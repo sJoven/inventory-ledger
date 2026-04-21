@@ -1,0 +1,88 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          String    @default("user")
+  
+  accounts      Account[]
+  
+  store_id      String?   @db.ObjectId
+  store         Store?    @relation(fields: [store_id], references: [id])
+  
+  logs          ActivityLog[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+
+model Store {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  store_name  String
+  owner_id    String    @db.ObjectId
+  
+  users       User[]
+  products    Product[]
+  logs        ActivityLog[]
+
+  @@map("stores")
+}
+
+model Product {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  store_id    String   @db.ObjectId
+  sku         String
+  name        String
+  quantity    Int      @default(0)
+  is_deleted  Boolean  @default(false)
+  
+  store       Store    @relation(fields: [store_id], references: [id])
+
+  @@map("products")
+}
+
+model ActivityLog {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  store_id    String   @db.ObjectId
+  user_id     String   @db.ObjectId
+  action      String
+  doc_id      String   
+  prev_state  Json?    
+  createdAt   DateTime @default(now())
+
+  store       Store    @relation(fields: [store_id], references: [id])
+  user        User     @relation(fields: [user_id], references: [id])
+
+  @@map("activity_logs")
+}
