@@ -3,36 +3,27 @@
 import { useState, useTransition } from "react";
 import { createProduct } from "@/app/products/actions";
 
-interface Product {
-  sku: string;
-}
-
 export default function CreateProductModal({
-  existingProducts,
+  existingSkus,
 }: {
-  existingProducts: Product[];
+  existingSkus: string[];
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition(); // 1. Add useTransition
+  const [isPending, startTransition] = useTransition();
 
   const [formData, setFormData] = useState({ name: "", sku: "", quantity: 0 });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Manual duplicate check
-    const isDuplicate = existingProducts.some(
-      (p) => p.sku.toLowerCase() === formData.sku.toLowerCase(),
-    );
+    const normalizedSku = formData.sku.toLowerCase().trim();
+    const isDuplicate = existingSkus.includes(normalizedSku);
 
     if (isDuplicate) {
       setError(`The SKU "${formData.sku}" is already in use.`);
-      setFormData((prev) => ({ ...prev, sku: "" }));
       return;
     }
 
-    // 2. Wrap the submission in startTransition
     startTransition(async () => {
       setError(null);
       const data = new FormData();
@@ -40,10 +31,13 @@ export default function CreateProductModal({
       data.append("sku", formData.sku);
       data.append("quantity", formData.quantity.toString());
 
-      await createProduct(data);
-
-      setIsOpen(false);
-      setFormData({ name: "", sku: "", quantity: 0 });
+      try {
+        await createProduct(data);
+        setIsOpen(false);
+        setFormData({ name: "", sku: "", quantity: 0 });
+      } catch (err) {
+        setError("Failed to create product. Please try again.");
+      }
     });
   };
 
@@ -54,7 +48,7 @@ export default function CreateProductModal({
           setError(null);
           setIsOpen(true);
         }}
-        className="mb-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition font-medium"
       >
         + Create Product
       </button>
@@ -67,7 +61,7 @@ export default function CreateProductModal({
               <button
                 onClick={() => !isPending && setIsOpen(false)}
                 disabled={isPending}
-                className="text-gray-500 hover:text-black disabled:opacity-30"
+                className="text-gray-500 hover:text-black disabled:opacity-30 p-1"
               >
                 ✕
               </button>
@@ -91,7 +85,7 @@ export default function CreateProductModal({
                     setFormData({ ...formData, name: e.target.value })
                   }
                   required
-                  className="w-full border rounded p-2 disabled:bg-gray-50"
+                  className="w-full border rounded p-2 disabled:bg-gray-50 outline-blue-500"
                   placeholder="e.g. Wireless Mouse"
                 />
               </div>
@@ -103,11 +97,13 @@ export default function CreateProductModal({
                   value={formData.sku}
                   onChange={(e) => {
                     setFormData({ ...formData, sku: e.target.value });
-                    setError(null);
+                    if (error) setError(null);
                   }}
                   required
                   placeholder="e.g. WM-001"
-                  className={`w-full border rounded p-2 disabled:bg-gray-50 ${error ? "border-red-500" : ""}`}
+                  className={`w-full border rounded p-2 disabled:bg-gray-50 outline-blue-500 ${
+                    error ? "border-red-500" : ""
+                  }`}
                 />
               </div>
 
@@ -118,6 +114,7 @@ export default function CreateProductModal({
                 <input
                   disabled={isPending}
                   type="number"
+                  min="0"
                   value={formData.quantity}
                   onChange={(e) =>
                     setFormData({
@@ -125,7 +122,7 @@ export default function CreateProductModal({
                       quantity: parseInt(e.target.value) || 0,
                     })
                   }
-                  className="w-full border rounded p-2 disabled:bg-gray-50"
+                  className="w-full border rounded p-2 disabled:bg-gray-50 outline-blue-500"
                 />
               </div>
 
@@ -134,14 +131,14 @@ export default function CreateProductModal({
                   type="button"
                   disabled={isPending}
                   onClick={() => setIsOpen(false)}
-                  className="px-4 py-2 border rounded hover:bg-gray-50 disabled:opacity-50"
+                  className="px-4 py-2 border rounded hover:bg-gray-50 disabled:opacity-50 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-400 flex items-center min-w-[120px] justify-center"
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-400 flex items-center min-w-[120px] justify-center transition"
                 >
                   {isPending ? (
                     <>

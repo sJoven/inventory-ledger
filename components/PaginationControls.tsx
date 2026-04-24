@@ -17,7 +17,6 @@ export default function PaginationControls({
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // isPending will be true while the URL is updating and data is fetching
   const [isPending, startTransition] = useTransition();
 
   const createPageURL = (pageNumber: number | string) => {
@@ -26,7 +25,6 @@ export default function PaginationControls({
     return `${pathname}?${params.toString()}`;
   };
 
-  // Helper to trigger transition on click
   const handlePageChange = (
     e: React.MouseEvent<HTMLAnchorElement>,
     url: string,
@@ -41,7 +39,6 @@ export default function PaginationControls({
 
   return (
     <div className="flex items-center justify-center gap-6 py-4">
-      {/* Previous Button */}
       {current > 1 && !isPending ? (
         <Link
           href={createPageURL(current - 1)}
@@ -56,7 +53,6 @@ export default function PaginationControls({
         </span>
       )}
 
-      {/* Center Content: Spinner or Page Text */}
       <div className="flex items-center justify-center min-w-[100px] text-sm font-medium">
         {isPending ? (
           <div className="h-5 w-5 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
@@ -67,7 +63,6 @@ export default function PaginationControls({
         )}
       </div>
 
-      {/* Next Button */}
       {current < total && !isPending ? (
         <Link
           href={createPageURL(current + 1)}

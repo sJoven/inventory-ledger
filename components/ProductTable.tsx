@@ -166,7 +166,7 @@ export default function ProductTable({
 
         {products.length === 0 && (
           <div className="p-12 text-center text-gray-400 italic">
-            No products found for this store.
+            No products found.
           </div>
         )}
       </div>

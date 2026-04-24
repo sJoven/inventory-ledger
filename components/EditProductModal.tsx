@@ -67,13 +67,11 @@ export default function EditProductModal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
         onClick={() => !isPending && onClose()}
       />
 
-      {/* Modal Content */}
       <div className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-2xl z-10 border">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-gray-800">Edit Product</h2>
@@ -87,7 +85,6 @@ export default function EditProductModal({
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Error Message Display */}
           {error && (
             <div className="p-3 text-sm bg-red-50 border border-red-200 text-red-600 rounded-md">
               <div className="flex items-center gap-2">
