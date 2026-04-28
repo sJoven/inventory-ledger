@@ -13,7 +13,7 @@ export default async function ActivityLogsPage({
   const session = await auth();
   const storeId = (session?.user as any)?.store_id;
 
-  if (!session || !storeId) redirect("/");
+  if (!session || !storeId) redirect("/login");
 
   const params = await searchParams;
   const page = Number(params.page) || 1;
