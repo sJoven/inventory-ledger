@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useRef, useTransition } from "react"; // 1. Added useTransition
+import { useRef, useTransition } from "react";
 
 export default function SearchField({ placeholder }: { placeholder: string }) {
   const searchParams = useSearchParams();
@@ -9,7 +9,6 @@ export default function SearchField({ placeholder }: { placeholder: string }) {
   const { replace } = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
 
-  // 2. Initialize the transition hook
   const [isPending, startTransition] = useTransition();
 
   const currentQuery = searchParams.get("query") || "";
@@ -28,7 +27,6 @@ export default function SearchField({ placeholder }: { placeholder: string }) {
       params.delete("query");
     }
 
-    // 3. Wrap navigation in startTransition to track loading state
     startTransition(() => {
       replace(`${pathname}?${params.toString()}`);
     });
@@ -50,14 +48,14 @@ export default function SearchField({ placeholder }: { placeholder: string }) {
     <form
       ref={formRef}
       onSubmit={handleSubmit}
-      className="flex w-full max-w-2xl items-center gap-2"
+      className="flex w-full max-w-2xl items-center gap-3 bg-white p-2 rounded-lg border border-gray-200 shadow-sm"
     >
       <div className="flex-1">
         <input
           key={currentQuery}
           name="query"
-          disabled={isPending} // Disable while searching
-          className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:bg-gray-50 transition-colors"
+          disabled={isPending}
+          className="block w-full rounded-md border border-gray-200 bg-gray-50/50 py-2 px-3 text-[0.875rem] text-[#3a3a3a] outline-none focus:ring-2 focus:ring-[#fc6022]/20 focus:border-[#fc6022] disabled:bg-gray-100 transition-all placeholder:text-gray-400"
           placeholder={placeholder}
           defaultValue={currentQuery}
         />
@@ -67,7 +65,7 @@ export default function SearchField({ placeholder }: { placeholder: string }) {
         <button
           type="submit"
           disabled={isPending}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors shrink-0 flex items-center justify-center gap-2 min-w-[90px]"
+          className="rounded-md bg-[#fc6022] px-4 py-2 text-[0.875rem] font-bold text-white hover:bg-[#e2521a] transition-all shrink-0 flex items-center justify-center gap-2 min-w-[100px] shadow-sm active:scale-95"
         >
           {isPending ? (
             <>
@@ -79,13 +77,13 @@ export default function SearchField({ placeholder }: { placeholder: string }) {
           )}
         </button>
 
-        <div className="w-[60px]">
+        <div className="min-w-[60px]">
           {currentQuery && (
             <button
               type="button"
               disabled={isPending}
               onClick={handleReset}
-              className="text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 px-2 py-2 rounded-md transition-colors disabled:opacity-50"
+              className="text-[0.875rem] font-medium text-[#17212c] opacity-60 hover:opacity-100 hover:bg-gray-100 px-3 py-2 rounded-md transition-all"
             >
               Reset
             </button>
