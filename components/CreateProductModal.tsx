@@ -48,34 +48,37 @@ export default function CreateProductModal({
           setError(null);
           setIsOpen(true);
         }}
-        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition font-medium"
+        style={{ backgroundColor: "rgb(252, 96, 34)" }}
+        className="text-white px-5 py-2.5 rounded-lg transition hover:opacity-90 text-[0.875rem] font-bold shadow-sm"
       >
         + Create Product
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl border">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">New Product</h2>
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl border border-gray-100">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-[1.25rem] font-extrabold text-[rgb(58,58,58)]">
+                New Product
+              </h2>
               <button
                 onClick={() => !isPending && setIsOpen(false)}
                 disabled={isPending}
-                className="text-gray-500 hover:text-black disabled:opacity-30 p-1"
+                className="text-gray-400 hover:text-[rgb(58,58,58)] disabled:opacity-30 transition-colors"
               >
-                ✕
+                <span className="text-xl">✕</span>
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
               {error && (
-                <div className="p-3 text-sm bg-red-50 border border-red-200 text-red-600 rounded">
+                <div className="p-3 text-[0.875rem] bg-red-50 border border-red-100 text-red-600 rounded-lg font-medium">
                   {error}
                 </div>
               )}
 
-              <div>
-                <label className="block text-sm font-medium mb-1">
+              <div className="space-y-1.5">
+                <label className="block text-[0.875rem] font-bold text-[rgb(58,58,58)]">
                   Product Name
                 </label>
                 <input
@@ -85,13 +88,15 @@ export default function CreateProductModal({
                     setFormData({ ...formData, name: e.target.value })
                   }
                   required
-                  className="w-full border rounded p-2 disabled:bg-gray-50 outline-blue-500"
+                  className="w-full border border-gray-200 rounded-lg p-2.5 text-[0.875rem] text-[rgb(58,58,58)] focus:ring-2 focus:ring-[rgb(252,96,34)]/20 outline-none transition-all"
                   placeholder="e.g. Wireless Mouse"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">SKU</label>
+              <div className="space-y-1.5">
+                <label className="block text-[0.875rem] font-bold text-[rgb(58,58,58)]">
+                  SKU
+                </label>
                 <input
                   disabled={isPending}
                   value={formData.sku}
@@ -101,44 +106,51 @@ export default function CreateProductModal({
                   }}
                   required
                   placeholder="e.g. WM-001"
-                  className={`w-full border rounded p-2 disabled:bg-gray-50 outline-blue-500 ${
-                    error ? "border-red-500" : ""
+                  className={`w-full border rounded-lg p-2.5 text-[0.875rem] text-[rgb(58,58,58)] outline-none transition-all ${
+                    error
+                      ? "border-red-500"
+                      : "border-gray-200 focus:ring-2 focus:ring-[rgb(252,96,34)]/20"
                   }`}
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">
+              <div className="space-y-1.5">
+                <label className="block text-[0.875rem] font-bold text-[rgb(58,58,58)]">
                   Initial Quantity
                 </label>
                 <input
                   disabled={isPending}
                   type="number"
                   min="0"
-                  value={formData.quantity}
-                  onChange={(e) =>
+                  value={Number(formData.quantity).toString()}
+                  onFocus={(e) => e.target.select()}
+                  onChange={(e) => {
+                    const rawValue = e.target.value;
+                    const sanitizedValue = parseInt(rawValue, 10);
+
                     setFormData({
                       ...formData,
-                      quantity: parseInt(e.target.value) || 0,
-                    })
-                  }
-                  className="w-full border rounded p-2 disabled:bg-gray-50 outline-blue-500"
+                      quantity: isNaN(sanitizedValue) ? 0 : sanitizedValue,
+                    });
+                  }}
+                  className="w-full border border-gray-200 rounded-lg p-2.5 text-[0.875rem] text-[rgb(58,58,58)] focus:ring-2 focus:ring-[rgb(252,96,34)]/20 outline-none transition-all"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 mt-6">
+              <div className="flex justify-end gap-3 mt-8">
                 <button
                   type="button"
                   disabled={isPending}
                   onClick={() => setIsOpen(false)}
-                  className="px-4 py-2 border rounded hover:bg-gray-50 disabled:opacity-50 transition"
+                  className="px-5 py-2.5 border border-gray-200 rounded-lg text-[0.875rem] font-semibold text-[rgb(58,58,58)] hover:bg-gray-50 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-400 flex items-center min-w-[120px] justify-center transition"
+                  style={{ backgroundColor: "rgb(252, 96, 34)" }}
+                  className="px-5 py-2.5 text-white rounded-lg hover:opacity-90 disabled:opacity-60 flex items-center min-w-[130px] justify-center transition text-[0.875rem] font-bold shadow-sm"
                 >
                   {isPending ? (
                     <>

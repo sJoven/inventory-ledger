@@ -20,7 +20,9 @@ export default async function ActivityLogsPage({
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Store Activity Logs</h1>
+      <h1 className="text-[1.5rem] font-bold text-[rgb(58,58,58)] mb-6">
+        Store Activity Logs
+      </h1>
 
       <Suspense
         key={`page-content-${page}`}

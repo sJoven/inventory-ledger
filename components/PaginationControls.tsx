@@ -38,27 +38,38 @@ export default function PaginationControls({
   if (total <= 1) return null;
 
   return (
-    <div className="flex items-center justify-center gap-6 py-4">
+    <div className="flex items-center justify-center gap-6 py-4 bg-white">
       {current > 1 && !isPending ? (
         <Link
           href={createPageURL(current - 1)}
           onClick={(e) => handlePageChange(e, createPageURL(current - 1))}
-          className="px-4 py-2 border rounded hover:bg-gray-100 transition-colors"
+          style={{
+            backgroundColor: "rgb(23, 33, 44)",
+            color: "rgb(197, 197, 197)",
+          }}
+          className="px-4 py-2 rounded text-[0.875rem] font-semibold transition-opacity hover:opacity-90"
         >
           {"<"} Previous
         </Link>
       ) : (
-        <span className="px-4 py-2 border rounded opacity-50 cursor-not-allowed">
+        <span
+          style={{
+            backgroundColor: "rgb(23, 33, 44)",
+            color: "rgb(197, 197, 197)",
+          }}
+          className="px-4 py-2 rounded text-[0.875rem] font-semibold opacity-40 cursor-not-allowed"
+        >
           {"<"} Previous
         </span>
       )}
 
-      <div className="flex items-center justify-center min-w-[100px] text-sm font-medium">
+      <div className="flex items-center justify-center min-w-[120px] text-[0.875rem] text-[rgb(58,58,58)]">
         {isPending ? (
-          <div className="h-5 w-5 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
+          <div className="h-5 w-5 border-2 border-gray-200 border-t-[rgb(23,33,44)] rounded-full animate-spin" />
         ) : (
           <span>
-            Page <span className="font-bold">{current}</span> of {total}
+            Page <span className="font-extrabold text-[1rem]">{current}</span>{" "}
+            of {total}
           </span>
         )}
       </div>
@@ -67,12 +78,22 @@ export default function PaginationControls({
         <Link
           href={createPageURL(current + 1)}
           onClick={(e) => handlePageChange(e, createPageURL(current + 1))}
-          className="px-4 py-2 border rounded hover:bg-gray-100 transition-colors"
+          style={{
+            backgroundColor: "rgb(23, 33, 44)",
+            color: "rgb(197, 197, 197)",
+          }}
+          className="px-4 py-2 rounded text-[0.875rem] font-semibold transition-opacity hover:opacity-90"
         >
           Next {">"}
         </Link>
       ) : (
-        <span className="px-4 py-2 border rounded opacity-50 cursor-not-allowed">
+        <span
+          style={{
+            backgroundColor: "rgb(23, 33, 44)",
+            color: "rgb(197, 197, 197)",
+          }}
+          className="px-4 py-2 rounded text-[0.875rem] font-semibold opacity-40 cursor-not-allowed"
+        >
           Next {">"}
         </span>
       )}

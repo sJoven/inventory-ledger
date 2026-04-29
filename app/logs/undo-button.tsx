@@ -9,14 +9,13 @@ export default function UndoButton({ logId }: { logId: string }) {
   const [isPending, startTransition] = useTransition();
 
   const handleUndo = async () => {
-    setError(null); // Clear previous errors
+    setError(null); 
 
     startTransition(async () => {
       try {
         await undoAction(logId);
-        setIsOpen(false); // Close on success
+        setIsOpen(false); 
       } catch (err: any) {
-        // Catch the SKU collision or any other server errors
         setError(err.message || "An unexpected error occurred.");
       }
     });
@@ -54,7 +53,6 @@ export default function UndoButton({ logId }: { logId: string }) {
                 state?
               </p>
 
-              {/* Error Message Display - Similar to your Create Modal */}
               {error && (
                 <div className="p-3 text-sm bg-red-50 border border-red-200 text-red-600 rounded">
                   <strong>Action Failed:</strong> {error}

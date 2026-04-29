@@ -33,8 +33,11 @@ export default async function ProductsPage({
 
   return (
     <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Store Products</h1>
+      <div className="flex justify-between items-center mb-4 bg-white">
+        <h1 className="text-[1.5rem] font-bold text-[rgb(58,58,58)]">
+          Store Products
+        </h1>
+
         <CreateProductModal existingSkus={existingSkus} />
       </div>
 

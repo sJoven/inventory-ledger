@@ -27,22 +27,22 @@ export default function DeleteConfirmModal({
         onClick={onClose}
       />
 
-      {/* Modal Content */}
       <div className="relative w-full max-w-md transform overflow-hidden rounded-xl bg-white p-6 shadow-2xl transition-all">
-        {/* Close 'X' Button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 transition-colors"
+          className="absolute right-4 top-4 text-gray-400 hover:text-[rgb(58,58,58)] transition-colors"
           aria-label="Close"
         >
           <span className="text-xl">✕</span>
         </button>
 
         <div className="mt-2">
-          <h3 className="text-xl font-bold text-gray-900">{title}</h3>
-          <p className="mt-3 text-sm text-gray-500">
+          <h3 className="text-[1.25rem] font-extrabold text-[rgb(58,58,58)]">
+            {title}
+          </h3>
+          <p className="mt-3 text-[0.875rem] leading-relaxed text-[rgb(58,58,58)]/80">
             Are you sure you want to delete{" "}
-            <span className="font-semibold text-gray-800">{itemName}</span>?
+            <span className="font-bold text-[rgb(58,58,58)]">{itemName}</span>?
             This action will mark the item as deleted in the system.
           </p>
         </div>
@@ -52,15 +52,17 @@ export default function DeleteConfirmModal({
             type="button"
             disabled={isPending}
             onClick={onClose}
-            className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+            className="rounded-lg border border-gray-200 px-5 py-2.5 text-[0.875rem] font-semibold text-[rgb(58,58,58)] hover:bg-gray-50 disabled:opacity-50 transition-colors"
           >
             Cancel
           </button>
+
           <button
             type="button"
             disabled={isPending}
             onClick={onConfirm}
-            className="rounded-lg bg-red-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-700 disabled:bg-red-400 transition-colors flex items-center gap-2"
+            style={{ backgroundColor: "rgb(252, 96, 34)" }}
+            className="rounded-lg px-5 py-2.5 text-[0.875rem] font-bold text-white hover:opacity-90 disabled:opacity-50 transition-colors flex items-center gap-2 shadow-sm"
           >
             {isPending ? (
               <>

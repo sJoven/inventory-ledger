@@ -146,39 +146,67 @@ export default function ProductTable({
   return (
     <>
       <div className="w-full">
-        <div className="md:hidden space-y-2">
+        <div className="md:hidden space-y-4 p-2">
           {products.map((product) => (
             <div
               key={product.id}
-              className={`bg-white rounded-xl p-6 border border-gray-100 hover:shadow-md hover:border-[#fc6022]/20 transition-all duration-200 relative ${
-                openMenuId === product.id
-                  ? "shadow-lg ring-2 ring-[#fc6022]/20 z-20"
-                  : "z-10"
-              }`}
+              className="group relative bg-white rounded-2xl p-6 border border-gray-100 
+                 shadow-sm transition-all duration-300 ease-out
+                 hover:shadow-xl hover:-translate-y-1 hover:border-[#fc6022]/30"
             >
+              {/* Animated Accent Bar: Expands on hover */}
+              <div
+                className="absolute top-0 left-6 w-8 h-1 bg-[#fc6022] rounded-b-full 
+                      opacity-40 transition-all duration-300 
+                      group-hover:w-16 group-hover:opacity-100"
+              />
+
               <div className="flex justify-between items-start gap-4">
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-bold text-[#3a3a3a] mb-1 leading-tight">
+                  <h3
+                    className="text-xl font-extrabold text-[#3a3a3a] mb-1 tracking-tight 
+                         group-hover:text-[#fc6022] transition-colors duration-300"
+                  >
                     {product.name}
                   </h3>
-                  <p className="text-sm text-[#3a3a3a] opacity-60 font-mono mb-2">
-                    SKU: {product.sku}
-                  </p>
-                  <div className="flex items-center gap-4">
-                    <div>
-                      <span className="text-sm text-[#3a3a3a] opacity-70">
-                        Quantity:
-                      </span>
-                      <span className="ml-1 font-semibold text-lg text-[#3a3a3a]">
+
+                  <div className="flex items-center gap-2 mb-4">
+                    <span
+                      className="px-2 py-0.5 bg-gray-100 text-[#3a3a3a] text-[10px] 
+                             font-bold uppercase tracking-wider rounded-md"
+                    >
+                      SKU
+                    </span>
+                    <span className="text-sm font-mono text-gray-400 group-hover:text-gray-600">
+                      {product.sku}
+                    </span>
+                  </div>
+
+                  <div
+                    className="flex items-center justify-between bg-gray-50 rounded-xl p-3 
+                          border border-gray-100 transition-colors duration-300 
+                          group-hover:bg-white group-hover:border-[#fc6022]/10"
+                  >
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                      In Stock
+                    </span>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-2xl font-black text-[#3a3a3a] group-hover:text-[#fc6022] transition-colors">
                         {product.quantity}
+                      </span>
+                      <span className="text-xs font-medium text-gray-500">
+                        units
                       </span>
                     </div>
                   </div>
                 </div>
-                <ActionMenu
-                  product={product}
-                  isOpen={openMenuId === product.id}
-                />
+
+                <div className="pt-1 opacity-60 group-hover:opacity-100 transition-opacity">
+                  <ActionMenu
+                    product={product}
+                    isOpen={openMenuId === product.id}
+                  />
+                </div>
               </div>
             </div>
           ))}
