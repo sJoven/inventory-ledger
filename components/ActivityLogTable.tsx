@@ -11,77 +11,169 @@ export default async function ActivityLogTable({ storeId, page }: Props) {
 
   if (logs.length < 1) {
     return (
-      <div className="p-12 border-2 border-dashed rounded-lg bg-gray-50 text-center">
-        <p className="text-gray-500 italic">
-          There are no logs related to this store.
-        </p>
+      <div className="p-12 text-center text-gray-400 italic">
+        There are no logs related to this store.
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto border rounded-lg shadow-sm bg-white">
-      <table className="w-full text-left border-collapse">
-        <thead>
-          <tr className="bg-gray-50 border-b text-sm uppercase tracking-wider">
-            <th className="p-4 font-semibold">Date/Time</th>
-            <th className="p-4 font-semibold">User</th>
-            <th className="p-4 font-semibold">Product</th>
-            <th className="p-4 font-semibold">Action</th>
-            <th className="p-4 font-semibold">Changes Detected</th>
-            <th className="p-4 font-semibold text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {logs.map((log) => {
-            const currentProduct = productMap.get(log.doc_id);
-            const changes = getDiff(log.prev_state as any, currentProduct);
-            const isComplete = !!(log.user && currentProduct);
-            const hasDiff = !!(changes && changes.length > 0);
-            const canUndo = isComplete && log.action !== "CREATE" && hasDiff;
+    <div className="w-full">
+      <div className="md:hidden space-y-4 p-2">
+        {logs.map((log) => {
+          const currentProduct = productMap.get(log.doc_id);
+          const changes = getDiff(log.prev_state as any, currentProduct);
+          const isComplete = !!(log.user && currentProduct);
+          const hasDiff = !!(changes && changes.length > 0);
+          const canUndo = isComplete && log.action !== "CREATE" && hasDiff;
 
-            return (
-              <tr
-                key={log.id}
-                className="border-b hover:bg-gray-50 transition-colors"
-              >
-                <td className="p-4 whitespace-nowrap text-sm">
-                  {log.createdAt.toLocaleString()}
-                </td>
-                <td className="p-4 text-sm">
-                  {log.user?.name ?? (
-                    <span className="text-red-400 italic">Missing User</span>
-                  )}
-                </td>
-                <td className="p-4 font-medium text-sm">
-                  {currentProduct?.name ?? (
-                    <span className="text-red-400 italic">Missing Product</span>
-                  )}
-                </td>
-                <td className="p-4">
-                  <span className="px-2 py-1 rounded bg-blue-100 text-blue-800 text-[10px] font-bold uppercase">
-                    {log.action}
+          return (
+            <div
+              key={log.id}
+              className="group relative bg-white rounded-2xl p-6 border border-gray-100 
+                     shadow-sm transition-all duration-300 ease-out
+                     hover:shadow-xl hover:-translate-y-1 hover:border-[#fc6022]/30"
+            >
+              <div
+                className="absolute top-0 left-6 w-8 h-1 bg-[#fc6022] rounded-b-full 
+                       opacity-40 transition-all duration-300 
+                       group-hover:w-16 group-hover:opacity-100"
+              />
+
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
+                    {log.createdAt.toLocaleString()}
+                  </p>
+                  <h3 className="text-lg font-extrabold text-[#3a3a3a] tracking-tight group-hover:text-[#fc6022] transition-colors">
+                    {currentProduct?.name ?? (
+                      <span className="text-red-400 italic">
+                        Missing Product
+                      </span>
+                    )}
+                  </h3>
+                </div>
+                <span className="px-2 py-0.5 bg-gray-100 text-[#3a3a3a] text-[10px] font-bold uppercase tracking-wider rounded-md">
+                  {log.action}
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600 font-medium">
+                    {log.user?.name ?? (
+                      <span className="text-red-400 italic">Missing User</span>
+                    )}
                   </span>
-                </td>
-                <td className="p-4 text-xs text-gray-600">
-                  {renderChanges(changes)}
-                </td>
-                <td className="p-4 text-center">
+                </div>
+
+                <div className="bg-gray-50 rounded-xl p-3 border border-gray-100 group-hover:bg-white group-hover:border-[#fc6022]/10 transition-colors">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase mb-2">
+                    Changes Detected
+                  </p>
+                  <div className="text-xs text-gray-600 leading-relaxed">
+                    {renderChanges(changes)}
+                  </div>
+                </div>
+
+                <div className="pt-2 flex justify-end">
                   {canUndo ? (
                     <UndoButton logId={log.id} />
                   ) : (
-                    <span className="text-gray-400 text-xs italic">
+                    <span className="text-[10px] font-bold text-gray-300 uppercase italic">
                       {log.action === "CREATE"
                         ? "Initial Entry"
-                        : "No changes to revert"}
+                        : "No Revert Available"}
                     </span>
                   )}
-                </td>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* DESKTOP VIEW: Professional Table */}
+      <div className="hidden md:block">
+        <div className="w-full overflow-x-auto scrollbar-hide rounded-lg border border-gray-200">
+          <table className="min-w-full bg-white">
+            <thead className="bg-[rgb(23,33,44)]">
+              <tr>
+                <th className="px-6 py-4 text-left text-[0.875rem] font-bold text-white uppercase tracking-wider">
+                  Date/Time
+                </th>
+                <th className="px-6 py-4 text-left text-[0.875rem] font-bold text-white uppercase tracking-wider">
+                  User
+                </th>
+                <th className="px-6 py-4 text-left text-[0.875rem] font-bold text-white uppercase tracking-wider">
+                  Product
+                </th>
+                <th className="px-6 py-4 text-left text-[0.875rem] font-bold text-white uppercase tracking-wider">
+                  Action
+                </th>
+                <th className="px-6 py-4 text-left text-[0.875rem] font-bold text-white uppercase tracking-wider">
+                  Changes
+                </th>
+                <th className="px-6 py-4 text-right text-[0.875rem] font-bold text-white uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {logs.map((log) => {
+                const currentProduct = productMap.get(log.doc_id);
+                const changes = getDiff(log.prev_state as any, currentProduct);
+                const isComplete = !!(log.user && currentProduct);
+                const hasDiff = !!(changes && changes.length > 0);
+                const canUndo =
+                  isComplete && log.action !== "CREATE" && hasDiff;
+
+                return (
+                  <tr
+                    key={log.id}
+                    className="transition-colors duration-150 odd:bg-white even:bg-[rgb(23,33,44)]/[0.03]"
+                  >
+                    <td className="px-6 py-4 text-[0.875rem] text-gray-500 font-mono border-b border-gray-100">
+                      {log.createdAt.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 text-[0.875rem] text-[#3a3a3a] font-semibold border-b border-gray-100">
+                      {log.user?.name ?? (
+                        <span className="text-red-400 italic">
+                          Missing User
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-[0.875rem] text-[#3a3a3a] font-semibold border-b border-gray-100">
+                      {currentProduct?.name ?? (
+                        <span className="text-red-400 italic">
+                          Missing Product
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-100">
+                      <span className="px-2 py-0.5 bg-[rgb(23,33,44)] text-white text-[10px] font-bold uppercase tracking-wider rounded">
+                        {log.action}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-xs text-gray-600 border-b border-gray-100 max-w-xs truncate">
+                      {renderChanges(changes)}
+                    </td>
+                    <td className="px-6 py-4 text-right border-b border-gray-100">
+                      {canUndo ? (
+                        <UndoButton logId={log.id} />
+                      ) : (
+                        <span className="text-[10px] font-bold text-gray-300 uppercase italic">
+                          Locked
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

@@ -154,7 +154,6 @@ export default function ProductTable({
                  shadow-sm transition-all duration-300 ease-out
                  hover:shadow-xl hover:-translate-y-1 hover:border-[#fc6022]/30"
             >
-              {/* Animated Accent Bar: Expands on hover */}
               <div
                 className="absolute top-0 left-6 w-8 h-1 bg-[#fc6022] rounded-b-full 
                       opacity-40 transition-all duration-300 

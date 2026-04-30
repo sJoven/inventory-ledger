@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { undoAction } from "./actions";
+import { createPortal } from "react-dom";
 
 export default function UndoButton({ logId }: { logId: string }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,12 +10,12 @@ export default function UndoButton({ logId }: { logId: string }) {
   const [isPending, startTransition] = useTransition();
 
   const handleUndo = async () => {
-    setError(null); 
+    setError(null);
 
     startTransition(async () => {
       try {
         await undoAction(logId);
-        setIsOpen(false); 
+        setIsOpen(false);
       } catch (err: any) {
         setError(err.message || "An unexpected error occurred.");
       }
@@ -28,72 +29,68 @@ export default function UndoButton({ logId }: { logId: string }) {
           setError(null);
           setIsOpen(true);
         }}
-        className="text-blue-600 hover:text-blue-800 font-medium text-sm underline decoration-dotted"
+        className="px-4 py-1.5 bg-[rgb(23,33,44)] text-[rgb(197,197,197)] hover:text-white 
+               rounded-lg font-bold text-[0.875rem] transition-all duration-200 border border-[rgb(23,33,44)]"
       >
         Undo
       </button>
 
-      {isOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl border">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Confirm Undo</h2>
+      {isOpen &&
+        createPortal(
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+            <div
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm"
+              onClick={() => setIsOpen(false)}
+            />
+            <div className="relative w-full max-w-md transform overflow-hidden rounded-xl bg-white p-6 shadow-2xl transition-all">
               <button
                 onClick={() => !isPending && setIsOpen(false)}
-                className="text-gray-500 hover:text-black disabled:opacity-30"
+                className="absolute right-4 top-4 text-gray-400 hover:text-[rgb(58,58,58)] transition-colors"
+                aria-label="Close"
                 disabled={isPending}
               >
-                ✕
+                <span className="text-xl">✕</span>
               </button>
-            </div>
 
-            <div className="space-y-4">
-              <p className="text-gray-600">
-                Are you sure you want to revert this product to its previous
-                state?
-              </p>
+              <div className="mt-2">
+                <h3 className="text-[1.25rem] font-extrabold text-[rgb(58,58,58)]">
+                  Confirm Undo
+                </h3>
 
-              {error && (
-                <div className="p-3 text-sm bg-red-50 border border-red-200 text-red-600 rounded">
-                  <strong>Action Failed:</strong> {error}
+                <div className="mt-3 space-y-4">
+                  <p className="text-[0.875rem] leading-relaxed text-[rgb(58,58,58)]/80">
+                    Are you sure you want to revert this product to its previous
+                    state? This will overwrite the current quantity and details.
+                  </p>
+
+                  {error && (
+                    <div className="p-3 text-[0.875rem] bg-red-50 border border-red-100 text-red-600 rounded-lg font-medium">
+                      <strong>Action Failed:</strong> {error}
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
 
-              <div className="flex justify-end gap-2 mt-6">
+              <div className="mt-8 flex justify-end gap-3">
                 <button
                   type="button"
                   disabled={isPending}
                   onClick={() => setIsOpen(false)}
-                  className="px-4 py-2 border rounded hover:bg-gray-50 disabled:opacity-50"
+                  className="rounded-lg border border-gray-200 px-5 py-2.5 text-[0.875rem] font-semibold text-[rgb(58,58,58)] hover:bg-gray-50 disabled:opacity-50 transition-colors"
                 >
                   Cancel
                 </button>
+
                 <button
-                  onClick={handleUndo}
+                  type="button"
                   disabled={isPending}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center min-w-[100px] disabled:bg-blue-400"
+                  onClick={handleUndo}
+                  style={{ backgroundColor: "rgb(252, 96, 34)" }}
+                  className="rounded-lg px-5 py-2.5 text-[0.875rem] font-bold text-white hover:opacity-90 disabled:opacity-50 transition-colors flex items-center gap-2 shadow-sm"
                 >
                   {isPending ? (
                     <>
-                      <svg
-                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                       Reverting...
                     </>
                   ) : (
@@ -102,9 +99,9 @@ export default function UndoButton({ logId }: { logId: string }) {
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </>
   );
 }
