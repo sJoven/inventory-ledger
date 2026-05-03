@@ -92,8 +92,6 @@ export default async function ActivityLogTable({ storeId, page }: Props) {
           );
         })}
       </div>
-
-      {/* DESKTOP VIEW: Professional Table */}
       <div className="hidden md:block">
         <div className="w-full overflow-x-auto scrollbar-hide rounded-lg border border-gray-200">
           <table className="min-w-full bg-white">

@@ -67,15 +67,11 @@ export default function EditProductModal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-[rgb(23,33,44)]/40 backdrop-blur-sm transition-opacity"
         onClick={() => !isPending && onClose()}
       />
-
-      {/* Modal Content */}
       <div className="relative w-full max-w-md rounded-xl bg-white shadow-2xl z-10 border border-gray-100 overflow-hidden">
-        {/* Header */}
         <div className="px-6 py-6 mb-0 flex justify-between items-center border-b border-gray-50">
           <h2 className="text-[1.125rem] font-bold text-[rgb(23,33,44)]">
             Edit Product
@@ -101,7 +97,6 @@ export default function EditProductModal({
             </div>
           )}
 
-          {/* Input Group */}
           <div className="space-y-4">
             <div>
               <label className="block text-[0.875rem] font-bold text-[rgb(58,58,58)] mb-1.5">
@@ -161,7 +156,6 @@ export default function EditProductModal({
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="mt-8 flex justify-end gap-3 pt-2">
             <button
               type="button"

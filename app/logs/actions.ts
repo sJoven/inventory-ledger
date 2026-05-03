@@ -13,18 +13,14 @@ export async function undoAction(logId: string) {
     throw new Error("Unauthorized");
   }
 
-  // 1. Fetch the specific log entry
   const log = await prisma.activityLog.findUnique({
     where: { id: logId },
   });
 
-  // Basic validation
   if (!log || !log.prev_state || log.action === "CREATE") {
     throw new Error("Cannot undo this action");
   }
 
-  // 2. Fetch the CURRENT state of the product before we change it
-  // We use userStoreId for security to ensure they aren't undoing a product they don't own
   const currentProduct = await prisma.product.findUnique({
     where: {
       id: log.doc_id,

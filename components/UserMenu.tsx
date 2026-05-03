@@ -18,14 +18,12 @@ export default function UserMenu({ user }: { user: any }) {
 
       {isOpen && (
         <>
-          {/* Background overlay for clicking away */}
           <div
             className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
           ></div>
 
           <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-xl z-20 py-1 overflow-hidden">
-            {/* Mobile Name Tag - Using 0.875rem and the defined dark gray text */}
             <div className="px-4 py-3 text-[0.875rem] font-bold text-[#3a3a3a] border-b border-gray-50 md:hidden bg-gray-50/50">
               {user.name}
             </div>
@@ -34,7 +32,6 @@ export default function UserMenu({ user }: { user: any }) {
               onClick={() => signOut({ callbackUrl: "/login" })}
               className="w-full text-left px-4 py-2.5 text-[0.875rem] text-[#3a3a3a] hover:bg-[#fc6022] hover:text-white transition-colors font-medium flex items-center gap-2"
             >
-              {/* Subtle logout icon for professional feel */}
               <svg
                 className="w-4 h-4"
                 fill="none"
