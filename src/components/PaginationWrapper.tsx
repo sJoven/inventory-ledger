@@ -1,5 +1,5 @@
-import { getStoreProducts } from "@/lib/product";
-import { getActivityLogs } from "@/lib/logs";
+import { getStoreProducts } from "@/src/lib/product";
+import { getActivityLogs } from "@/src/lib/logs";
 import PaginationControls from "./PaginationControls";
 
 interface Props {

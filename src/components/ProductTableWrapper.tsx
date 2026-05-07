@@ -1,5 +1,5 @@
-import { getStoreProducts } from "@/lib/product";
-import ProductTable from "@/components/ProductTable";
+import { getStoreProducts } from "@/src/lib/product";
+import ProductTable from "@/src/components/ProductTable";
 
 export default async function ProductTableWrapper({
   storeId,

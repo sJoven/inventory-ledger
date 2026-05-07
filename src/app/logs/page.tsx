@@ -1,9 +1,9 @@
 import { Suspense } from "react";
-import { auth } from "@/auth";
+import { auth } from "@/src/lib/auth";
 import { redirect } from "next/navigation";
-import ActivityLogTable from "@/components/ActivityLogTable";
-import PaginationWrapper from "@/components/PaginationWrapper";
-import TableSkeleton from "@/components/TableSkeleton";
+import ActivityLogTable from "@/src/components/ActivityLogTable";
+import PaginationWrapper from "@/src/components/PaginationWrapper";
+import TableSkeleton from "@/src/components/TableSkeleton";
 
 export default async function ActivityLogsPage({
   searchParams,

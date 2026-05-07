@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { deleteProduct } from "@/app/products/actions";
-import DeleteConfirmModal from "@/components/DeleteConfirmModal";
-import { updateProduct } from "@/app/products/actions";
-import EditProductModal from "@/components/EditProductModal";
+import { deleteProduct } from "@/src/app/products/actions";
+import DeleteConfirmModal from "@/src/components/DeleteConfirmModal";
+import { updateProduct } from "@/src/app/products/actions";
+import EditProductModal from "@/src/components/EditProductModal";
 
 interface Product {
   id: string;

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/src/lib/prisma";
 import { cache } from "react";
 
 export const getActivityLogs = cache(async (storeId: string, page = 1) => {

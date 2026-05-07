@@ -1,7 +1,7 @@
-import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
-import UserMenu from "@/components/UserMenu";
-import Sidebar from "@/components/Sidebar";
+import { auth } from "@/src/lib/auth";
+import { prisma } from "@/src/lib/prisma";
+import UserMenu from "@/src/components/UserMenu";
+import Sidebar from "@/src/components/Sidebar";
 
 export default async function Navbar() {
   const session = await auth();

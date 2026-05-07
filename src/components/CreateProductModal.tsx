@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { createProduct } from "@/app/products/actions";
+import { createProduct } from "@/src/app/products/actions";
 
 export default function CreateProductModal({
   existingSkus,

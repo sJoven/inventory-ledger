@@ -1,4 +1,4 @@
-import { auth, signIn } from "@/auth";
+import { auth, signIn } from "@/src/lib/auth";
 import { redirect } from "next/navigation";
 
 export default async function Home() {

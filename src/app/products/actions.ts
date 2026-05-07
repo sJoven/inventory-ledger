@@ -1,7 +1,7 @@
 "use server";
 
-import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { auth } from "@/src/lib/auth";
+import { prisma } from "@/src/lib/prisma";
 import { revalidatePath } from "next/cache";
 
 export async function createProduct(formData: FormData) {

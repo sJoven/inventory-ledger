@@ -1,12 +1,12 @@
-import { auth } from "@/auth";
+import { auth } from "@/src/lib/auth";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { getStoreProducts } from "@/lib/product";
-import CreateProductModal from "@/components/CreateProductModal";
-import SearchField from "@/components/SearchField";
-import ProductTableWrapper from "@/components/ProductTableWrapper";
-import PaginationWrapper from "@/components/PaginationWrapper";
-import TableSkeleton from "@/components/TableSkeleton";
+import { getStoreProducts } from "@/src/lib/product";
+import CreateProductModal from "@/src/components/CreateProductModal";
+import SearchField from "@/src/components/SearchField";
+import ProductTableWrapper from "@/src/components/ProductTableWrapper";
+import PaginationWrapper from "@/src/components/PaginationWrapper";
+import TableSkeleton from "@/src/components/TableSkeleton";
 
 export default async function ProductsPage({
   searchParams,

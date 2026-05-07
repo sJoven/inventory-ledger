@@ -1,5 +1,5 @@
-import { getActivityLogs } from "@/lib/logs";
-import UndoButton from "@/app/logs/undo-button";
+import { getActivityLogs } from "@/src/lib/logs";
+import UndoButton from "@/src/app/logs/undo-button";
 
 interface Props {
   storeId: string;
