@@ -5,7 +5,7 @@ export default async function LoginPage() {
   const session = await auth();
 
   if (session) {
-    redirect("/products");
+    redirect("/stores");
   }
 
   return (
@@ -33,7 +33,7 @@ export default async function LoginPage() {
           <form
             action={async () => {
               "use server";
-              await signIn("google", { redirectTo: "/products" });
+              await signIn("google", { redirectTo: "/stores" });
             }}
           >
             <button

@@ -7,23 +7,24 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 model User {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  role          String    @default("user")
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  name            String?
+  email           String?           @unique
+  emailVerified   DateTime?
+  image           String?
   
-  accounts      Account[]
-  
-  store_id      String?   @db.ObjectId
-  store         Store?    @relation(fields: [store_id], references: [id])
-  
-  logs          ActivityLog[]
+  accounts        Account[]
+  logs            ActivityLog[]
+  owned_stores    Store[]           @relation("StoreOwner")
+  store_permissions StorePermission[]
 
   @@map("users")
+}
+
+type StorePermission {
+  store_id String @db.ObjectId
+  role     String
 }
 
 model Account {
@@ -48,11 +49,12 @@ model Account {
 
 
 model Store {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
   store_name  String
-  owner_id    String    @db.ObjectId
   
-  users       User[]
+  owner_id    String        @db.ObjectId
+  owner       User          @relation("StoreOwner", fields: [owner_id], references: [id])
+  
   products    Product[]
   logs        ActivityLog[]
 
@@ -67,8 +69,9 @@ model Product {
   quantity    Int      @default(0)
   is_deleted  Boolean  @default(false)
   
-  store       Store    @relation(fields: [store_id], references: [id])
+  store       Store    @relation(fields: [store_id], references: [id], onDelete: Cascade)
 
+  @@index([store_id, sku])
   @@map("products")
 }
 
@@ -81,8 +84,9 @@ model ActivityLog {
   prev_state  Json?    
   createdAt   DateTime @default(now())
 
-  store       Store    @relation(fields: [store_id], references: [id])
+  store       Store    @relation(fields: [store_id], references: [id], onDelete: Cascade)
   user        User     @relation(fields: [user_id], references: [id])
 
+  @@index([store_id, createdAt])
   @@map("activity_logs")
 }
