@@ -25,26 +25,43 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         where: { id: user.id },
         data: {
           emailVerified: new Date(),
-          store_permissions: [],
         },
       });
     },
   },
   callbacks: {
+    async signIn({ user, profile }) {
+      if (!user.email) return false;
+
+      const existingUser = await prisma.user.findUnique({
+        where: { email: user.email },
+      });
+
+      if (existingUser) {
+        const needsUpdate = !existingUser.emailVerified || !existingUser.image;
+
+        if (needsUpdate) {
+          await prisma.user.update({
+            where: { id: existingUser.id },
+            data: {
+              emailVerified: existingUser.emailVerified ?? new Date(),
+              image: existingUser.image ?? profile?.picture,
+              name: existingUser.name ?? profile?.name,
+            },
+          });
+        }
+      }
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: user.id },
-          select: { store_permissions: true },
-        });
-        token.store_permissions = dbUser?.store_permissions || [];
+        token.id = user.id;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.sub as string;
-        (session.user as any).store_permissions = token.store_permissions || [];
+        session.user.id = token.id as string;
       }
       return session;
     },

@@ -23,8 +23,9 @@ model User {
 }
 
 type StorePermission {
-  store_id String @db.ObjectId
-  role     String
+  store_id  String  @db.ObjectId
+  role      String
+  is_active Boolean @default(true)
 }
 
 model Account {
@@ -54,6 +55,8 @@ model Store {
   
   owner_id    String        @db.ObjectId
   owner       User          @relation("StoreOwner", fields: [owner_id], references: [id])
+
+  version     Int      @default(0)
   
   products    Product[]
   logs        ActivityLog[]
@@ -67,6 +70,7 @@ model Product {
   sku         String
   name        String
   quantity    Int      @default(0)
+  version     Int      @default(0)
   is_deleted  Boolean  @default(false)
   
   store       Store    @relation(fields: [store_id], references: [id], onDelete: Cascade)

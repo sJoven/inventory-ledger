@@ -1,6 +1,5 @@
-import { auth } from "@/src/lib/auth";
-import { prisma } from "@/src/lib/prisma";
 import { notFound, redirect } from "next/navigation";
+import { getStoreAccess } from "@/src/lib/access";
 import Link from "next/link";
 
 interface PageProps {
@@ -8,28 +7,14 @@ interface PageProps {
 }
 
 export default async function StoreDashboard({ params }: PageProps) {
-  const [{ id }, session] = await Promise.all([params, auth()]);
+  const { id } = await params;
 
-  if (!session?.user?.id) {
-    redirect("/login");
-  }
+  const access = await getStoreAccess(id);
 
-  const [store, dbUser] = await Promise.all([
-    prisma.store.findUnique({ where: { id } }),
-    prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { name: true, store_permissions: true },
-    }),
-  ]);
-
-  if (!store) return notFound();
-
-  const userPermission = dbUser?.store_permissions.find(
-    (p) => p.store_id === id,
-  );
-  const isOwner = store.owner_id === session.user.id;
-
-  if (!isOwner && !userPermission) {
+  if (!access.authorized) {
+    if (access.status === 401) redirect("/login");
+    if (access.status === 404) notFound();
+    //403
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] p-8 text-center">
         <h1 className="text-2xl font-bold text-red-600">Access Denied</h1>
@@ -46,9 +31,12 @@ export default async function StoreDashboard({ params }: PageProps) {
     );
   }
 
+  const { store, role, userName } = access;
+
   return (
-    <div className="p-8 max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto">
       <div className="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-200">
+        {/* Store Header */}
         <div className="bg-slate-900 p-8 text-white">
           <h1 className="text-3xl font-bold tracking-tight">
             {store.store_name}
@@ -58,6 +46,7 @@ export default async function StoreDashboard({ params }: PageProps) {
           </p>
         </div>
 
+        {/* Dashboard Content */}
         <div className="p-8 space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <section>
@@ -65,7 +54,7 @@ export default async function StoreDashboard({ params }: PageProps) {
                 Current User
               </h2>
               <p className="text-lg font-medium text-gray-900">
-                {dbUser?.name || "Unknown User"}
+                {userName || "Unknown User"}
               </p>
             </section>
 
@@ -74,7 +63,7 @@ export default async function StoreDashboard({ params }: PageProps) {
                 Your Access Level
               </h2>
               <span className="inline-flex items-center px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-sm font-semibold capitalize">
-                {isOwner ? "Store Owner" : userPermission?.role || "Staff"}
+                {role}
               </span>
             </section>
           </div>
