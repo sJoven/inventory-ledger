@@ -9,4 +9,4 @@
 //low stock threshold
 //currency
 //user management
-//themes?
+//themes string

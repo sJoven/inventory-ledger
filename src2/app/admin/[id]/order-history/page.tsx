@@ -12,8 +12,8 @@
 //use pageNum = const pageNum
 //in store_id = [id]
 //select: id (default/auto), createdAt, transactionid,
-//ordernum(create a function), customerid, items(productid, productname, quantity)
-//total price (peso, in cents then just convert it),
+//ordernum(create a function), customerid, items(a type with: productid, productname, quantity)
+//total price (in cents),
 //payment (customerPaymentId, payment method, payment status)
 //take: 10
 //const skip = ([page] - 1) * 10;
