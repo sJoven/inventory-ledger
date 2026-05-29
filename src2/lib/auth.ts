@@ -1,5 +1,4 @@
 //using google prisma adapter
-//map: id, name, email, profile picture from google
 
 //additional signin callback:
 //if user.image or user.emailVerified is null,

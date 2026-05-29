@@ -1,3 +1,4 @@
+import { prisma } from "@/src/lib/prisma";
 //4 functions
 
 //1st function canAdmin

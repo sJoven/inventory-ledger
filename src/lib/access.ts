@@ -1,63 +1,7 @@
-import { auth } from "@/src/lib/auth";
 import { prisma } from "@/src/lib/prisma";
-import { cache } from "react";
-
-export const getStoreAccess = cache(async (storeId: string) => {
-  if (!storeId || typeof storeId !== "string") {
-    return { authorized: false, status: 400 } as const;
-  }
-
-  const session = await auth();
-
-  // 1. Check if user is logged in
-  if (!session?.user?.id) {
-    return {
-      authorized: false,
-      status: 401, // Unauthorized
-      redirectTo: "/login",
-    } as const;
-  }
-
-  const userId = session.user.id;
-
-  const [store, dbUser] = await Promise.all([
-    prisma.store.findUnique({ where: { id: storeId } }),
-    prisma.user.findUnique({
-      where: { id: userId },
-      select: { name: true, store_permissions: true },
-    }),
-  ]);
-
-  // 2. Check if store exists
-  if (!store) {
-    return { authorized: false, status: 404 } as const;
-  }
-
-  const permission = dbUser?.store_permissions.find(
-    (p) => p.store_id === storeId,
-  );
-  const isOwner = store.owner_id === userId;
-
-  // 3. Check permissions
-  if (!isOwner) {
-    if (!permission || permission.is_active === false) {
-      return {
-        authorized: false,
-        status: 403,
-        message: permission
-          ? "Your account is deactivated for this store."
-          : "No access.",
-      } as const;
-    }
-  }
-
-  return {
-    authorized: true,
-    status: 200,
-    userId,
-    userName: dbUser?.name,
-    store,
-    //Possible: Owner, Manager, Clerk
-    role: isOwner ? "Owner" : permission?.role || "Clerk",
-  } as const;
-});
+//adminAccess function
+//using the user id from session get the User(model) StorePermission(type)
+//It is an array of objects with store_id, role and is_active each
+//get all store_id and role with is_active=true
+//using the store_id, get the Store(model) store_name
+//return an array of objects (store_id, store_name and role with is_active=true)

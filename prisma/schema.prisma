@@ -19,7 +19,7 @@ model User {
   owned_stores      Store[]           @relation("StoreOwner")
   store_permissions StorePermission[]
   carts             Cart[]
-  orders            Order[]           // <-- Added relation to track customer orders
+  orders            Order[]          
 
   @@map("users")
 }
@@ -150,6 +150,6 @@ type OrderItem {
 
 type PaymentInfo {
   customerPaymentId String
-  method            String // e.g., "STRIPE", "CASH"
-  status            String // e.g., "COMPLETED", "FAILED"
+  method            String
+  status            String
 }
