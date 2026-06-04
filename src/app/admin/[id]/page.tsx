@@ -1,21 +1,36 @@
-//get [id] params
-//user isLoggedIn.ts as well as the canShowAdmin function of canUser.ts
-//pass parameters: canShowAdmin(id, permission);
-//showDashboard
+import DashboardCalendarControls from "@/src/app/admin/[id]/components/CalendarControls";
+import RecentActivityLogs from "@/src/app/admin/[id]/components/Logs";
+import GenerateReportAction from "@/src/app/admin/[id]/components/Report";
+import Revenue from "@/src/app/admin/[id]/components/Revenue";
 
-//components
-//Revenue/Sales: Total sales for the month (with a percentage change compared to the previous period)
-//(date unaffected) Recent Logs (view more to /logs) (Manager + Only)
-//(date unaffected) Low Stock Alerts: Items that are running out.
-//Sales Trends: A line chart showing revenue over time.
-//(part of revenue sales)Generate Report: Quick export for PDF. (Manager + Only)
-//monthly calendar selector
+export default async function AdminDashboardPage({
+  params,
+  searchParams, // <-- 1. Add searchParams here
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ period?: string; date?: string }>; // <-- Next 15+ types it as a Promise
+}) {
+  // 2. Await both promises (Next.js handles this efficiently)
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
 
-//clerk view: rev > low stock > trend
-//manager+ view: rev > low stock > trend > recent logs
+  const store_id = resolvedParams.id;
 
-//report:
-//header (store name and date, manager who generated it)
-//summary (total revenue in currency [in month] and the growth from prev [month])
-//visual trend (1 month)
-//low stock: list of low stock items
+  return (
+    <div className="space-y-6">
+      <DashboardCalendarControls />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Pass the resolved searchParams down to the component */}
+        <GenerateReportAction
+          store_id={store_id}
+          searchParams={resolvedSearchParams}
+        />
+
+        <RecentActivityLogs store_id={store_id} />
+
+        <Revenue store_id={store_id} searchParams={resolvedSearchParams} />
+      </div>
+    </div>
+  );
+}

@@ -1,3 +1,12 @@
-import { prisma } from "@/src/lib/prisma";
-//check if there is a session or a session.userid
-//if not, go to /login
+import { redirect } from "next/navigation";
+import { auth } from "@/src/lib/auth";
+
+export async function isLoggedIn() {
+  const session = await auth();
+
+  if (!session) {
+    redirect("/login");
+  }
+
+  return session;
+}

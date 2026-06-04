@@ -1,13 +1,13 @@
 import { prisma } from "@/src/lib/prisma";
 import { auth } from "@/src/lib/auth";
 
-interface AdminAccessResult {
+interface InvitationResult {
   store_id: string;
   store_name: string;
   role: string;
 }
 
-export async function adminAccess(): Promise<AdminAccessResult[]> {
+export async function getPendingInvitations(): Promise<InvitationResult[]> {
   const session = await auth();
   const userId = session?.user?.userid;
 
@@ -27,15 +27,15 @@ export async function adminAccess(): Promise<AdminAccessResult[]> {
       return [];
     }
 
-    const activePermissions = user.store_permissions.filter(
-      (permission) => permission.is_active === true,
+    const pendingPermissions = user.store_permissions.filter(
+      (permission) => permission.is_active === false,
     );
 
-    if (activePermissions.length === 0) {
+    if (pendingPermissions.length === 0) {
       return [];
     }
 
-    const storeIds = activePermissions.map((p) => p.store_id);
+    const storeIds = pendingPermissions.map((p) => p.store_id);
 
     const stores = await prisma.store.findMany({
       where: {
@@ -49,13 +49,13 @@ export async function adminAccess(): Promise<AdminAccessResult[]> {
 
     const storeNameMap = new Map(stores.map((s) => [s.id, s.store_name]));
 
-    return activePermissions.map((permission) => ({
+    return pendingPermissions.map((permission) => ({
       store_id: permission.store_id,
       store_name: storeNameMap.get(permission.store_id) || "Unknown Store",
       role: permission.role,
     }));
   } catch (error) {
-    console.error("Error fetching admin access permissions:", error);
+    console.error("Error fetching pending invitations:", error);
     return [];
   }
 }

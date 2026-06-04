@@ -5,3 +5,9 @@
 //for each card, have a link going to client/{store_id}
 
 //components: cards
+
+const page = () => {
+  return <div>a</div>;
+};
+
+export default page;
