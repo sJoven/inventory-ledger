@@ -24,7 +24,7 @@ export default function Navbar({ user }: NavbarProps) {
   };
 
   return (
-    <nav className="flex justify-between items-center px-6 py-4 bg-gray-800 text-white shadow-md">
+    <nav className="flex justify-between items-center px-6 py-4 bg-gray-800 text-white shadow-md print:hidden">
       <div className="text-xl font-bold">{userName}</div>
 
       <div className="relative flex items-center">

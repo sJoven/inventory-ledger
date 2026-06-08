@@ -87,6 +87,7 @@ export async function canShowAdmin(store_id: string, permission: string) {
     "dashboard",
     "report",
     "revenue",
+    "low_stock",
   ];
   const clerkPermissions: string[] = ["revenue"];
 

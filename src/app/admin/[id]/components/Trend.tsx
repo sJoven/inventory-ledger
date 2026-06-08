@@ -1,9 +1,94 @@
-//npm install recharts lucide-react
-//array of objects, 1st field of an object is the x axis
-//get newDate()
-//get params for the date
-//for day: 24 hours
-//for month: the month's day
-//for year: 12 months
-//if selected day/month/year = currentDate:
-//the graph should stop in the middle instead of going all the way through
+"use client";
+
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+
+import { TrendingUp } from "lucide-react";
+
+type ChartDataPoint = {
+  label: string;
+  revenue: number | null; // null ensures the line stops drawing
+};
+
+export default function RevenueChartClient({
+  data,
+  totalRevenue,
+}: {
+  data: ChartDataPoint[];
+  totalRevenue: number;
+}) {
+  return (
+    <div className="w-full bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h3 className="text-sm font-medium text-gray-500">Total Revenue</h3>
+          <p className="text-2xl font-bold text-gray-900">
+            ${totalRevenue.toFixed(2)}
+          </p>
+        </div>
+        <div className="p-3 bg-blue-50 text-blue-600 rounded-full">
+          <TrendingUp size={24} />
+        </div>
+      </div>
+
+      <div className="h-[300px] w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={data}
+            margin={{ top: 5, right: 10, left: -20, bottom: 0 }}
+          >
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={false}
+              stroke="#E5E7EB"
+            />
+            <XAxis
+              dataKey="label"
+              axisLine={false}
+              tickLine={false}
+              tick={{ fontSize: 12, fill: "#6B7280" }}
+              dy={10}
+            />
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tick={{ fontSize: 12, fill: "#6B7280" }}
+              tickFormatter={(value: number) => `$${value}`}
+            />
+            <Tooltip
+              contentStyle={{
+                borderRadius: "8px",
+                border: "none",
+                boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+              }}
+              formatter={(value: any) =>
+                [`$${Number(value).toFixed(2)}`, "Revenue"] as any
+              }
+              labelStyle={{
+                color: "#374151",
+                fontWeight: "bold",
+                marginBottom: "4px",
+              }}
+            />
+            <Line
+              type="monotone"
+              dataKey="revenue"
+              stroke="#2563EB"
+              strokeWidth={3}
+              dot={false}
+              activeDot={{ r: 6, fill: "#2563EB" }}
+              connectNulls={false} // CRITICAL: This breaks the line if value is null (future date)
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}

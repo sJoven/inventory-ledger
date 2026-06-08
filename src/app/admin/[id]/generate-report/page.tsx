@@ -1,4 +1,12 @@
 import { notFound } from "next/navigation";
+import { canShowAdmin } from "@/src/lib/canUser";
+import { redirect } from "next/navigation";
+import { prisma } from "@/src/lib/prisma";
+import { isLoggedIn } from "@/src/lib/isLoggedIn";
+import { getRevenueStats } from "@/src/lib/revenue-utils";
+import Trend from "@/src/app/admin/[id]/components/Trend";
+import { getTrendData } from "@/src/lib/trend";
+import PrintControls from "@/src/app/admin/[id]/components/PrintControls";
 
 interface ReportPageProps {
   params: Promise<{ id: string }>;
@@ -11,68 +19,98 @@ export default async function GenerateReportPage({
 }: ReportPageProps) {
   const { id: store_id } = await params;
   const { period = "month", date } = await searchParams;
+  const gotSearchParams = { period, date };
+
+  const canGenerate = await canShowAdmin(store_id, "report");
+  const canShowTrend = await canShowAdmin(store_id, "trend");
+
+  if (!canGenerate) {
+    redirect(`/admin/${store_id}`);
+  }
+  const session = await isLoggedIn();
 
   const targetDate = date ? new Date(date) : new Date();
 
-  // MOCK DATA
-  const mockStore = {
-    id: store_id,
-    name: "Apex Retail Solutions HQ",
+  // 1. Fetch the store and its settings
+  const store = await prisma.store.findUnique({
+    where: {
+      id: store_id,
+    },
+    select: {
+      id: true,
+      store_name: true,
+      settings: true,
+    },
+  });
+
+  if (!store) {
+    notFound(); // Cleaner than throwing an Error in Next.js
+  }
+
+  // Extract the threshold from the store's settings
+  const threshold = store.settings.low_stock_threshold;
+
+  // 2. Fetch products below the threshold
+  const products = await prisma.product.findMany({
+    where: {
+      store_id: store_id,
+      quantity: {
+        lte: threshold, // Less than or equal to the threshold
+      },
+      is_deleted: false, // Ensure we don't fetch deleted products
+    },
+    select: {
+      id: true,
+      name: true,
+      sku: true,
+      quantity: true,
+    },
+    orderBy: {
+      quantity: "asc", // Order by lowest stock first
+    },
+  });
+
+  // 3. Map the data to match your component's expected format
+  const storeData = {
+    id: store.id,
+    name: store.store_name,
   };
 
-  const mockLowStockItems = [
-    { id: "p1", name: "Wireless Ergonomic Mouse", sku: "MS-ERG-01", stock: 4 },
-    {
-      id: "p2",
-      name: "Mechanical Keyboard (Red Switches)",
-      sku: "KB-MEC-RD",
-      stock: 2,
-    },
-    { id: "p3", name: 'UltraWide Monitor 34"', sku: "MON-UW-34", stock: 7 },
-    { id: "p4", name: "USB-C Multi-Port Hub", sku: "HUB-USBC-09", stock: 0 },
-    {
-      id: "p5",
-      name: "Premium Leather Desk Pad",
-      sku: "PAD-LTH-BRN",
-      stock: 9,
-    },
-  ];
+  const lowStockItems = products.map((item) => ({
+    id: item.id,
+    name: item.name,
+    sku: item.sku,
+    stock: item.quantity, // Mapping Prisma's 'quantity' to 'stock'
+  }));
 
-  const totalRevenue = 24850.0;
-  const growthPercentage = 14.2;
-  const managerName = "Sarah Jenkins";
+  const revenueData = await getRevenueStats(gotSearchParams);
 
-  if (!mockStore) notFound();
+  const totalRevenue = revenueData.currentRev;
+  const growthPercentage = revenueData.percentageChange;
+  const managerName = session.user.name || "Unknown Manager";
 
+  const colorClass =
+    growthPercentage === 0
+      ? "text-gray-500"
+      : growthPercentage > 0
+        ? "text-green-500"
+        : "text-red-500";
+
+  const trendPayload = canShowTrend
+    ? await getTrendData(store_id, gotSearchParams)
+    : null;
+  const periodLabel = period === "day" ? "daily" : `${period}ly`;
   return (
     <div className="min-h-screen bg-white p-8 max-w-4xl mx-auto text-gray-900 print:p-0 print:max-w-full">
-      {/* Print Controls (Hidden on the actual PDF) */}
-      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between print:hidden">
-        <div className="flex flex-col">
-          <span className="text-sm font-semibold text-blue-900">
-            Mock Data Preview Mode
-          </span>
-          <span className="text-xs text-blue-700">
-            Database queries are bypassed. Ready to print or save as PDF.
-          </span>
-        </div>
-        {/* FIXED: Removed onClick and added an id */}
-        <button
-          id="manual-print-trigger"
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
-        >
-          Open Print Dialog
-        </button>
-      </div>
-
+      <PrintControls />
       {/* --- PDF DOCUMENT START --- */}
       <header className="border-b-2 border-gray-200 pb-6 flex justify-between items-start">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
-            {mockStore.name}
+            {storeData.name}
           </h1>
           <p className="text-sm text-gray-500 mt-1 uppercase tracking-wider font-medium">
-            Performance Report — {period}ly
+            Performance Report — {periodLabel}
           </p>
           <p className="text-xs text-gray-400 mt-0.5">Store ID: {store_id}</p>
         </div>
@@ -82,7 +120,7 @@ export default async function GenerateReportPage({
             <span className="font-medium text-gray-800">{managerName}</span>
           </p>
           <p>
-            Date:{" "}
+            Start Date:{" "}
             {targetDate.toLocaleDateString("en-US", {
               month: "long",
               year: "numeric",
@@ -110,8 +148,9 @@ export default async function GenerateReportPage({
             <p className="text-sm text-gray-500 font-medium">
               Growth vs Previous Period
             </p>
-            <p className="text-3xl font-bold mt-1 text-green-600">
-              +{growthPercentage}%
+            <p className={`text-3xl font-bold mt-1 ${colorClass}`}>
+              {growthPercentage > 0 ? "+" : ""}
+              {growthPercentage}%
             </p>
           </div>
         </div>
@@ -121,16 +160,19 @@ export default async function GenerateReportPage({
         <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">
           Sales Trends (1 Month)
         </h2>
-        <div className="border border-gray-200 rounded-xl h-64 flex items-center justify-center bg-gray-50 text-gray-400 text-sm border-dashed">
-          [Line Chart Component Visual Trend — Mocked]
-        </div>
+        {canShowTrend && trendPayload ? (
+          <Trend
+            data={trendPayload.chartData}
+            totalRevenue={trendPayload.totalRevenue}
+          />
+        ) : null}
       </section>
 
       <section className="my-8 print:break-inside-avoid">
         <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">
           Low Stock Alerts
         </h2>
-        {mockLowStockItems.length === 0 ? (
+        {lowStockItems.length === 0 ? (
           <p className="text-sm text-gray-500">
             All products are adequately stocked.
           </p>
@@ -151,7 +193,7 @@ export default async function GenerateReportPage({
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 bg-white">
-                {mockLowStockItems.map((item) => (
+                {lowStockItems.map((item) => (
                   <tr key={item.id}>
                     <td className="px-4 py-3 font-medium text-gray-900">
                       {item.name}
@@ -168,23 +210,6 @@ export default async function GenerateReportPage({
         )}
       </section>
       {/* --- PDF DOCUMENT END --- */}
-
-      {/* FIXED: Vanilla JS binds the click listener natively on the client side */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            // 1. Automatically pop open the print dialog on load
-            setTimeout(() => {
-              window.print();
-            }, 600);
-
-            // 2. Wire up the backup button using standard DOM listeners
-            document.getElementById('manual-print-trigger')?.addEventListener('click', () => {
-              window.print();
-            });
-          `,
-        }}
-      />
     </div>
   );
 }
