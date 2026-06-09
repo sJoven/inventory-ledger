@@ -67,11 +67,10 @@ export async function revertProductState(
       cleanProductData as Prisma.ProductUncheckedCreateInput;
 
     if (log.action === "delete") {
-      await prisma.product.create({
+      const updatedProduct = await prisma.product.update({
+        where: { id: productId },
         data: {
           ...productPayload,
-          id: productId,
-          store_id: storeId,
           version: nextVersion,
           is_deleted: false,
         },
