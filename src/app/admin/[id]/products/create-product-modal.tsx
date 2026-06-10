@@ -8,11 +8,13 @@ export default function CreateProductModal({
   storeId,
   existingSKUs,
   userId,
+  currency,
   onClose,
 }: {
   storeId: string;
   existingSKUs: string[];
   userId: string;
+  currency: string;
   onClose: () => void;
 }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -97,7 +99,7 @@ export default function CreateProductModal({
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Price ($)
+                Price ({currency})
               </label>
               <input
                 required

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getExistingSKUs } from "@/src/lib/data/product";
 import { isLoggedIn } from "@/src/lib/isLoggedIn";
+import { getStoreCurrency } from "@/src/lib/data/store";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -34,6 +35,11 @@ export default async function ProductsPage({
       : base;
   };
 
+  const currencyResult = await getStoreCurrency(id);
+  const currency = currencyResult.success
+    ? (currencyResult.data as string)
+    : "PHP";
+
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -53,6 +59,7 @@ export default async function ProductsPage({
             storeId={id}
             existingSKUs={existingSKUs}
             userId={session.user.userid}
+            currency={currency}
           />
         </div>
       </div>
@@ -62,6 +69,7 @@ export default async function ProductsPage({
         products={products}
         existingSKUs={existingSKUs}
         userId={session.user.userid}
+        currency={currency}
       />
 
       {/* Simple Pagination Footer */}

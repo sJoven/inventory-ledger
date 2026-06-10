@@ -1,5 +1,6 @@
 import { getRevenueStats } from "@/src/lib/revenue-utils";
 import { canShowAdmin } from "@/src/lib/canUser";
+import { getStoreCurrency } from "@/src/lib/data/store";
 
 export default async function Revenue({
   store_id,
@@ -9,6 +10,8 @@ export default async function Revenue({
   searchParams: { period?: string; date?: string };
 }) {
   const canShowRevenue = await canShowAdmin(store_id, "revenue");
+  const currencyResult = await getStoreCurrency(store_id);
+  const currency = currencyResult.success ? currencyResult.data : "PHP";
 
   if (!canShowRevenue) {
     return null;
@@ -18,7 +21,7 @@ export default async function Revenue({
   // Format the currency nicely for the UI
   const formattedRevenue = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "USD",
+    currency: currency,
   }).format(currentRev);
 
   // Determine the correct text color based on the 3 states

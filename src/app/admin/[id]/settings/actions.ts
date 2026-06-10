@@ -1,0 +1,123 @@
+"use server";
+
+import { prisma } from "@/src/lib/prisma";
+import { revalidatePath } from "next/cache";
+
+export async function updateStoreSettings(
+  storeId: string,
+  data: {
+    store_name?: string;
+    store_icon?: string;
+    low_stock_threshold?: number;
+    currency?: string;
+    theme?: string;
+    allow_negative_inventory?: boolean;
+  },
+) {
+  try {
+    const updatedStore = await prisma.store.update({
+      where: { id: storeId },
+      data: {
+        store_name: data.store_name,
+        settings: {
+          update: {
+            store_icon: data.store_icon,
+            low_stock_threshold: data.low_stock_threshold,
+            currency: data.currency,
+            theme: data.theme,
+            allow_negative_inventory: data.allow_negative_inventory,
+          },
+        },
+      },
+    });
+
+    revalidatePath(`/dashboard/${storeId}/settings`);
+    return { success: true, data: updatedStore };
+  } catch (error) {
+    console.error("Failed to update store settings:", error);
+    return { success: false, error: "Could not update store settings." };
+  }
+}
+
+export async function getStoreSettings(storeId: string) {
+  try {
+    const store = await prisma.store.findUnique({
+      where: { id: storeId },
+      select: {
+        store_name: true,
+        settings: true,
+      },
+    });
+    return { success: true, data: store };
+  } catch (error) {
+    return { success: false, error: "Failed to fetch store." };
+  }
+}
+
+export async function updateStoreMember(
+  storeId: string,
+  userId: string,
+  role: string,
+) {
+  return { success: true, message: `User ${userId} updated to ${role}` };
+}
+
+export async function addMember(email: string, store_id: string, role: string) {
+  try {
+    // 1. Validate the role (Ensure it matches your DB requirements)
+    const validRoles = ["super", "manager", "clerk"];
+    if (!validRoles.includes(role)) {
+      return {
+        success: false,
+        error: "Invalid role. Must be 'super', 'manager', or 'clerk'.",
+      };
+    }
+
+    // 2. Define the new permission object (is_active is false as requested)
+    const newPermission = {
+      store_id: store_id,
+      role: role,
+      is_active: false,
+    };
+
+    // 3. Check if the user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+      select: { store_permissions: true }, // Only fetch what we need
+    });
+
+    if (existingUser) {
+      // 4a. Update existing user
+      // Filter out any existing permissions for this specific store to prevent duplicates
+      const updatedPermissions = (existingUser.store_permissions || []).filter(
+        (perm) => perm.store_id !== store_id,
+      );
+
+      // Add the new permission to the array
+      updatedPermissions.push(newPermission);
+
+      await prisma.user.update({
+        where: { email },
+        data: {
+          store_permissions: updatedPermissions,
+        },
+      });
+    } else {
+      // 4b. Create a new user if they don't exist
+      await prisma.user.create({
+        data: {
+          email: email,
+          store_permissions: [newPermission],
+        },
+      });
+    }
+
+    // 5. Revalidate the page so the UI updates immediately
+    revalidatePath(`/admin/${store_id}/settings`);
+
+    return { success: true, message: "Member added successfully." };
+  } catch (error) {
+    console.error("Failed to add member:", error);
+    return { success: false, error: "Could not add member to the store." };
+  }
+}

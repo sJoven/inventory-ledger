@@ -20,6 +20,7 @@ interface EditProductModalProps {
   product: ProductRow;
   existingSKUs: string[];
   userId: string;
+  currency: string;
   onClose: () => void;
 }
 
@@ -27,6 +28,7 @@ export default function EditProductModal({
   product,
   existingSKUs,
   userId,
+  currency,
   onClose,
 }: EditProductModalProps) {
   const params = useParams();
@@ -157,19 +159,16 @@ export default function EditProductModal({
             {/* 👈 Added Price Input */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Price
+                Price ({currency})
               </label>
               <div className="relative">
-                <span className="absolute left-3 top-2.5 text-gray-500">$</span>
                 <input
                   required
                   type="number"
                   name="price"
-                  min="0"
-                  step="0.01"
                   value={formData.price}
                   onChange={handleChange}
-                  className="w-full pl-7 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                  className="w-full pl-4 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
                 />
               </div>
             </div>

@@ -20,18 +20,23 @@ type ChartDataPoint = {
 export default function RevenueChartClient({
   data,
   totalRevenue,
+  currency,
 }: {
   data: ChartDataPoint[];
   totalRevenue: number;
+  currency: string;
 }) {
+  const safeCurrency = currency || "PHP";
+  const formattedRevenue = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: safeCurrency,
+  }).format(totalRevenue);
   return (
     <div className="w-full bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-sm font-medium text-gray-500">Total Revenue</h3>
-          <p className="text-2xl font-bold text-gray-900">
-            ${totalRevenue.toFixed(2)}
-          </p>
+          <p className="text-2xl font-bold text-gray-900">{formattedRevenue}</p>
         </div>
         <div className="p-3 bg-blue-50 text-blue-600 rounded-full">
           <TrendingUp size={24} />

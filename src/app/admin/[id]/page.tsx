@@ -7,6 +7,7 @@ import LowStockCard from "./components/StockAlerts";
 import Trend from "@/src/app/admin/[id]/components/Trend";
 import { getTrendData } from "@/src/lib/trend";
 import { prisma } from "@/src/lib/prisma";
+import { getStoreCurrency } from "@/src/lib/data/store";
 
 export default async function AdminDashboardPage({
   params,
@@ -56,6 +57,11 @@ export default async function AdminDashboardPage({
     ? await getTrendData(store_id, resolvedSearchParams)
     : null;
 
+  const currencyResult = await getStoreCurrency(store_id);
+  const currency = currencyResult.success
+    ? (currencyResult.data as string)
+    : "PHP";
+
   return (
     <div className="space-y-6">
       <DashboardCalendarControls />
@@ -79,6 +85,7 @@ export default async function AdminDashboardPage({
         <Trend
           data={trendPayload.chartData}
           totalRevenue={trendPayload.totalRevenue}
+          currency={currency}
         />
       ) : null}
     </div>

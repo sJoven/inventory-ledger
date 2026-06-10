@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getTenOrders } from "@/src/lib/data/order";
 import OrderHistoryTable from "@/src/app/admin/[id]/order-history/order-history-table"; // We bundle the client interaction safely here
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { getStoreCurrency } from "@/src/lib/data/store";
 interface PageProps {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ page?: string }>;
@@ -17,6 +18,11 @@ export default async function OrderHistoryPage({
   const currentPage = Number(page) || 1;
   const { orders, totalPages } = await getTenOrders(id, currentPage);
 
+  const currencyResult = await getStoreCurrency(id);
+  const currency = currencyResult.success
+    ? (currencyResult.data as string)
+    : "PHP";
+
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="mb-6">
@@ -25,7 +31,7 @@ export default async function OrderHistoryPage({
       </div>
 
       {/* Interactive Table Wrapper */}
-      <OrderHistoryTable initialOrders={orders} />
+      <OrderHistoryTable initialOrders={orders} currency={currency} />
 
       {/* Simple Pagination Footer */}
       <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">

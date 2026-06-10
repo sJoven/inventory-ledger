@@ -6,12 +6,16 @@ import OrderDetailModal from "./order-detail-modal";
 
 export default function OrderHistoryTable({
   initialOrders,
+  currency,
 }: {
   initialOrders: OrderWithCustomer[];
+  currency: string;
 }) {
   const [selectedOrder, setSelectedOrder] = useState<OrderWithCustomer | null>(
     null,
   );
+
+  const safeCurrency = currency || "PHP";
 
   return (
     <div className="bg-white border rounded-lg overflow-hidden shadow-sm">
@@ -44,7 +48,10 @@ export default function OrderHistoryTable({
                   {order.customer?.email || "N/A"}
                 </td>
                 <td className="p-4 font-semibold text-gray-900">
-                  ₱{(order.totalPrice / 100).toFixed(2)}
+                  {new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: safeCurrency,
+                  }).format(order.totalPrice / 100)}
                 </td>
                 <td className="p-4">
                   <span
@@ -74,6 +81,7 @@ export default function OrderHistoryTable({
       {/* Triggering the External Modal Component */}
       <OrderDetailModal
         order={selectedOrder}
+        currency={safeCurrency}
         onClose={() => setSelectedOrder(null)}
       />
     </div>

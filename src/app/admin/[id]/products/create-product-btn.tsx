@@ -8,10 +8,12 @@ export default function CreateProductButton({
   storeId,
   existingSKUs,
   userId,
+  currency,
 }: {
   storeId: string;
   existingSKUs: string[];
   userId: string;
+  currency: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -29,6 +31,7 @@ export default function CreateProductButton({
           storeId={storeId}
           existingSKUs={existingSKUs}
           userId={userId}
+          currency={currency}
           onClose={() => setIsOpen(false)}
         />
       )}

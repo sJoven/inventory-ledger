@@ -7,7 +7,7 @@ import { getRevenueStats } from "@/src/lib/revenue-utils";
 import Trend from "@/src/app/admin/[id]/components/Trend";
 import { getTrendData } from "@/src/lib/trend";
 import PrintControls from "@/src/app/admin/[id]/components/PrintControls";
-
+import { getStoreCurrency } from "@/src/lib/data/store";
 interface ReportPageProps {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ period?: string; date?: string }>;
@@ -100,6 +100,15 @@ export default async function GenerateReportPage({
     ? await getTrendData(store_id, gotSearchParams)
     : null;
   const periodLabel = period === "day" ? "daily" : `${period}ly`;
+
+  const currencyResult = await getStoreCurrency(store_id);
+  const currency = currencyResult.success
+    ? (currencyResult.data as string)
+    : "PHP";
+  const formattedRevenue = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currency,
+  }).format(totalRevenue);
   return (
     <div className="min-h-screen bg-white p-8 max-w-4xl mx-auto text-gray-900 print:p-0 print:max-w-full">
       <PrintControls />
@@ -137,12 +146,7 @@ export default async function GenerateReportPage({
         <div className="grid grid-cols-2 gap-4">
           <div className="border border-gray-200 rounded-xl p-5 bg-gray-50/50">
             <p className="text-sm text-gray-500 font-medium">Total Revenue</p>
-            <p className="text-3xl font-bold mt-1">
-              {new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-              }).format(totalRevenue)}
-            </p>
+            <p className="text-3xl font-bold mt-1">{formattedRevenue}</p>
           </div>
           <div className="border border-gray-200 rounded-xl p-5 bg-gray-50/50">
             <p className="text-sm text-gray-500 font-medium">
@@ -164,6 +168,7 @@ export default async function GenerateReportPage({
           <Trend
             data={trendPayload.chartData}
             totalRevenue={trendPayload.totalRevenue}
+            currency={currency}
           />
         ) : null}
       </section>

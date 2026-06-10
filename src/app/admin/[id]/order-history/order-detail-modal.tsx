@@ -5,10 +5,15 @@ import { OrderWithCustomer } from "@/src/lib/data/order";
 
 interface ModalProps {
   order: OrderWithCustomer | null;
+  currency: string;
   onClose: () => void;
 }
 
-export default function OrderDetailModal({ order, onClose }: ModalProps) {
+export default function OrderDetailModal({
+  order,
+  currency,
+  onClose,
+}: ModalProps) {
   if (!order) return null;
 
   return (
@@ -61,7 +66,12 @@ export default function OrderDetailModal({ order, onClose }: ModalProps) {
 
           <div className="border-t pt-3 flex justify-between font-bold text-base text-gray-900">
             <span>Total:</span>
-            <span>₱{(order.totalPrice / 100).toFixed(2)}</span>
+            <span>
+              {new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: currency,
+              }).format(order.totalPrice / 100)}
+            </span>
           </div>
         </div>
 

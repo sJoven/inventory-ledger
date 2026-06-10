@@ -20,12 +20,14 @@ interface ProductTableProps {
   products: ProductRow[];
   existingSKUs?: string[];
   userId: string;
+  currency: string;
 }
 
 export default function ProductTable({
   products,
   existingSKUs = [],
   userId,
+  currency, // <-- 2. Destructure currency
 }: ProductTableProps) {
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
   const [menuCoords, setMenuCoords] = useState<{
@@ -37,22 +39,22 @@ export default function ProductTable({
 
   const tableContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // Close dropdown on outside click, scroll, or window resize
+  // Fallback to prevent Intl crashes just in case
+  const safeCurrency = currency || "PHP";
+
+  // ... keep your existing useEffect ...
   useEffect(() => {
     function handleOutsideInteraction(event: Event) {
       if (!activeMenuId) return;
-
-      // For mouse clicks, ignore if they are clicking the trigger button OR the menu itself
       if (event.type === "mousedown") {
         const target = event.target as HTMLElement;
         if (
           target.closest(".actions-menu-trigger") ||
-          target.closest(".portaled-dropdown") // 👈 Add this line!
+          target.closest(".portaled-dropdown")
         ) {
           return;
         }
       }
-
       setActiveMenuId(null);
     }
 
@@ -74,6 +76,7 @@ export default function ProductTable({
         className="bg-white border rounded-xl overflow-hidden shadow-sm relative"
       >
         <table className="w-full text-left text-sm text-gray-600 border-collapse">
+          {/* ... keep your existing thead ... */}
           <thead className="bg-gray-50 text-xs uppercase text-gray-700 border-b">
             <tr>
               <th className="p-4 w-20">Image</th>
@@ -87,6 +90,7 @@ export default function ProductTable({
           </thead>
           <tbody className="divide-y divide-gray-100">
             {products.length === 0 ? (
+              // ... keep your existing empty state ...
               <tr>
                 <td
                   colSpan={7}
@@ -98,6 +102,7 @@ export default function ProductTable({
             ) : (
               products.map((product) => (
                 <tr key={product.id} className="hover:bg-gray-50/70 transition">
+                  {/* ... keep Image, Name, Description td's identical ... */}
                   <td className="p-4">
                     {product.image ? (
                       <img
@@ -111,11 +116,9 @@ export default function ProductTable({
                       </div>
                     )}
                   </td>
-
                   <td className="p-4 font-semibold text-gray-900">
                     {product.name}
                   </td>
-
                   <td className="p-4 text-sm text-gray-500 max-w-[250px] truncate">
                     {product.description || (
                       <span className="italic text-gray-300">
@@ -124,23 +127,24 @@ export default function ProductTable({
                     )}
                   </td>
 
+                  {/* 3. Updated Price Column using Intl.NumberFormat */}
                   <td className="p-4 text-right font-medium text-gray-900">
-                    $
-                    {product.price.toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                    })}
+                    {new Intl.NumberFormat("en-US", {
+                      style: "currency",
+                      currency: safeCurrency,
+                    }).format(product.price)}
                   </td>
 
                   <td className="p-4 font-mono text-xs text-gray-500 tracking-wider">
                     {product.sku}
                   </td>
-
                   <td
                     className={`p-4 text-right font-medium ${product.quantity <= 0 ? "text-red-500" : "text-gray-900"}`}
                   >
                     {product.quantity.toLocaleString()}
                   </td>
 
+                  {/* ... keep your existing Actions column identical ... */}
                   <td className="p-4 text-center">
                     <button
                       className="actions-menu-trigger p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition"
@@ -210,10 +214,10 @@ export default function ProductTable({
           product={editProduct}
           existingSKUs={existingSKUs}
           userId={userId}
+          currency={safeCurrency}
           onClose={() => setEditProduct(null)}
         />
       )}
-
       {deleteProduct && (
         <DeleteProductModal
           product={deleteProduct}
