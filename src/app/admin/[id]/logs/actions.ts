@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getExistingSKUs } from "@/src/lib/data/product";
 import { prisma } from "@/src/lib/prisma";
 import { Prisma } from "@prisma/client";
+import { canAdmin } from "@/src/lib/canUser";
 
 export async function revertProductState(
   storeId: string,
@@ -11,6 +12,15 @@ export async function revertProductState(
   userId: string,
 ) {
   try {
+    const authCheck = await canAdmin(storeId, "revert");
+
+    if (authCheck.status !== 200) {
+      return {
+        success: false,
+        error: "Forbidden: You do not have permission to revert products.",
+      };
+    }
+
     const log = await prisma.activityLog.findUnique({
       where: { id: logId, store_id: storeId },
     });
@@ -33,7 +43,6 @@ export async function revertProductState(
     const prevState = log.prev_state as Record<string, any>;
     const productId = log.doc_id;
 
-    // 🔄 FIX 1: Fetch the ENTIRE product object instead of just filtering a few fields
     const currentProduct = await prisma.product.findUnique({
       where: { id: productId },
     });
@@ -86,7 +95,6 @@ export async function revertProductState(
       });
     }
 
-    // 🔄 FIX 2: Store the true full state snapshot in your activity log
     const stateBeforeRevert = currentProduct ? currentProduct : null;
 
     await prisma.activityLog.create({

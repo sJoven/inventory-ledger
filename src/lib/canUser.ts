@@ -4,10 +4,17 @@ import { isLoggedIn } from "./isLoggedIn";
 
 export async function canAdmin(store_id: string, permission: string) {
   const managerPermissions: string[] = [
-    "view_reports", //test
-    "generate_report",
+    "view_reports",
+    "revert",
+    "create_products",
+    "delete_products",
+    "update_products",
   ];
-  const clerkPermissions: string[] = ["create_order", "view_inventory"];
+  const clerkPermissions: string[] = [
+    "view_reports",
+    "create_products",
+    "update_products",
+  ];
 
   // Call adminAccess and store it
   const userRoles = await adminAccess();
@@ -88,29 +95,32 @@ export async function canShowAdmin(store_id: string, permission: string) {
     "report",
     "revenue",
     "low_stock",
+    "trend",
+    "products",
+    "order",
   ];
-  const clerkPermissions: string[] = ["revenue"];
+  const clerkPermissions: string[] = [
+    "revenue",
+    "low_stock",
+    "trend",
+    "dashboard",
+    "products",
+  ];
 
   // Fetch the current session
   const session = await isLoggedIn();
 
-  // If there's no session or is_admin is not an array, deny access
   if (!session || !session.user || !Array.isArray(session.user.is_admin)) {
     return { status: 403 };
   }
 
-  // 2. Check if the session.is_admin contains the store_id from the parameter
-  // Get that object and store it in a const
   const storeAccess = session.user.is_admin.find(
     (store: { store_id: string; role: string }) => store.store_id === store_id,
   );
 
-  // 3. If not found, return status = 403
   if (!storeAccess) {
     return { status: 403 };
   }
-
-  // 4. Check the .role of the const and evaluate the array similar to that role
   if (storeAccess.role === "super") {
     return { status: 200 };
   }
@@ -123,12 +133,10 @@ export async function canShowAdmin(store_id: string, permission: string) {
     isAllowed = clerkPermissions.includes(permission);
   }
 
-  // 5. Check the array for the same permission. If not found, return 403
   if (!isAllowed) {
     return { status: 403 };
   }
 
-  // If found and allowed, return 200
   return { status: 200 };
 }
 

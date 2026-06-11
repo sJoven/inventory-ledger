@@ -8,6 +8,8 @@ import Trend from "@/src/app/admin/[id]/components/Trend";
 import { getTrendData } from "@/src/lib/trend";
 import { prisma } from "@/src/lib/prisma";
 import { getStoreCurrency } from "@/src/lib/data/store";
+import { isLoggedIn } from "@/src/lib/isLoggedIn";
+import { redirect } from "next/navigation";
 
 export default async function AdminDashboardPage({
   params,
@@ -19,7 +21,14 @@ export default async function AdminDashboardPage({
   const resolvedParams = await params;
   const resolvedSearchParams = await searchParams;
 
+  const session = await isLoggedIn();
   const store_id = resolvedParams.id;
+
+  const canShowDashboard = await canShowAdmin(store_id, "dashboard");
+
+  if (canShowDashboard.status !== 200) {
+    redirect("/admin");
+  }
 
   const store = await prisma.store.findUnique({
     where: { id: store_id },
@@ -51,6 +60,9 @@ export default async function AdminDashboardPage({
 
   const canShowLowStock = await canShowAdmin(store_id, "low_stock");
   const canShowTrend = await canShowAdmin(store_id, "trend");
+  const canShowReport = await canShowAdmin(store_id, "report");
+  const canShowLogs = await canShowAdmin(store_id, "logs");
+  const canShowRevenue = await canShowAdmin(store_id, "revenue");
 
   // Conditionally fetch trend data ONLY if the admin is allowed to see it
   const trendPayload = canShowTrend
@@ -67,21 +79,26 @@ export default async function AdminDashboardPage({
       <DashboardCalendarControls />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <GenerateReportAction
-          store_id={store_id}
-          searchParams={resolvedSearchParams}
-        />
+        {canShowReport.status === 200 ? (
+          <GenerateReportAction
+            store_id={store_id}
+            searchParams={resolvedSearchParams}
+          />
+        ) : null}
 
-        <RecentActivityLogs store_id={store_id} />
+        {canShowLogs.status === 200 ? (
+          <RecentActivityLogs store_id={store_id} />
+        ) : null}
 
-        <Revenue store_id={store_id} searchParams={resolvedSearchParams} />
-
-        {canShowLowStock ? (
+        {canShowRevenue.status === 200 ? (
+          <Revenue store_id={store_id} searchParams={resolvedSearchParams} />
+        ) : null}
+        {canShowLowStock.status === 200 ? (
           <LowStockCard store_id={store_id} lowStockItems={lowStockItems} />
         ) : null}
       </div>
 
-      {canShowTrend && trendPayload ? (
+      {canShowTrend.status === 200 && trendPayload ? (
         <Trend
           data={trendPayload.chartData}
           totalRevenue={trendPayload.totalRevenue}

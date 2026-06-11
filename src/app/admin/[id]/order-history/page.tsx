@@ -3,6 +3,8 @@ import { getTenOrders } from "@/src/lib/data/order";
 import OrderHistoryTable from "@/src/app/admin/[id]/order-history/order-history-table"; // We bundle the client interaction safely here
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getStoreCurrency } from "@/src/lib/data/store";
+import { canShowAdmin } from "@/src/lib/canUser";
+import { redirect } from "next/navigation";
 interface PageProps {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ page?: string }>;
@@ -14,6 +16,12 @@ export default async function OrderHistoryPage({
 }: PageProps) {
   const { id } = await params;
   const { page } = await searchParams;
+
+  const canShowOrder = await canShowAdmin(id, "order");
+
+  if (canShowOrder.status !== 200) {
+    redirect("/admin");
+  }
 
   const currentPage = Number(page) || 1;
   const { orders, totalPages } = await getTenOrders(id, currentPage);

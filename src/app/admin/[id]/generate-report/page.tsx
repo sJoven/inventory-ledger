@@ -24,7 +24,7 @@ export default async function GenerateReportPage({
   const canGenerate = await canShowAdmin(store_id, "report");
   const canShowTrend = await canShowAdmin(store_id, "trend");
 
-  if (!canGenerate) {
+  if (canGenerate.status !== 200) {
     redirect(`/admin/${store_id}`);
   }
   const session = await isLoggedIn();

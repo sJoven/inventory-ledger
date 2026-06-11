@@ -1,16 +1,22 @@
 import { getStoreSettings } from "@/src/app/admin/[id]/settings/actions";
 import SettingsForm from "@/src/app/admin/[id]/settings/settings-form";
 import UserManagementForm from "@/src/app/admin/[id]/settings/user-management-form";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { canShowAdmin } from "@/src/lib/canUser";
 
 export default async function SettingsPage({
   params,
 }: {
   params: Promise<{ id: string }>; // 1. Type it as a Promise
 }) {
-  // 2. Await the params before accessing properties
   const resolvedParams = await params;
   const storeId = resolvedParams.id;
+
+  const canShowSetting = await canShowAdmin(storeId, "setting");
+
+  if (canShowSetting.status !== 200) {
+    redirect("/admin");
+  }
 
   // Fetch initial data on the server
   const result = await getStoreSettings(storeId);

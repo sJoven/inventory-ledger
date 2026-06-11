@@ -2,6 +2,7 @@
 
 import { prisma } from "@/src/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { canAdmin } from "@/src/lib/canUser";
 
 export async function updateProductAction(
   productId: string,
@@ -10,15 +11,21 @@ export async function updateProductAction(
   userId: string,
 ) {
   try {
+    const authCheck = await canAdmin(storeId, "update_products");
+    if (authCheck.status !== 200) {
+      return {
+        success: false,
+        error: "Forbidden: You do not have permission to update products.",
+      };
+    }
+
     await prisma.$transaction(async (tx) => {
-      // 1. Fetch current state to save as prev_state
       const oldProduct = await tx.product.findUnique({
         where: { id: productId },
       });
 
       if (!oldProduct) throw new Error("Product not found");
 
-      // 2. Perform the update
       await tx.product.update({
         where: { id: productId },
         data: {
@@ -32,7 +39,6 @@ export async function updateProductAction(
         },
       });
 
-      // 3. Create the activity log
       await tx.activityLog.create({
         data: {
           store_id: storeId,
@@ -61,21 +67,26 @@ export async function deleteProductAction(
   userId: string,
 ) {
   try {
+    const authCheck = await canAdmin(storeId, "delete_products");
+    if (authCheck.status !== 200) {
+      return {
+        success: false,
+        error: "Forbidden: You do not have permission to delete products.",
+      };
+    }
+
     await prisma.$transaction(async (tx) => {
-      // 1. Fetch current state for the audit log
       const oldProduct = await tx.product.findUnique({
         where: { id: productId },
       });
 
       if (!oldProduct) throw new Error("Product not found");
 
-      // 2. Perform the soft delete
       await tx.product.update({
         where: { id: productId },
         data: { is_deleted: true },
       });
 
-      // 3. Create the activity log
       await tx.activityLog.create({
         data: {
           store_id: storeId,
@@ -104,6 +115,14 @@ export async function createProductAction(
   userId: string,
 ) {
   try {
+    const authCheck = await canAdmin(storeId, "create_products");
+    if (authCheck.status !== 200) {
+      return {
+        success: false,
+        error: "Forbidden: You do not have permission to create products.",
+      };
+    }
+
     await prisma.$transaction(async (tx) => {
       const newProduct = await tx.product.create({
         data: {

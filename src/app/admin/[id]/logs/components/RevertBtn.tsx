@@ -30,7 +30,6 @@ export function RevertButton({
 
     setErrorMessage(null);
     startTransition(async () => {
-      // ➕ Passed userId as the third argument to the server action
       const result = await revertProductState(storeId, logId, userId);
       if (!result.success && result.error) {
         setErrorMessage(result.error);

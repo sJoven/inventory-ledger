@@ -1,8 +1,3 @@
-//1 params: lowStockItems
-//a card, depending on the size of the card, make it full
-//when clicked to [Show More], open StockModal
-
-//componenets: StockModal(prop: lowStockItems)
 "use client";
 
 import { useState } from "react";

@@ -10,7 +10,12 @@ import {
   Settings,
 } from "lucide-react";
 
-export default function Sidebar() {
+// 1. Define the props to accept the 'role'
+interface SidebarProps {
+  role?: string;
+}
+
+export default function Sidebar({ role }: SidebarProps) {
   const params = useParams();
   const pathname = usePathname();
 
@@ -24,7 +29,8 @@ export default function Sidebar() {
     );
   }
 
-  const navLinks = [
+  // 2. Define all possible links
+  const allNavLinks = [
     {
       name: "Dashboard",
       href: `/admin/${storeId}`,
@@ -40,6 +46,17 @@ export default function Sidebar() {
     { name: "Activity Logs", href: `/admin/${storeId}/logs`, icon: ScrollText },
     { name: "Settings", href: `/admin/${storeId}/settings`, icon: Settings },
   ];
+
+  // 3. Filter links based on the role
+  const navLinks = allNavLinks.filter((link) => {
+    // If the user is a clerk, hide these specific links
+    if (role === "clerk") {
+      const hiddenForClerk = ["Order History", "Activity Logs", "Settings"];
+      return !hiddenForClerk.includes(link.name);
+    }
+    // Otherwise, show all links (for owner, admin, etc.)
+    return true;
+  });
 
   return (
     <aside className="w-64 bg-gray-50 border-r border-gray-200 min-h-screen flex flex-col print:hidden">

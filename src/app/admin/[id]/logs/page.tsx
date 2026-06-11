@@ -4,6 +4,8 @@ import { format } from "date-fns";
 import { ArrowLeft, ArrowRight, History } from "lucide-react";
 import { RevertButton } from "@/src/app/admin/[id]/logs/components/RevertBtn";
 import { isLoggedIn } from "@/src/lib/isLoggedIn";
+import { canShowAdmin } from "@/src/lib/canUser";
+import { redirect } from "next/navigation";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -17,6 +19,12 @@ export default async function LogsPage({ params, searchParams }: PageProps) {
 
   const currentPage = Math.max(1, parseInt(page || "1", 10));
   const logs = await getLogs(storeId, currentPage);
+
+  const canShowLogs = await canShowAdmin(storeId, "logs");
+
+  if (canShowLogs.status !== 200) {
+    redirect("/admin");
+  }
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">

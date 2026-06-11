@@ -21,13 +21,15 @@ interface ProductTableProps {
   existingSKUs?: string[];
   userId: string;
   currency: string;
+  canDelete: boolean;
 }
 
 export default function ProductTable({
   products,
   existingSKUs = [],
   userId,
-  currency, // <-- 2. Destructure currency
+  currency,
+  canDelete,
 }: ProductTableProps) {
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
   const [menuCoords, setMenuCoords] = useState<{
@@ -187,16 +189,18 @@ export default function ProductTable({
                           >
                             <Edit2 className="h-4 w-4 text-gray-400" /> Edit
                           </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setDeleteProduct(product);
-                              setActiveMenuId(null);
-                            }}
-                            className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 transition"
-                          >
-                            <Trash2 className="h-4 w-4 text-red-400" /> Delete
-                          </button>
+                          {canDelete && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDeleteProduct(product);
+                                setActiveMenuId(null);
+                              }}
+                              className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 transition"
+                            >
+                              <Trash2 className="h-4 w-4 text-red-400" /> Delete
+                            </button>
+                          )}
                         </div>,
                         document.body,
                       )}
@@ -208,7 +212,6 @@ export default function ProductTable({
         </table>
       </div>
 
-      {/* Modals Framework */}
       {editProduct && (
         <EditProductModal
           product={editProduct}

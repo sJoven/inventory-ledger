@@ -44,3 +44,6 @@ prog.html
 /app/generated/prisma
 prisma/seed.ts
 som.txt
+src1/
+src2/
+src/app/client/

@@ -3,13 +3,11 @@
 import { useEffect } from "react";
 
 export default function PrintControls() {
-  // 1. Automatically pop open the print dialog on load safely
   useEffect(() => {
     const timer = setTimeout(() => {
       window.print();
     }, 600);
 
-    // Cleanup the timer if the user navigates away before it fires
     return () => clearTimeout(timer);
   }, []);
 

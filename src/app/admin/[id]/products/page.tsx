@@ -7,6 +7,8 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getExistingSKUs } from "@/src/lib/data/product";
 import { isLoggedIn } from "@/src/lib/isLoggedIn";
 import { getStoreCurrency } from "@/src/lib/data/store";
+import { canShowAdmin, canAdmin } from "@/src/lib/canUser";
+import { redirect } from "next/navigation";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -21,6 +23,12 @@ export default async function ProductsPage({
   const { page, query } = await searchParams;
   const existingSKUs = await getExistingSKUs(id);
   const session = await isLoggedIn();
+
+  const canShowProducts = await canShowAdmin(id, "products");
+
+  if (canShowProducts.status !== 200) {
+    redirect("/admin");
+  }
 
   const currentPage = Number(page) || 1;
   const currentQuery = query || "";
@@ -40,6 +48,8 @@ export default async function ProductsPage({
     ? (currencyResult.data as string)
     : "PHP";
 
+  const authCheck = await canAdmin(id, "delete_products");
+  const canDelete = authCheck.status === 200;
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -70,6 +80,7 @@ export default async function ProductsPage({
         existingSKUs={existingSKUs}
         userId={session.user.userid}
         currency={currency}
+        canDelete={canDelete}
       />
 
       {/* Simple Pagination Footer */}

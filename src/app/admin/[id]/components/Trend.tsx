@@ -14,7 +14,7 @@ import { TrendingUp } from "lucide-react";
 
 type ChartDataPoint = {
   label: string;
-  revenue: number | null; // null ensures the line stops drawing
+  revenue: number | null;
 };
 
 export default function RevenueChartClient({

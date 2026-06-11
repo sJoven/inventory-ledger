@@ -2,6 +2,7 @@
 
 import { prisma } from "@/src/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { canAdmin } from "@/src/lib/canUser";
 
 export async function updateStoreSettings(
   storeId: string,
@@ -15,6 +16,16 @@ export async function updateStoreSettings(
   },
 ) {
   try {
+    // 🔒 AUTHORIZATION CHECK
+    const authCheck = await canAdmin(storeId, "update_settings");
+    if (authCheck.status !== 200) {
+      return {
+        success: false,
+        error:
+          "Forbidden: You do not have permission to update store settings.",
+      };
+    }
+
     const updatedStore = await prisma.store.update({
       where: { id: storeId },
       data: {
@@ -41,6 +52,15 @@ export async function updateStoreSettings(
 
 export async function getStoreSettings(storeId: string) {
   try {
+    // 🔒 AUTHORIZATION CHECK
+    const authCheck = await canAdmin(storeId, "view_settings");
+    if (authCheck.status !== 200) {
+      return {
+        success: false,
+        error: "Forbidden: You do not have permission to view store settings.",
+      };
+    }
+
     const store = await prisma.store.findUnique({
       where: { id: storeId },
       select: {
@@ -59,11 +79,35 @@ export async function updateStoreMember(
   userId: string,
   role: string,
 ) {
-  return { success: true, message: `User ${userId} updated to ${role}` };
+  try {
+    // 🔒 AUTHORIZATION CHECK
+    const authCheck = await canAdmin(storeId, "update_member");
+    if (authCheck.status !== 200) {
+      return {
+        success: false,
+        error: "Forbidden: You do not have permission to update members.",
+      };
+    }
+
+    // Add your Prisma update logic here in the future
+    return { success: true, message: `User ${userId} updated to ${role}` };
+  } catch (error) {
+    console.error("Failed to update member:", error);
+    return { success: false, error: "Could not update store member." };
+  }
 }
 
 export async function addMember(email: string, store_id: string, role: string) {
   try {
+    // 🔒 AUTHORIZATION CHECK
+    const authCheck = await canAdmin(store_id, "add_member");
+    if (authCheck.status !== 200) {
+      return {
+        success: false,
+        error: "Forbidden: You do not have permission to add members.",
+      };
+    }
+
     // 1. Validate the role (Ensure it matches your DB requirements)
     const validRoles = ["super", "manager", "clerk"];
     if (!validRoles.includes(role)) {
