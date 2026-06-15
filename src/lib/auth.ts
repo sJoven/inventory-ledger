@@ -3,7 +3,7 @@ import Google from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/src/lib/prisma";
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
@@ -65,10 +65,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         token.is_client = dbUser?.is_client || [];
         token.is_admin =
-          dbUser?.store_permissions?.map((sp) => ({
-            store_id: sp.store_id,
-            role: sp.role,
-          })) || [];
+          dbUser?.store_permissions
+            ?.filter((sp) => sp.is_active === true)
+            .map((sp) => ({
+              store_id: sp.store_id,
+              role: sp.role,
+            })) || [];
       }
 
       if (trigger === "update" && token.userid) {
@@ -80,10 +82,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (dbUser) {
           token.is_client = dbUser.is_client || [];
           token.is_admin =
-            dbUser.store_permissions?.map((sp) => ({
-              store_id: sp.store_id,
-              role: sp.role,
-            })) || [];
+            dbUser.store_permissions
+              ?.filter((sp) => sp.is_active === true)
+              .map((sp) => ({
+                store_id: sp.store_id,
+                role: sp.role,
+              })) || [];
           if (dbUser.image) token.picture = dbUser.image;
         }
       }

@@ -131,27 +131,41 @@ export async function addMember(email: string, store_id: string, role: string) {
     });
 
     if (existingUser) {
-      // 4a. Update existing user
-      // Filter out any existing permissions for this specific store to prevent duplicates
-      const updatedPermissions = (existingUser.store_permissions || []).filter(
-        (perm) => perm.store_id !== store_id,
+      // 🛡️ GUARD: Check if store_id already exists in permissions
+      const existingPermission = existingUser.store_permissions?.find(
+        (p) => p.store_id === store_id,
       );
 
-      // Add the new permission to the array
-      updatedPermissions.push(newPermission);
+      if (existingPermission) {
+        if (existingPermission.is_active) {
+          return {
+            success: false,
+            error: "User is already an active member of this store.",
+          };
+        } else {
+          return {
+            success: false,
+            error: "User has already been invited and is pending acceptance.",
+          };
+        }
+      }
+
+      // 4a. Update existing user (safe to add new permission)
+      const updatedPermissions = [
+        ...(existingUser.store_permissions || []),
+        { store_id, role, is_active: false },
+      ];
 
       await prisma.user.update({
         where: { email },
-        data: {
-          store_permissions: updatedPermissions,
-        },
+        data: { store_permissions: updatedPermissions },
       });
     } else {
-      // 4b. Create a new user if they don't exist
+      // 4b. Create a new user
       await prisma.user.create({
         data: {
           email: email,
-          store_permissions: [newPermission],
+          store_permissions: [{ store_id, role, is_active: false }],
         },
       });
     }

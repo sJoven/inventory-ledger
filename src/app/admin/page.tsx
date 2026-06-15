@@ -3,7 +3,7 @@ import { isLoggedIn } from "@/src/lib/isLoggedIn";
 import { adminAccess } from "@/src/lib/access";
 import { getPendingInvitations } from "@/src/lib/invitations";
 import { acceptInvite, declineInvite } from "@/src/app/admin/actions";
-
+import CreateStoreModal from "@/src/app/admin/create-store-modal";
 interface Store {
   store_id: string;
   store_name: string;
@@ -30,7 +30,7 @@ export default async function AdminDashboard() {
           Manage your accessible stores and pending team invitations.
         </p>
       </div>
-
+      <CreateStoreModal />
       {/* Main Grid Sections */}
       <div className="space-y-12">
         {/* Stores Section */}
@@ -136,8 +136,6 @@ export function InviteCard({
   invite: Store;
   userId: string;
 }) {
-  // .bind allows us to pass arguments to the Server Action
-  // The first argument is 'this' (null), followed by the action's expected arguments.
   const acceptAction = acceptInvite.bind(null, userId, invite.store_id);
   const declineAction = declineInvite.bind(null, userId, invite.store_id);
 

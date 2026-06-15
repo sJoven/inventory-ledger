@@ -19,9 +19,9 @@ export default async function AdminLayout({
     redirect("/admin");
   }
   return (
-    <>
+    <div className="flex min-h-screen">
       <Sidebar role={userRole} />
-      <main className="flex-1">{children}</main>;
-    </>
+      <main className="flex-1">{children}</main>
+    </div>
   );
 }

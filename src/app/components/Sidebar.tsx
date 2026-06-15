@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSidebar } from "@/src/app/components/SidebarContext";
 import { useParams, usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -9,27 +10,19 @@ import {
   ScrollText,
   Settings,
 } from "lucide-react";
-
-// 1. Define the props to accept the 'role'
 interface SidebarProps {
   role?: string;
 }
 
 export default function Sidebar({ role }: SidebarProps) {
+  const { isOpen, setIsOpen } = useSidebar();
   const params = useParams();
   const pathname = usePathname();
 
   const storeId = params?.id as string;
 
-  if (!storeId) {
-    return (
-      <aside className="w-64 bg-gray-50 border-r border-gray-200 min-h-screen p-4 print:hidden">
-        <p className="text-gray-500 text-sm">Select a store to view menu.</p>
-      </aside>
-    );
-  }
+  if (!storeId) return null;
 
-  // 2. Define all possible links
   const allNavLinks = [
     {
       name: "Dashboard",
@@ -47,48 +40,86 @@ export default function Sidebar({ role }: SidebarProps) {
     { name: "Settings", href: `/admin/${storeId}/settings`, icon: Settings },
   ];
 
-  // 3. Filter links based on the role
   const navLinks = allNavLinks.filter((link) => {
-    // If the user is a clerk, hide these specific links
     if (role === "clerk") {
-      const hiddenForClerk = ["Order History", "Activity Logs", "Settings"];
-      return !hiddenForClerk.includes(link.name);
+      return !["Order History", "Activity Logs", "Settings"].includes(
+        link.name,
+      );
     }
-    // Otherwise, show all links (for owner, admin, etc.)
     return true;
   });
 
   return (
-    <aside className="w-64 bg-gray-50 border-r border-gray-200 min-h-screen flex flex-col print:hidden">
-      <div className="p-6 border-b border-gray-200">
-        <h2 className="text-xl font-bold text-gray-800">Admin Panel</h2>
-      </div>
+    <>
+      <button
+        className={`lg:hidden fixed top-4 left-4 p-2 bg-[#17212c] border border-[#c5c5c5]/60 rounded-md shadow-lg transition-opacity duration-300 z-[60] ${
+          isOpen ? "opacity-0 pointer-events-none" : "opacity-100 delay-300"
+        }`}
+        onClick={() => setIsOpen(true)}
+        aria-label="Open Menu"
+      >
+        <svg
+          className="w-5 h-5 text-white"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 6h16M4 12h16m-7 6h7"
+          />
+        </svg>
+      </button>
 
-      <nav className="flex-1 p-4 space-y-1">
-        {navLinks.map((link) => {
-          const Icon = link.icon;
-          const isActive = link.exact
-            ? pathname === link.href
-            : pathname?.startsWith(link.href);
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+      <aside
+        className={`fixed lg:sticky top-[73px] left-0 h-[calc(100vh-73px)] bg-[#17212c] border-r border-white/5 z-40 transition-transform duration-300 ease-in-out w-64 flex flex-col print:hidden ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0`}
+      >
+        <div className="p-6 border-b border-white/10 lg:hidden">
+          <h2 className="text-[1rem] font-bold uppercase text-[#c5c5c5] tracking-tight">
+            Admin Panel
+          </h2>
+        </div>
 
-          return (
-            <Link
-              key={link.name}
-              href={link.href}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-              }`}
-            >
-              <Icon
-                className={`w-5 h-5 ${isActive ? "text-blue-700" : "text-gray-400"}`}
-              />
-              {link.name}
-            </Link>
-          );
-        })}
-      </nav>
-    </aside>
+        <nav className="flex-1 px-0 space-y-1 mt-2">
+          {navLinks.map((link) => {
+            const Icon = link.icon;
+            const isActive = link.exact
+              ? pathname === link.href
+              : pathname?.startsWith(link.href);
+
+            return (
+              <Link
+                key={link.name}
+                href={link.href}
+                onClick={() => setIsOpen(false)}
+                className={`relative flex items-center gap-3 px-6 py-3 transition-all duration-200 text-[0.875rem] ${
+                  isActive
+                    ? "text-white bg-white/5"
+                    : "text-[#c5c5c5] hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                {isActive && (
+                  <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-[#fc6022] shadow-[2px_0_10px_rgba(252,96,34,0.4)]" />
+                )}
+                <Icon
+                  className={`w-5 h-5 ${isActive ? "text-[#fc6022]" : "text-[#c5c5c5]"}`}
+                />
+                {link.name}
+              </Link>
+            );
+          })}
+        </nav>
+      </aside>
+    </>
   );
 }
