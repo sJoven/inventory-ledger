@@ -112,7 +112,6 @@ export default async function GenerateReportPage({
   return (
     <div className="min-h-screen bg-white p-8 max-w-4xl mx-auto text-gray-900 print:p-0 print:max-w-full">
       <PrintControls />
-      {/* --- PDF DOCUMENT START --- */}
       <header className="border-b-2 border-gray-200 pb-6 flex justify-between items-start">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
@@ -173,7 +172,7 @@ export default async function GenerateReportPage({
         ) : null}
       </section>
 
-      <section className="my-8 print:break-inside-avoid">
+      <section className="my-8">
         <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">
           Low Stock Alerts
         </h2>

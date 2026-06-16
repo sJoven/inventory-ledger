@@ -52,7 +52,7 @@ export default function Sidebar({ role }: SidebarProps) {
   return (
     <>
       <button
-        className={`lg:hidden fixed top-4 left-4 p-2 bg-[#17212c] border border-[#c5c5c5]/60 rounded-md shadow-lg transition-opacity duration-300 z-[60] ${
+        className={`print:hidden lg:hidden fixed top-4 left-4 p-2 bg-[#17212c] border border-[#c5c5c5]/60 rounded-md shadow-lg transition-opacity duration-300 z-[60] ${
           isOpen ? "opacity-0 pointer-events-none" : "opacity-100 delay-300"
         }`}
         onClick={() => setIsOpen(true)}

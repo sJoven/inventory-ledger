@@ -8,9 +8,6 @@ type LowStockItem = {
   qty: number;
 };
 
-// ==========================================
-// COMPONENT 1: STOCK MODAL
-// ==========================================
 function StockModal({
   isOpen,
   onClose,
@@ -23,33 +20,46 @@ function StockModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[80vh] flex flex-col">
-        {/* Modal Header */}
-        <div className="p-4 border-b flex justify-between items-center sticky top-0 bg-white rounded-t-lg">
-          <h2 className="text-xl font-bold text-gray-800">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div
+        className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity duration-300"
+        onClick={onClose}
+      />
+      <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl z-10 animate-in fade-in zoom-in-95 duration-200 overflow-hidden flex flex-col max-h-[80vh]">
+        <div className="p-6 pb-2">
+          <h2 className="text-2xl font-bold text-gray-800 tracking-tight">
             All Low Stock Items
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-800 text-3xl leading-none"
+            className="absolute top-5 right-5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full p-1.5 transition-colors z-20"
             aria-label="Close modal"
           >
-            &times;
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
           </button>
         </div>
-
-        {/* Modal Body */}
-        <div className="p-4 overflow-y-auto">
+        <div className="p-6 overflow-y-auto [scrollbar-width:thin] [scrollbar-color:#d6d3d1_transparent]">
           <ul className="space-y-3">
             {items.map((item, index) => (
               <li
                 key={index}
-                className="flex justify-between items-center border-b border-gray-100 pb-2 last:border-0 last:pb-0"
+                className="flex justify-between items-center p-3 bg-gray-50 rounded-xl border border-gray-100"
               >
-                <span className="font-medium text-gray-700">{item.name}</span>
-                <span className="text-red-700 font-bold bg-red-100 px-2 py-1 rounded-md text-sm">
-                  Qty: {item.qty}
+                <span className="font-semibold text-gray-700">{item.name}</span>
+                <span className="text-[#fc6022] font-bold bg-[#fc6022]/10 px-3 py-1 rounded-lg text-sm">
+                  {item.qty} left
                 </span>
               </li>
             ))}
@@ -60,9 +70,6 @@ function StockModal({
   );
 }
 
-// ==========================================
-// COMPONENT 2: LOW STOCK CARD (MAIN EXPORT)
-// ==========================================
 export default function LowStockCard({
   store_id,
   lowStockItems,
@@ -72,18 +79,13 @@ export default function LowStockCard({
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // We only show a preview of items in the card itself.
-  // The rest are hidden behind the "Show More" button.
   const PREVIEW_LIMIT = 3;
   const previewItems = lowStockItems.slice(0, PREVIEW_LIMIT);
   const hasMore = lowStockItems.length > PREVIEW_LIMIT;
 
   return (
     <>
-      {/* The Card 
-        `w-full` ensures it takes up 100% of whatever grid/container you place it in. 
-      */}
-      <div className="w-full bg-white border border-gray-200 rounded-xl shadow-sm p-5">
+      <div className="w-full p-5">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-gray-800">Inventory Alerts</h3>
           <span className="bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded-full">
@@ -118,7 +120,7 @@ export default function LowStockCard({
             {hasMore && (
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="w-full mt-4 text-sm text-blue-700 font-semibold py-2 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                className="w-full mt-4 text-sm text-[#fc6022] font-semibold py-2 bg-[#fc6022]/10 hover:bg-[#fc6022]/20 rounded-lg transition-colors"
               >
                 Show More ({lowStockItems.length - PREVIEW_LIMIT})
               </button>
@@ -127,7 +129,6 @@ export default function LowStockCard({
         )}
       </div>
 
-      {/* The Modal */}
       <StockModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

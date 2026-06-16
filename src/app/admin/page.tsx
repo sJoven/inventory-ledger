@@ -11,40 +11,44 @@ interface Store {
 }
 
 export default async function AdminDashboard() {
-  // 1. Check if the user is authenticated
   const loggedIn = await isLoggedIn();
   const userid = loggedIn.user.userid as string;
 
-  // 2. Fetch the stores and pending invitations live from the database
   const stores: Store[] = await adminAccess();
   const invitations: Store[] = await getPendingInvitations();
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
-      {/* Header Section */}
-      <div className="mb-8 border-b border-gray-200 pb-5">
-        <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
-          Admin Dashboard
-        </h1>
-        <p className="mt-2 text-sm text-gray-500">
-          Manage your accessible stores and pending team invitations.
-        </p>
+      <div className="mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-5 border-b border-gray-100 pb-6">
+        <div>
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+            Admin Dashboard
+          </h1>
+          <p className="mt-1.5 text-sm text-gray-500">
+            Manage your accessible stores and pending team invitations.
+          </p>
+        </div>
+
+        <div className="shrink-0">
+          <CreateStoreModal />
+        </div>
       </div>
-      <CreateStoreModal />
-      {/* Main Grid Sections */}
+
       <div className="space-y-12">
         {/* Stores Section */}
         <section>
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            🏪 Your Stores
-            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-normal">
+          <div className="flex items-center gap-3 mb-6">
+            <h2 className="text-xl font-bold text-gray-800 tracking-tight flex items-center gap-2">
+              🏪 Your Stores
+            </h2>
+            <span className="text-xs bg-gray-50 border border-gray-200 text-gray-600 px-2.5 py-1 rounded-full font-semibold">
               {stores.length}
             </span>
-          </h2>
+          </div>
 
           {stores.length === 0 ? (
-            <div className="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-300">
-              <p className="text-gray-500">
+            <div className="text-center py-16 bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-200 transition-colors hover:border-gray-300 hover:bg-gray-50">
+              <p className="text-gray-500 font-medium">
                 You don't have access to any stores yet.
               </p>
             </div>
@@ -57,18 +61,25 @@ export default async function AdminDashboard() {
           )}
         </section>
 
-        {/* Invitations Section */}
         <section>
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            ✉️ Pending Invitations
-            <span className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-normal">
-              {invitations.length}
-            </span>
-          </h2>
+          <div className="flex items-center gap-3 mb-6">
+            <h2 className="text-xl font-bold text-gray-800 tracking-tight flex items-center gap-2">
+              ✉️ Pending Invitations
+            </h2>
+            {invitations.length > 0 ? (
+              <span className="text-xs bg-orange-50 border border-orange-100 text-[#fc6022] px-2.5 py-1 rounded-full font-bold">
+                {invitations.length} New
+              </span>
+            ) : (
+              <span className="text-xs bg-gray-50 border border-gray-200 text-gray-600 px-2.5 py-1 rounded-full font-semibold">
+                0
+              </span>
+            )}
+          </div>
 
           {invitations.length === 0 ? (
-            <div className="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-300">
-              <p className="text-gray-500">
+            <div className="text-center py-16 bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-200 transition-colors hover:border-gray-300 hover:bg-gray-50">
+              <p className="text-gray-500 font-medium">
                 You have no pending invitations at this time.
               </p>
             </div>
@@ -89,13 +100,12 @@ export default async function AdminDashboard() {
   );
 }
 
-// Component 1: Store Card
-function StoreCard({ store }: { store: Store }) {
+export function StoreCard({ store }: { store: Store }) {
   const roleColors: Record<string, string> = {
     admin: "bg-purple-50 text-purple-700 border-purple-200",
     manager: "bg-blue-50 text-blue-700 border-blue-200",
   };
-
+  const role = store.role === "super" ? "admin" : store.role;
   const normalizedRole = store.role.toLowerCase();
   const badgeStyle =
     roleColors[normalizedRole] || "bg-gray-50 text-gray-700 border-gray-200";
@@ -103,23 +113,27 @@ function StoreCard({ store }: { store: Store }) {
   return (
     <Link
       href={`/admin/${store.store_id}`}
-      className="group block p-6 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:border-gray-300 transition-all duration-200"
+      className="group block p-5 bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-gray-300 transition-all duration-200"
     >
       <div className="flex flex-col h-full justify-between space-y-4">
         <div>
-          <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${badgeStyle}`}
-          >
-            {store.role}
-          </span>
-          <h3 className="mt-3 text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-            {store.store_name}
-          </h3>
+          <div className="flex justify-between items-start gap-3">
+            <h3 className="text-lg font-bold text-gray-800 tracking-tight group-hover:text-[#fc6022] transition-colors duration-200 truncate">
+              {store.store_name}
+            </h3>
+            <span
+              className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide border shrink-0 ${badgeStyle}`}
+            >
+              {role}
+            </span>
+          </div>
         </div>
 
-        <div className="pt-2 border-t border-gray-50 flex items-center justify-between text-xs text-gray-500">
-          <span>ID: {store.store_id}</span>
-          <span className="text-blue-600 font-medium group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+        <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-mono text-gray-400">
+          <span className="truncate flex items-center gap-1">
+            <span className="text-gray-400">ID:</span> {store.store_id}
+          </span>
+          <span className="text-[#fc6022] font-semibold group-hover:translate-x-1 transition-transform duration-200 inline-flex items-center gap-1 font-sans shrink-0 ml-2">
             Manage <span>&rarr;</span>
           </span>
         </div>
@@ -128,7 +142,6 @@ function StoreCard({ store }: { store: Store }) {
   );
 }
 
-// Component 2: Invite Card
 export function InviteCard({
   invite,
   userId,
@@ -136,41 +149,40 @@ export function InviteCard({
   invite: Store;
   userId: string;
 }) {
+  const role = invite.role === "super" ? "admin" : invite.role;
+  // Make sure these actions are imported or defined!
   const acceptAction = acceptInvite.bind(null, userId, invite.store_id);
   const declineAction = declineInvite.bind(null, userId, invite.store_id);
 
   return (
-    <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm flex flex-col justify-between space-y-4">
+    <div className="p-5 bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between space-y-5">
       <div>
-        <div className="flex justify-between items-start gap-2">
-          <h3 className="text-base font-semibold text-gray-900 truncate">
+        <div className="flex justify-between items-start gap-3">
+          <h3 className="text-lg font-bold text-gray-800 tracking-tight truncate">
             {invite.store_name}
           </h3>
-          <span className="inline-flex items-center px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 text-xs font-medium shrink-0">
-            As {invite.role}
+          <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-orange-50 text-[#fc6022] text-[11px] font-semibold tracking-wide shrink-0">
+            As {role}
           </span>
         </div>
-        <p className="mt-2 text-[11px] font-mono text-gray-400 truncate">
-          Store ID: {invite.store_id}
+        <p className="mt-1.5 text-xs font-mono text-gray-400 truncate flex items-center gap-1">
+          <span className="text-gray-400">ID:</span> {invite.store_id}
         </p>
       </div>
 
-      <div className="flex gap-2 pt-2">
-        {/* Wrap the Accept button in a form */}
+      <div className="flex gap-3 pt-3 border-t border-gray-100">
         <form action={acceptAction} className="flex-1">
           <button
             type="submit"
-            className="w-full px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-medium transition-colors shadow-sm"
+            className="w-full px-4 py-2 bg-[#fc6022] hover:bg-[#e0541e] text-white rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow active:scale-[0.98]"
           >
             Accept
           </button>
         </form>
-
-        {/* Wrap the Decline button in a form */}
         <form action={declineAction} className="flex-1">
           <button
             type="submit"
-            className="w-full px-3 py-1.5 bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 rounded-md text-xs font-medium transition-colors"
+            className="w-full px-4 py-2 bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium transition-all duration-200 hover:text-gray-900 active:scale-[0.98]"
           >
             Decline
           </button>

@@ -9,7 +9,6 @@ export default function CreateStoreModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  // Prevent background page from scrolling when the modal window is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -22,13 +21,10 @@ export default function CreateStoreModal() {
   }, [isOpen]);
 
   const handleSubmit = async (formData: FormData) => {
-    // 1. Extract values from Form Data
     const storeName = formData.get("storeName") as string;
     const currency = formData.get("currency") as string;
     const theme = formData.get("theme") as string;
     const storeIcon = formData.get("storeIcon") as string;
-
-    // 2. Parse HTML values into proper types required by your Prisma schema
     const lowStockThreshold =
       parseInt(formData.get("lowStockThreshold") as string, 10) || 10;
     const allowNegativeInventory =
@@ -58,97 +54,115 @@ export default function CreateStoreModal() {
 
   return (
     <>
-      {/* 1. THE TRIGGER BUTTON */}
       <button
         onClick={() => setIsOpen(true)}
-        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition shadow-sm"
+        className="bg-[#fc6022] hover:bg-[#e0541e] text-white font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98]"
       >
         + Create New Store
       </button>
 
-      {/* 2. THE MODAL BACKDROP AND OVERLAY */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          {/* Dimmed Background Overlay */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+          {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
-            onClick={() => setIsOpen(false)} // Closes the modal if clicking outside the form box
+            className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity duration-300"
+            onClick={() => setIsOpen(false)}
           />
 
-          {/* Modal Container Card */}
-          <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-white rounded-xl shadow-xl p-1 z-10">
-            {/* Absolute Top Right Close 'X' Button */}
+          {/* Modal Card */}
+          <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl z-10 animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
             <button
               onClick={() => setIsOpen(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-lg p-1 transition z-20"
+              className="absolute top-5 right-5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full p-1.5 transition-colors z-20"
               aria-label="Close Modal"
             >
-              ✕
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
             </button>
 
-            {/* YOUR EXACT FORM COMPONENT CONTAINER */}
             <form
               action={handleSubmit}
-              className="w-full p-6 space-y-4 bg-white"
+              className="w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-5 [scrollbar-width:thin] [scrollbar-color:#d6d3d1_transparent]"
             >
-              <h2 className="text-xl font-bold mb-4 text-gray-800">
-                Create New Store
-              </h2>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-800 tracking-tight pr-8">
+                  Create New Store
+                </h2>
+                <p className="text-sm text-gray-500 mt-1">
+                  Set up the basics for your new storefront.
+                </p>
+              </div>
 
-              {/* Store Name */}
               <div className="flex flex-col">
-                <label className="font-semibold text-sm mb-1 text-gray-700">
-                  Store Name *
+                <label className="font-semibold text-sm mb-1.5 text-gray-700">
+                  Store Name <span className="text-[#fc6022]">*</span>
                 </label>
                 <input
                   type="text"
                   name="storeName"
                   required
-                  placeholder="My Store"
-                  className="border p-2 rounded text-gray-900 focus:outline-blue-500"
+                  placeholder="e.g. My Awesome Store"
+                  className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#fc6022] focus:ring-4 focus:ring-[#fc6022]/10 transition-all duration-200"
                 />
               </div>
 
-              <hr className="my-4 border-gray-200" />
-              <h3 className="text-md font-semibold text-gray-500">
-                Store Settings
-              </h3>
-
-              {/* Currency */}
-              <div className="flex flex-col">
-                <label className="font-semibold text-sm mb-1 text-gray-700">
-                  Currency *
-                </label>
-                <select
-                  name="currency"
-                  defaultValue="PHP"
-                  className="border p-2 rounded text-gray-900"
-                >
-                  <option value="PHP">PHP (₱)</option>
-                  <option value="USD">USD ($)</option>
-                  <option value="EUR">EUR (€)</option>
-                </select>
+              <div className="relative py-2">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-100"></div>
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="bg-white px-3 text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    Store Settings
+                  </span>
+                </div>
               </div>
 
-              {/* Theme */}
-              <div className="flex flex-col">
-                <label className="font-semibold text-sm mb-1 text-gray-700">
-                  Theme *
-                </label>
-                <select
-                  name="theme"
-                  defaultValue="light"
-                  className="border p-2 rounded text-gray-900"
-                >
-                  <option value="light">Light Mode</option>
-                  <option value="dark">Dark Mode</option>
-                </select>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col">
+                  <label className="font-semibold text-sm mb-1.5 text-gray-700">
+                    Currency <span className="text-[#fc6022]">*</span>
+                  </label>
+                  <select
+                    name="currency"
+                    defaultValue="PHP"
+                    className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-800 focus:outline-none focus:border-[#fc6022] focus:ring-4 focus:ring-[#fc6022]/10 transition-all duration-200"
+                  >
+                    <option value="PHP">PHP (₱)</option>
+                    <option value="USD">USD ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col">
+                  <label className="font-semibold text-sm mb-1.5 text-gray-700">
+                    Theme <span className="text-[#fc6022]">*</span>
+                  </label>
+                  <select
+                    name="theme"
+                    defaultValue="light"
+                    className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-800 focus:outline-none focus:border-[#fc6022] focus:ring-4 focus:ring-[#fc6022]/10 transition-all duration-200"
+                  >
+                    <option value="light">Light Mode</option>
+                    <option value="dark">Dark Mode</option>
+                  </select>
+                </div>
               </div>
 
-              {/* Low Stock Threshold */}
               <div className="flex flex-col">
-                <label className="font-semibold text-sm mb-1 text-gray-700">
-                  Low Stock Alert Threshold *
+                <label className="font-semibold text-sm mb-1.5 text-gray-700">
+                  Low Stock Alert Threshold{" "}
+                  <span className="text-[#fc6022]">*</span>
                 </label>
                 <input
                   type="number"
@@ -156,57 +170,80 @@ export default function CreateStoreModal() {
                   defaultValue={10}
                   min={0}
                   required
-                  className="border p-2 rounded text-gray-900"
+                  className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-800 focus:outline-none focus:border-[#fc6022] focus:ring-4 focus:ring-[#fc6022]/10 transition-all duration-200"
                 />
               </div>
 
-              {/* Store Icon (Optional) */}
               <div className="flex flex-col">
-                <label className="font-semibold text-sm mb-1 text-gray-700">
-                  Store Icon URL{" "}
-                  <span className="text-gray-400 font-normal">(Optional)</span>
+                <label className="font-semibold text-sm mb-1.5 text-gray-700 flex justify-between">
+                  <span>Store Icon URL</span>
+                  <span className="text-gray-400 font-normal">Optional</span>
                 </label>
                 <input
                   type="url"
                   name="storeIcon"
                   placeholder="https://example.com/logo.png"
-                  className="border p-2 rounded text-gray-900"
+                  className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#fc6022] focus:ring-4 focus:ring-[#fc6022]/10 transition-all duration-200"
                 />
               </div>
 
-              {/* Allow Negative Inventory */}
-              <div className="flex items-start space-x-2 pt-2">
+              <label className="flex items-start gap-3 p-3 border border-gray-100 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors group">
                 <input
                   type="checkbox"
                   id="allowNegativeInventory"
                   name="allowNegativeInventory"
-                  className="h-4 w-4 mt-1"
+                  className="mt-0.5 w-4 h-4 text-[#fc6022] bg-white border-gray-300 rounded focus:ring-[#fc6022] focus:ring-2 accent-[#fc6022]"
                 />
-                <label
-                  htmlFor="allowNegativeInventory"
-                  className="text-sm font-medium text-gray-700 select-none"
+                <span className="text-sm text-gray-700 leading-tight">
+                  <strong className="block text-gray-900 mb-0.5 font-semibold">
+                    Allow Negative Inventory
+                  </strong>
+                  Permit selling items even when your recorded stock reaches 0.
+                </span>
+              </label>
+
+              <div className="pt-4 flex flex-col gap-3">
+                <button
+                  type="submit"
+                  disabled={isPending}
+                  className="w-full bg-[#fc6022] hover:bg-[#e0541e] text-white py-3 rounded-xl font-bold tracking-wide transition-all duration-200 shadow-md hover:shadow-lg disabled:bg-orange-300 disabled:shadow-none active:scale-[0.98] flex justify-center items-center"
                 >
-                  Allow selling items when stock is 0 (Negative Inventory)
-                </label>
+                  {isPending ? (
+                    <span className="flex items-center gap-2">
+                      <svg
+                        className="animate-spin h-5 w-5 text-white"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                          fill="none"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
+                      </svg>
+                      Creating Store...
+                    </span>
+                  ) : (
+                    "Create Store"
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  className="w-full text-center text-sm font-semibold text-gray-500 hover:text-gray-800 py-2 rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
               </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={isPending}
-                className="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 disabled:bg-blue-300 transition"
-              >
-                {isPending ? "Creating Store..." : "Create Store"}
-              </button>
-
-              {/* Optional Inline Secondary Cancel Button */}
-              <button
-                type="button"
-                onClick={() => setIsOpen(false)}
-                className="w-full text-center text-sm font-medium text-gray-400 hover:text-gray-600 pt-1 transition"
-              >
-                Cancel
-              </button>
             </form>
           </div>
         </div>

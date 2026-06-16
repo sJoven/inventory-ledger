@@ -23,14 +23,12 @@ export default async function RecentActivityLogs({
     return null;
   }
 
-  // 2. Get the 5 most recent logs
   const logs = await prisma.activityLog.findMany({
     where: { store_id },
     orderBy: { createdAt: "desc" },
     take: 5,
   });
 
-  // 3. Extract doc_ids and fetch corresponding product names
   const productIds = logs.map((log) => log.doc_id);
   const products = await prisma.product.findMany({
     where: { id: { in: productIds } },
@@ -39,7 +37,6 @@ export default async function RecentActivityLogs({
 
   const productMap = new Map(products.map((p) => [p.id, p.name]));
 
-  // Combine and format the data
   const enrichedLogs = logs.map((log) => {
     const formattedDate = new Intl.DateTimeFormat("en-US", {
       month: "short",
@@ -50,7 +47,6 @@ export default async function RecentActivityLogs({
 
     return {
       id: log.id,
-      // Create the human-readable sentence directly
       sentence: (
         <>
           <span className="font-semibold text-gray-900">
@@ -83,12 +79,10 @@ export default async function RecentActivityLogs({
             {enrichedLogs.map((log, index) => (
               <li
                 key={log.id}
-                // Hides elements on smaller screens based on index
-                className={`p-3 rounded-lg hover:bg-gray-50 flex items-center transition-colors ${
+                className={`p-3 rounded-lg hover:bg-orange-50/50 flex items-center transition-colors ${
                   index >= 3 ? "hidden sm:flex" : "flex"
                 } ${index >= 4 ? "lg:flex" : ""}`}
               >
-                {/* Single sentence representation */}
                 <p className="text-sm truncate w-full">{log.sentence}</p>
               </li>
             ))}
@@ -99,7 +93,7 @@ export default async function RecentActivityLogs({
       <div className="px-5 py-3 border-t border-gray-100 bg-gray-50 rounded-b-xl">
         <Link
           href={`/admin/${store_id}/logs`}
-          className="block w-full text-center text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+          className="block w-full text-center text-sm font-medium text-[#fc6022] hover:text-[#e0551d] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fc6022] rounded"
         >
           View all logs &rarr;
         </Link>

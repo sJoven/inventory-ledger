@@ -32,13 +32,13 @@ export default function RevenueChartClient({
     currency: safeCurrency,
   }).format(totalRevenue);
   return (
-    <div className="w-full bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+    <div className="w-full p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-sm font-medium text-gray-500">Total Revenue</h3>
           <p className="text-2xl font-bold text-gray-900">{formattedRevenue}</p>
         </div>
-        <div className="p-3 bg-blue-50 text-blue-600 rounded-full">
+        <div className="p-3 bg-[#fc6022]/10 text-[#fc6022] rounded-full">
           <TrendingUp size={24} />
         </div>
       </div>
@@ -85,11 +85,11 @@ export default function RevenueChartClient({
             <Line
               type="monotone"
               dataKey="revenue"
-              stroke="#2563EB"
+              stroke="#fc6022"
               strokeWidth={3}
               dot={false}
-              activeDot={{ r: 6, fill: "#2563EB" }}
-              connectNulls={false} // CRITICAL: This breaks the line if value is null (future date)
+              activeDot={{ r: 6, fill: "#fc6022" }}
+              connectNulls={false}
             />
           </LineChart>
         </ResponsiveContainer>

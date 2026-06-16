@@ -12,20 +12,19 @@ export default function PrintControls() {
   }, []);
 
   return (
-    <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between print:hidden">
+    <div className="mb-6 p-6 w-full flex items-center justify-between print:hidden">
       <div className="flex flex-col">
-        <span className="text-sm font-semibold text-blue-900">
+        <span className="text-sm font-semibold text-gray-900">
           Ready to Print
         </span>
-        <span className="text-xs text-blue-700">
+        <span className="text-xs text-gray-500">
           Review the data below. Ready to print or save as PDF.
         </span>
       </div>
 
-      {/* 2. Wire up the button using standard React onClick */}
       <button
         onClick={() => window.print()}
-        className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+        className="px-4 py-2 bg-[#fc6022] hover:bg-[#e0541e] text-white text-sm font-medium rounded-lg transition-colors shadow-sm active:scale-[0.98]"
       >
         Open Print Dialog
       </button>

@@ -75,36 +75,45 @@ export default async function AdminDashboardPage({
     : "PHP";
 
   return (
-    <div className="space-y-6">
-      <DashboardCalendarControls />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {canShowReport.status === 200 ? (
+    <div className="space-y-6 p-4 md:p-6">
+      {/* Row 1: Calendar and Print Action */}
+      <div className="grid grid-cols-[1fr,auto] items-center gap-4">
+        <DashboardCalendarControls />
+        {canShowReport.status === 200 && (
           <GenerateReportAction
             store_id={store_id}
             searchParams={resolvedSearchParams}
           />
-        ) : null}
-
-        {canShowLogs.status === 200 ? (
-          <RecentActivityLogs store_id={store_id} />
-        ) : null}
-
-        {canShowRevenue.status === 200 ? (
-          <Revenue store_id={store_id} searchParams={resolvedSearchParams} />
-        ) : null}
-        {canShowLowStock.status === 200 ? (
-          <LowStockCard store_id={store_id} lowStockItems={lowStockItems} />
-        ) : null}
+        )}
       </div>
 
-      {canShowTrend.status === 200 && trendPayload ? (
-        <Trend
-          data={trendPayload.chartData}
-          totalRevenue={trendPayload.totalRevenue}
-          currency={currency}
-        />
-      ) : null}
+      {/* Row 2: Revenue and Low Stock (Side-by-side on desktop, stacked on mobile) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {canShowRevenue.status === 200 && (
+          <Revenue store_id={store_id} searchParams={resolvedSearchParams} />
+        )}
+        {canShowLowStock.status === 200 && (
+          <LowStockCard store_id={store_id} lowStockItems={lowStockItems} />
+        )}
+      </div>
+
+      {/* Row 3: Trend Chart (Full width) */}
+      {canShowTrend.status === 200 && trendPayload && (
+        <div className="w-full">
+          <Trend
+            data={trendPayload.chartData}
+            totalRevenue={trendPayload.totalRevenue}
+            currency={currency}
+          />
+        </div>
+      )}
+
+      {/* Row 4: Recent Activity Logs (Full width) */}
+      {canShowLogs.status === 200 && (
+        <div className="w-full">
+          <RecentActivityLogs store_id={store_id} />
+        </div>
+      )}
     </div>
   );
 }
