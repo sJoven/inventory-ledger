@@ -50,44 +50,62 @@ export default function DeleteProductModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-xl overflow-hidden p-6 text-center">
-        <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">
-          <AlertTriangle className="h-8 w-8 text-red-600" />
+    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6">
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity duration-300"
+        onClick={onClose}
+      />
+
+      {/* Modal Card */}
+      <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl z-10 animate-in fade-in zoom-in-95 duration-200 overflow-hidden p-6 sm:p-8 text-center flex flex-col items-center">
+        {/* Warning Icon Container */}
+        <div className="flex items-center justify-center h-16 w-16 rounded-full bg-red-50 mb-5">
+          <AlertTriangle className="h-8 w-8 text-red-500" />
         </div>
 
-        <h2 className="text-xl font-bold text-gray-900 mb-2">Delete Product</h2>
+        {/* Header Content */}
+        <h2 className="text-2xl font-bold text-gray-800 tracking-tight mb-2">
+          Delete Product
+        </h2>
 
-        <p className="text-gray-500 mb-6">
+        <p className="text-sm text-gray-500 mb-6 leading-relaxed">
           Are you sure you want to delete{" "}
-          <span className="font-semibold text-gray-800">"{product.name}"</span>?
+          <span className="font-semibold text-gray-800">"{product.name}"</span>?{" "}
+          <br className="hidden sm:block" />
           This action cannot be undone.
         </p>
 
+        {/* Error State */}
         {error && (
-          <div className="mb-6 p-3 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg text-left">
+          <div className="w-full mb-6 p-3 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg text-left">
             {error}
           </div>
         )}
 
-        <div className="flex gap-3 justify-center w-full">
-          <button
-            onClick={onClose}
-            disabled={isLoading}
-            className="flex-1 px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
-          >
-            Cancel
-          </button>
+        {/* Action Buttons - Stacked to match established system */}
+        <div className="w-full flex flex-col gap-3">
           <button
             onClick={handleDelete}
             disabled={isLoading}
-            className="flex-1 px-5 py-2.5 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition flex items-center justify-center gap-2 disabled:opacity-70"
+            className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-bold tracking-wide transition-all duration-200 shadow-md hover:shadow-lg disabled:bg-red-300 disabled:shadow-none active:scale-[0.98] flex justify-center items-center"
           >
             {isLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <span className="flex items-center gap-2">
+                <Loader2 className="w-5 h-5 animate-spin text-white" />
+                Deleting...
+              </span>
             ) : (
-              "Delete"
+              "Delete Product"
             )}
+          </button>
+
+          <button
+            onClick={onClose}
+            disabled={isLoading}
+            className="w-full text-center text-sm font-semibold text-gray-500 hover:text-gray-800 py-2 rounded-lg transition-colors disabled:opacity-50"
+          >
+            Cancel
           </button>
         </div>
       </div>

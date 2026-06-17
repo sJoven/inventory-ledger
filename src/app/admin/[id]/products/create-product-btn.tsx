@@ -21,7 +21,7 @@ export default function CreateProductButton({
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+        className="w-full flex items-center justify-center gap-2 bg-[#fc6022] hover:bg-[#e0541e] text-white font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98]"
       >
         <Plus className="w-4 h-4" /> Add Product
       </button>

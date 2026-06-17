@@ -35,7 +35,6 @@ export default async function ProductsPage({
 
   const products = await getTenProducts(id, currentPage, currentQuery);
 
-  // Helper function to build clean pagination links keeping the search state
   const getPaginationHref = (pageNumber: number) => {
     const base = `?page=${pageNumber}`;
     return currentQuery
@@ -51,58 +50,63 @@ export default async function ProductsPage({
   const authCheck = await canAdmin(id, "delete_products");
   const canDelete = authCheck.status === 200;
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Products</h1>
-          <p className="text-gray-500 text-sm">
-            Manage inventory for Store ID: {id}
+    <div className="sm:max-w-6xl mx-auto w-full space-y-6">
+      <div className="p-4 flex flex-col gap-6 w-full px-1 sm:p-6">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+            Products
+          </h1>
+          <p className="text-sm text-gray-500">
+            Store ID: <span className="font-semibold text-gray-700">{id}</span>
           </p>
         </div>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <div className="flex-1 sm:w-72">
+        {/* Actions Section */}
+        <div className="flex flex-col gap-3 w-full sm:flex-row sm:items-center sm:justify-end">
+          <div className="w-full sm:max-w-xs">
             <SearchInput placeholder="Search name or SKU..." />
           </div>
-          {/* Add the button here */}
-          <CreateProductButton
-            storeId={id}
-            existingSKUs={existingSKUs}
-            userId={session.user.userid}
-            currency={currency}
-          />
+
+          {/* Full-width button on mobile for easier tapping */}
+          <div className="w-full sm:w-auto">
+            <CreateProductButton
+              storeId={id}
+              existingSKUs={existingSKUs}
+              userId={session.user.userid}
+              currency={currency}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Table Component */}
-      <ProductTable
-        products={products}
-        existingSKUs={existingSKUs}
-        userId={session.user.userid}
-        currency={currency}
-        canDelete={canDelete}
-      />
+      <div className="w-full min-w-0">
+        <ProductTable
+          products={products}
+          existingSKUs={existingSKUs}
+          userId={session.user.userid}
+          currency={currency}
+          canDelete={canDelete}
+        />
+      </div>
 
-      {/* Simple Pagination Footer */}
-      <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-        {/* Mobile Layout */}
-        <div className="flex-1 flex justify-between sm:hidden">
+      <div className="bg-white px-6 py-4 flex items-center justify-between border border-gray-200 rounded-2xl shadow-sm sm:px-6 w-full">
+        <div className="flex-1 flex justify-between sm:hidden w-full">
           <Link
             href={getPaginationHref(Math.max(1, currentPage - 1))}
-            className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md bg-white text-gray-700 ${
+            className={`relative inline-flex items-center px-4 py-2.5 border text-sm font-semibold rounded-lg bg-white transition-all duration-200 shadow-sm ${
               currentPage <= 1
-                ? "pointer-events-none opacity-50"
-                : "hover:bg-gray-50"
+                ? "border-gray-100 text-gray-300 pointer-events-none bg-gray-50/50"
+                : "border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-[#fc6022] hover:border-[#fc6022]/30 active:scale-[0.98]"
             }`}
           >
             Previous
           </Link>
           <Link
             href={getPaginationHref(currentPage + 1)}
-            className={`ml-3 relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md bg-white text-gray-700 ${
+            className={`ml-3 relative inline-flex items-center px-4 py-2.5 border text-sm font-semibold rounded-lg bg-white transition-all duration-200 shadow-sm ${
               products.length < 10
-                ? "pointer-events-none opacity-50"
-                : "hover:bg-gray-50"
+                ? "border-gray-100 text-gray-300 pointer-events-none bg-gray-50/50"
+                : "border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-[#fc6022] hover:border-[#fc6022]/30 active:scale-[0.98]"
             }`}
           >
             Next
@@ -110,29 +114,30 @@ export default async function ProductsPage({
         </div>
 
         {/* Desktop Layout */}
-        <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+        <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between w-full">
           <div>
-            <p className="text-sm text-gray-700">
-              Showing page <span className="font-medium">{currentPage}</span>
+            <p className="text-sm text-gray-500">
+              Showing page{" "}
+              <span className="font-semibold text-gray-800">{currentPage}</span>
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2.5">
             <Link
               href={getPaginationHref(Math.max(1, currentPage - 1))}
-              className={`inline-flex items-center gap-1 px-3 py-1.5 border text-sm font-medium rounded bg-white text-gray-700 ${
+              className={`inline-flex items-center gap-1.5 px-4 py-2 border text-sm font-semibold rounded-lg bg-white transition-all duration-200 shadow-sm ${
                 currentPage <= 1
-                  ? "pointer-events-none opacity-40"
-                  : "hover:bg-gray-50"
+                  ? "border-gray-100 text-gray-300 pointer-events-none bg-gray-50/50"
+                  : "border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-[#fc6022] hover:border-[#fc6022]/30 active:scale-[0.98]"
               }`}
             >
               <ArrowLeft className="h-4 w-4" /> Previous
             </Link>
             <Link
               href={getPaginationHref(currentPage + 1)}
-              className={`inline-flex items-center gap-1 px-3 py-1.5 border text-sm font-medium rounded bg-white text-gray-700 ${
+              className={`inline-flex items-center gap-1.5 px-4 py-2 border text-sm font-semibold rounded-lg bg-white transition-all duration-200 shadow-sm ${
                 products.length < 10
-                  ? "pointer-events-none opacity-40"
-                  : "hover:bg-gray-50"
+                  ? "border-gray-100 text-gray-300 pointer-events-none bg-gray-50/50"
+                  : "border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-[#fc6022] hover:border-[#fc6022]/30 active:scale-[0.98]"
               }`}
             >
               Next <ArrowRight className="h-4 w-4" />

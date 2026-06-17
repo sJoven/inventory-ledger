@@ -1,8 +1,8 @@
-// app/admin/[id]/products/search-input.tsx
 "use client";
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useTransition, useEffect, useState } from "react";
+import { Search } from "lucide-react";
 
 export default function SearchInput({ placeholder }: { placeholder: string }) {
   const router = useRouter();
@@ -34,16 +34,17 @@ export default function SearchInput({ placeholder }: { placeholder: string }) {
   }, [text]);
 
   return (
-    <div className="relative">
+    // SearchInput.tsx
+    <div className="relative min-w-0 w-full">
       <input
         type="text"
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder={placeholder}
-        className="w-full pl-4 pr-10 py-2 border rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+        className="block w-full pl-4 pr-10 py-2.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#fc6022] focus:ring-4 focus:ring-[#fc6022]/10 transition-all duration-200"
       />
-      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-400">
-        🔍
+      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+        <Search className="w-4 h-4 text-gray-400" />
       </div>
     </div>
   );
