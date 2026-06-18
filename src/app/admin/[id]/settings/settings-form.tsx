@@ -57,38 +57,42 @@ export default function SettingsForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 bg-white p-6 rounded-lg shadow-sm border"
+      className="space-y-6 bg-white p-8 pt-0 rounded-2xl border border-gray-100 shadow-sm"
     >
       {/* Store Name */}
-      <div>
-        <label className="block text-sm font-medium mb-1">Store Name</label>
+      <div className="space-y-1.5">
+        <label className="text-sm font-semibold text-gray-700">
+          Store Name
+        </label>
         <input
           type="text"
           name="store_name"
           value={formData.store_name}
           onChange={handleChange}
-          className="w-full border rounded-md p-2"
+          className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-[#fc6022]/20 focus:border-[#fc6022] outline-none transition-all"
           required
         />
       </div>
 
       {/* Store Icon URL */}
-      <div>
-        <label className="block text-sm font-medium mb-1">Store Icon URL</label>
+      <div className="space-y-1.5">
+        <label className="text-sm font-semibold text-gray-700">
+          Store Icon URL
+        </label>
         <input
           type="url"
           name="store_icon"
           value={formData.store_icon}
           onChange={handleChange}
-          className="w-full border rounded-md p-2"
+          className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-[#fc6022]/20 focus:border-[#fc6022] outline-none transition-all"
           placeholder="https://example.com/logo.png"
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {/* Low Stock Threshold */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
+        <div className="space-y-1.5">
+          <label className="text-sm font-semibold text-gray-700">
             Low Stock Threshold
           </label>
           <input
@@ -96,19 +100,21 @@ export default function SettingsForm({
             name="low_stock_threshold"
             value={formData.low_stock_threshold}
             onChange={handleChange}
-            className="w-full border rounded-md p-2"
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-[#fc6022]/20 focus:border-[#fc6022] outline-none transition-all"
             min="0"
           />
         </div>
 
         {/* Currency */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Currency</label>
+        <div className="space-y-1.5">
+          <label className="text-sm font-semibold text-gray-700">
+            Currency
+          </label>
           <select
             name="currency"
             value={formData.currency}
             onChange={handleChange}
-            className="w-full border rounded-md p-2"
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-[#fc6022]/20 focus:border-[#fc6022] outline-none transition-all"
           >
             <option value="PHP">PHP (₱)</option>
             <option value="USD">USD ($)</option>
@@ -118,13 +124,15 @@ export default function SettingsForm({
       </div>
 
       {/* Theme */}
-      <div>
-        <label className="block text-sm font-medium mb-1">Store Theme</label>
+      <div className="space-y-1.5">
+        <label className="text-sm font-semibold text-gray-700">
+          Store Theme
+        </label>
         <select
           name="theme"
           value={formData.theme}
           onChange={handleChange}
-          className="w-full border rounded-md p-2"
+          className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-[#fc6022]/20 focus:border-[#fc6022] outline-none transition-all"
         >
           <option value="light">Light</option>
           <option value="dark">Dark</option>
@@ -133,27 +141,31 @@ export default function SettingsForm({
       </div>
 
       {/* Allow Negative Inventory */}
-      <div className="flex items-center gap-2 mt-4">
+      <div className="flex items-center gap-3 py-2">
         <input
           type="checkbox"
           id="allow_negative_inventory"
           name="allow_negative_inventory"
           checked={formData.allow_negative_inventory}
           onChange={handleChange}
-          className="h-4 w-4"
+          className="h-5 w-5 rounded border-gray-300 text-[#fc6022] focus:ring-[#fc6022]"
         />
         <label
           htmlFor="allow_negative_inventory"
-          className="text-sm font-medium"
+          className="text-sm font-medium text-gray-700"
         >
-          Allow selling items when inventory is 0 (Negative Inventory)
+          Allow negative inventory sales
         </label>
       </div>
 
       {/* Status Messages */}
       {message.text && (
         <div
-          className={`p-3 rounded text-sm ${message.type === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
+          className={`p-4 rounded-xl text-sm font-medium ${
+            message.type === "success"
+              ? "bg-green-50 text-green-700 border border-green-200"
+              : "bg-red-50 text-red-700 border border-red-200"
+          }`}
         >
           {message.text}
         </div>
@@ -163,7 +175,7 @@ export default function SettingsForm({
       <button
         type="submit"
         disabled={isPending}
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
+        className="w-full bg-[#fc6022] hover:bg-[#e0541e] text-white py-3 px-4 rounded-xl font-bold tracking-wide transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 active:scale-[0.98]"
       >
         {isPending ? "Saving..." : "Save Settings"}
       </button>

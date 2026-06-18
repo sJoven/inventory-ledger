@@ -37,17 +37,23 @@ export default function UserManagementForm({ storeId }: { storeId: string }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 bg-white p-6 rounded-lg shadow-sm border"
+      className="space-y-6 bg-white p-8 pt-0 rounded-2xl border border-gray-100 shadow-sm"
     >
-      <p className="text-sm text-gray-600 mb-4">
-        Invite a new member to this store. If they don't have an account, one
-        will be created for them.
-      </p>
+      {/* Description Header */}
+      <div>
+        <h2 className="text-lg font-bold text-gray-900 tracking-tight">
+          Invite Member
+        </h2>
+        <p className="text-sm text-gray-500 mt-1">
+          Invite a new member to this store. If they don't have an account, one
+          will be created for them.
+        </p>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
         {/* Email Input */}
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium mb-1">
+        <div className="md:col-span-2 space-y-1.5">
+          <label className="text-sm font-semibold text-gray-700">
             Email Address
           </label>
           <input
@@ -56,17 +62,17 @@ export default function UserManagementForm({ storeId }: { storeId: string }) {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="user@example.com"
             required
-            className="w-full border rounded-md p-2"
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-[#fc6022]/20 focus:border-[#fc6022] outline-none transition-all"
           />
         </div>
 
         {/* Role Selection */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Role</label>
+        <div className="space-y-1.5">
+          <label className="text-sm font-semibold text-gray-700">Role</label>
           <select
             value={uiRole}
             onChange={(e) => setUiRole(e.target.value)}
-            className="w-full border rounded-md p-2"
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-[#fc6022]/20 focus:border-[#fc6022] outline-none transition-all"
           >
             <option value="Admin">Admin</option>
             <option value="Manager">Manager</option>
@@ -78,18 +84,22 @@ export default function UserManagementForm({ storeId }: { storeId: string }) {
       {/* Status Messages */}
       {message.text && (
         <div
-          className={`p-3 rounded text-sm ${message.type === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
+          className={`p-4 rounded-xl text-sm font-medium ${
+            message.type === "success"
+              ? "bg-green-50 text-green-700 border border-green-200"
+              : "bg-red-50 text-red-700 border border-red-200"
+          }`}
         >
           {message.text}
         </div>
       )}
 
       {/* Submit Button */}
-      <div className="flex justify-end mt-4">
+      <div className="flex justify-end pt-2">
         <button
           type="submit"
           disabled={isPending || !email}
-          className="bg-black text-white py-2 px-6 rounded-md hover:bg-gray-800 disabled:opacity-50 transition-colors"
+          className="bg-[#fc6022] hover:bg-[#e0541e] text-white py-3 px-8 rounded-xl font-bold tracking-wide transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 active:scale-[0.98]"
         >
           {isPending ? "Adding..." : "Add Member"}
         </button>
