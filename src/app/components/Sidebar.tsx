@@ -9,7 +9,9 @@ import {
   History,
   ScrollText,
   Settings,
+  Store,
 } from "lucide-react";
+
 interface SidebarProps {
   role?: string;
 }
@@ -90,7 +92,7 @@ export default function Sidebar({ role }: SidebarProps) {
           </h2>
         </div>
 
-        <nav className="flex-1 px-0 space-y-1 mt-2">
+        <nav className="flex-1 px-0 space-y-1 mt-2 overflow-y-auto">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const isActive = link.exact
@@ -119,6 +121,18 @@ export default function Sidebar({ role }: SidebarProps) {
             );
           })}
         </nav>
+
+        {/* New Other Stores Button */}
+        <div className="p-4 mt-auto border-t border-white/10">
+          <Link
+            href="/admin"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#fc6022] hover:bg-[#e5561e] text-white rounded-md transition-colors duration-200 text-[0.875rem] font-medium shadow-md"
+          >
+            <Store className="w-4 h-4" />
+            Other Stores
+          </Link>
+        </div>
       </aside>
     </>
   );

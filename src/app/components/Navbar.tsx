@@ -3,6 +3,7 @@
 import { useState } from "react";
 import UserOptions from "@/src/app/components/UserOptions";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 interface NavbarProps {
   user: {
@@ -25,11 +26,12 @@ export default function Navbar({ user }: NavbarProps) {
 
   return (
     <nav className="flex items-center justify-between px-6 py-4 bg-[#17212c] border-b border-white/5 shadow-md sticky top-0 z-50 print:hidden">
-      <div
-        className={`flex items-center gap-4 ${!isAdmin ? "ml-14 lg:ml-0" : ""}`}
+      <Link
+        href="/"
+        className={`flex items-center gap-4 hover:opacity-90 transition-opacity ${!isAdmin ? "ml-14 lg:ml-0" : ""}`}
       >
         <div className="text-white font-bold">Inventory Ledger</div>
-      </div>
+      </Link>
 
       <div className="flex items-center gap-4">
         <span className="hidden md:block text-[0.875rem] font-medium text-[#c5c5c5]">

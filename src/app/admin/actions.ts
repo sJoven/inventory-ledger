@@ -33,8 +33,7 @@ export async function createStore(data: CreateStoreInput) {
 
     const userId = session.user.userid;
 
-    // 2. Use a Prisma transaction to ensure BOTH the store is created
-    // AND the user's permission is updated. If one fails, both roll back.
+    // 2. Use a Prisma transaction to ensure ALL actions succeed together
     const result = await prisma.$transaction(async (tx) => {
       // Step A: Create the Store
       const newStore = await tx.store.create({
@@ -63,7 +62,7 @@ export async function createStore(data: CreateStoreInput) {
       const updatedPermissions = [
         ...currentPermissions,
         {
-          store_id: newStore.id, // Links to the newly created store
+          store_id: newStore.id,
           role: "super",
           is_active: true,
         },
@@ -74,6 +73,78 @@ export async function createStore(data: CreateStoreInput) {
         where: { id: userId },
         data: {
           store_permissions: updatedPermissions,
+        },
+      });
+
+      const mockProduct1 = await tx.product.create({
+        data: {
+          store_id: newStore.id,
+          sku: "MOCK-PROD-001",
+          name: "Sample Wireless Headphones",
+          image: "",
+          description: "Premium sound quality with active noise cancellation.",
+          quantity: 50,
+          price: 9900,
+        },
+      });
+
+      const mockProduct2 = await tx.product.create({
+        data: {
+          store_id: newStore.id,
+          sku: "MOCK-PROD-002",
+          name: "Minimalist Leather Wallet",
+          image: "",
+          description:
+            "Sleek front-pocket wallet made from full-grain genuine leather.",
+          quantity: 35,
+          price: 4500, // Stored in cents ($45.00)
+        },
+      });
+
+      await tx.activityLog.createMany({
+        data: [
+          {
+            store_id: newStore.id,
+            user_id: userId,
+            action: "create",
+            doc_id: mockProduct1.id,
+            prev_state: null,
+          },
+          {
+            store_id: newStore.id,
+            user_id: userId,
+            action: "create",
+            doc_id: mockProduct2.id,
+            prev_state: null,
+          },
+        ],
+      });
+
+      const orderTimestamp = Date.now();
+      await tx.order.create({
+        data: {
+          transactionid: `tx_${orderTimestamp}_${Math.random().toString(36).substring(2, 7)}`,
+          ordernum: `ORD-${orderTimestamp}`,
+          store_id: newStore.id,
+          customerid: userId,
+          items: [
+            {
+              productid: mockProduct1.id,
+              productname: mockProduct1.name,
+              quantity: 1,
+            },
+            {
+              productid: mockProduct2.id,
+              productname: mockProduct2.name,
+              quantity: 2,
+            },
+          ],
+          totalPrice: mockProduct1.price + mockProduct2.price * 2, // Total in cents
+          payment: {
+            customerPaymentId: `pay_${Math.random().toString(36).substring(2, 9)}`,
+            method: "credit_card",
+            status: "COMPLETED",
+          },
         },
       });
 
