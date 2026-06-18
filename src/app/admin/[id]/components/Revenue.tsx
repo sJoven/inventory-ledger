@@ -16,7 +16,12 @@ export default async function Revenue({
   if (!canShowRevenue) {
     return null;
   }
-  const { currentRev, percentageChange } = await getRevenueStats(searchParams);
+
+  // Pass both the search parameters and the specific storeId to the utility function
+  const { currentRev, percentageChange } = await getRevenueStats({
+    ...searchParams,
+    storeId: store_id,
+  });
 
   const formattedRevenue = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -29,7 +34,6 @@ export default async function Revenue({
       : percentageChange > 0
         ? "text-green-500"
         : "text-red-500";
-
   return (
     <div className="p-6 w-full">
       <h2 className="text-gray-500 text-sm font-medium">Total Revenue</h2>

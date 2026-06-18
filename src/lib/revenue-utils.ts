@@ -1,4 +1,4 @@
-import { prisma } from "@/src/lib/prisma"; // Adjust this to your actual Prisma client path
+import { prisma } from "@/src/lib/prisma";
 import {
   parseISO,
   subDays,
@@ -13,10 +13,12 @@ import {
 type RevenueParams = {
   period?: string;
   date?: string;
+  storeId?: string; // Added storeId to parameters
 };
 
 export async function getRevenueStats(searchParams?: RevenueParams) {
   const period = searchParams?.period || "day";
+  const storeId = searchParams?.storeId; // Extract storeId
 
   // Default to today if no date is provided
   const baseDate = searchParams?.date
@@ -48,6 +50,7 @@ export async function getRevenueStats(searchParams?: RevenueParams) {
     prisma.order.aggregate({
       _sum: { totalPrice: true },
       where: {
+        store_id: storeId, // Filters by storeId if provided (Prisma ignores undefined)
         createdAt: {
           gte: currentStart,
           lt: currentEnd,
@@ -57,6 +60,7 @@ export async function getRevenueStats(searchParams?: RevenueParams) {
     prisma.order.aggregate({
       _sum: { totalPrice: true },
       where: {
+        store_id: storeId, // Filters by storeId if provided
         createdAt: {
           gte: prevStart,
           lt: prevEnd,

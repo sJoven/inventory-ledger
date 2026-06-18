@@ -8,6 +8,7 @@ import Trend from "@/src/app/admin/[id]/components/Trend";
 import { getTrendData } from "@/src/lib/trend";
 import PrintControls from "@/src/app/admin/[id]/components/PrintControls";
 import { getStoreCurrency } from "@/src/lib/data/store";
+
 interface ReportPageProps {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ period?: string; date?: string }>;
@@ -83,7 +84,11 @@ export default async function GenerateReportPage({
     stock: item.quantity, // Mapping Prisma's 'quantity' to 'stock'
   }));
 
-  const revenueData = await getRevenueStats(gotSearchParams);
+  // FIXED: Spread the search params and inject the storeId
+  const revenueData = await getRevenueStats({
+    ...gotSearchParams,
+    storeId: store_id,
+  });
 
   const totalRevenue = revenueData.currentRev;
   const growthPercentage = revenueData.percentageChange;
@@ -105,10 +110,12 @@ export default async function GenerateReportPage({
   const currency = currencyResult.success
     ? (currencyResult.data as string)
     : "PHP";
+
   const formattedRevenue = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: currency,
   }).format(totalRevenue);
+
   return (
     <div className="min-h-screen bg-white p-8 max-w-4xl mx-auto text-gray-900 print:p-0 print:max-w-full">
       <PrintControls />
