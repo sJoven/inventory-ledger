@@ -85,7 +85,7 @@ export default function LowStockCard({
 
   return (
     <>
-      <div className="w-full p-5">
+      <div className="w-full p-5 bg-white">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-gray-800">Inventory Alerts</h3>
           <span className="bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded-full">

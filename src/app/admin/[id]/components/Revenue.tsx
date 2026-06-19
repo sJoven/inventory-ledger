@@ -35,7 +35,7 @@ export default async function Revenue({
         ? "text-green-500"
         : "text-red-500";
   return (
-    <div className="p-6 w-full">
+    <div className="p-6 w-full bg-white">
       <h2 className="text-gray-500 text-sm font-medium">Total Revenue</h2>
       <div className="flex items-end gap-2 mt-2">
         <span className="text-3xl font-bold">{formattedRevenue}</span>

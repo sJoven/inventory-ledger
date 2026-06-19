@@ -1,210 +1,190 @@
-//use isLoggedIn
-//a simple 2 link page with go to front store and go to admin page links
-//1st btn will go to /client
-//the other will go to /admin
-//using next links
-import { isLoggedIn } from "@/src/lib/isLoggedIn";
-import { signOut } from "@/src/lib//auth";
+import React from "react";
 import Link from "next/link";
-import { adminAccess } from "@/src/lib/access";
 import {
-  canAdmin,
-  canClient,
-  canShowAdmin,
-  canShowClient,
-} from "@/src/lib/canUser";
-export const dynamic = "force-dynamic";
+  ShieldCheck,
+  BarChart3,
+  RotateCcw,
+  Layers,
+  ArrowUpRight,
+  CheckCircle2,
+  Settings,
+  ShoppingBag,
+} from "lucide-react";
 
-export default async function Home() {
-  const session = await isLoggedIn();
-  const accessData = await adminAccess();
-  const canAdminTest = await canAdmin(
-    "6a0127d3e02491fe8773dd35",
-    "view_reports",
-  );
-  const canClientTest = await canClient("6a0127d3e02491fe8773dd35");
-  const canShowAdminTest = await canShowAdmin(
-    "6a0127d3e02491fe8773dd35",
-    "view_reports",
-  );
-  const canShowClientTest = await canShowClient("6a0127d3e02491fe8773dd35");
-
-  console.log("canAdmin", { canAdminTest });
-  console.log("canClient", { canClientTest });
-  console.log("canShowAdmin", { canShowAdminTest });
-  console.log("canShowClient", { canShowClientTest });
-
+export default function ProjectPage() {
   return (
-    <>
-      <main className="p-8 flex flex-col gap-6 max-w-3xl mx-auto">
-        {/* Header with Profile Picture and Name */}
-        <div className="flex items-center gap-4">
-          {session.user.image && (
-            <img
-              src={session.user.image}
-              alt={`${session.user.name}'s Profile`}
-              className="w-16 h-16 rounded-full border border-gray-300 shadow-sm"
-            />
-          )}
-          <h1 className="text-2xl font-bold">Welcome, {session.user.name}</h1>
+    <div className="min-h-screen bg-slate-900 text-slate-100 font-sans">
+      {/* NAVBAR */}
+      <nav className="sticky top-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-slate-800 px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
+            Enterprise Headless Commerce SaaS
+          </span>
         </div>
 
-        {/* General Details */}
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-          <h2 className="font-semibold text-lg border-b pb-2 mb-3">
-            User Details
-          </h2>
-          <div className="space-y-1 text-gray-700">
-            <p>
-              <span className="font-medium text-gray-900">User ID:</span>{" "}
-              {session.user.userid}
-            </p>
-            <p>
-              <span className="font-medium text-gray-900">Email:</span>{" "}
-              {session.user.email}
-            </p>
-            <p>
-              <span className="font-medium text-gray-900">
-                Session Expires:
-              </span>{" "}
-              {new Date(session.expires).toLocaleString()}
-            </p>
-          </div>
-        </div>
+        <Link
+          href="/admin"
+          className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold px-4 py-2 rounded-lg transition-all duration-200 shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20 group"
+        >
+          Live Project
+          <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+        </Link>
+      </nav>
 
-        {/* Client Access */}
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-          <h2 className="font-semibold text-lg border-b pb-2 mb-3">
-            Client Access (is_client)
-          </h2>
-          {session.user.is_client && session.user.is_client.length > 0 ? (
-            <ul className="list-disc pl-5 space-y-1 text-gray-700">
-              {session.user.is_client.map((clientId: string) => (
-                <li key={clientId}>{clientId}</li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-500 italic">No client access.</p>
-          )}
-        </div>
+      {/* HERO SECTION */}
+      <header className="max-w-5xl mx-auto px-6 pt-20 pb-12 text-center">
+        <span className="text-emerald-400 text-sm font-semibold tracking-wider uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+          Architecture Case Study
+        </span>
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mt-4 mb-6">
+          Enterprise-Ready Headless SaaS Commerce Infrastructure
+        </h1>
+        <p className="text-lg md:text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed">
+          A production-grade, multi-tenant B2B administrative dashboard
+          engineered for total operational control, data auditability, and
+          granular security.
+        </p>
+      </header>
 
-        {/* Admin Permissions */}
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-          <h2 className="font-semibold text-lg border-b pb-2 mb-3">
-            Admin Permissions (is_admin)
+      {/* CORE HIGHLIGHTS GRID */}
+      <main className="max-w-5xl mx-auto px-6 pb-24 space-y-16">
+        <section>
+          <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">
+            <span className="w-1 h-6 bg-emerald-400 rounded-full" />
+            Architectural Pillars
           </h2>
-          {session.user.is_admin && session.user.is_admin.length > 0 ? (
-            <ul className="list-disc pl-5 space-y-1 text-gray-700">
-              {session.user.is_admin.map((admin: any) => (
-                <li key={admin.store_id}>
-                  Store ID:{" "}
-                  <span className="font-medium">{admin.store_id}</span> — Role:{" "}
-                  <span className="font-medium">{admin.role}</span>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Pillar 1 */}
+            <div className="bg-slate-800/50 border border-slate-800 p-6 rounded-xl hover:border-slate-700 transition-colors">
+              <div className="p-3 bg-blue-500/10 text-blue-400 rounded-lg w-fit mb-4">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                Granular RBAC & Secure Auth
+              </h3>
+              <ul className="space-y-2 text-slate-400 text-sm">
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                  <span>
+                    Integrated secure Google OAuth 2.0 single sign-on (SSO).
+                  </span>
                 </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-500 italic">No admin permissions.</p>
-          )}
-        </div>
-
-        {/* Raw Session Dump for Debugging */}
-        <div className="bg-gray-800 p-4 rounded-lg shadow-sm">
-          <h2 className="font-semibold text-lg text-white border-b border-gray-600 pb-2 mb-3">
-            Raw Session Data
-          </h2>
-          <pre className="overflow-x-auto text-sm text-green-400">
-            {JSON.stringify(session, null, 2)}
-          </pre>
-        </div>
-
-        {/* Logout Button */}
-        <div className="pt-4">
-          <form
-            action={async () => {
-              "use server";
-              await signOut();
-            }}
-          >
-            <button
-              type="submit"
-              className="px-6 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition-colors shadow-sm"
-            >
-              Logout
-            </button>
-          </form>
-        </div>
-      </main>
-      <main className="p-8 flex flex-col items-center justify-center min-h-screen gap-8">
-        <h1 className="text-3xl font-bold">Select Your Destination</h1>
-
-        <div className="flex flex-col sm:flex-row gap-6">
-          <Link
-            href="/client"
-            className="px-6 py-3 bg-blue-600 text-white text-center font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
-          >
-            Go to Front Store
-          </Link>
-
-          <Link
-            href="/admin"
-            className="px-6 py-3 bg-gray-800 text-white text-center font-medium rounded-lg hover:bg-gray-900 transition-colors shadow-sm"
-          >
-            Go to Admin Page
-          </Link>
-        </div>
-      </main>
-      <main>
-        <div className="p-8 max-w-3xl mx-auto font-sans">
-          <header className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">
-              🔍 `adminAccess()` Diagnostic Page
-            </h1>
-            <p className="text-sm text-gray-500 mt-1">
-              Displays the raw array returned from your database permissions
-              check.
-            </p>
-          </header>
-
-          {/* Raw JSON Dump Container */}
-          <div className="bg-gray-950 text-emerald-400 p-6 rounded-lg shadow-inner border border-gray-800 overflow-x-auto">
-            <div className="text-xs text-gray-500 font-mono mb-3 uppercase tracking-wider select-none">
-              // Array Output ({accessData.length} item
-              {accessData.length === 1 ? "" : "s"})
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                  <span>
+                    Strict permission matrices isolating financial analytics and
+                    system settings based on assigned member roles.
+                  </span>
+                </li>
+              </ul>
             </div>
 
-            {accessData.length === 0 ? (
-              <span className="text-amber-400 font-mono text-sm">
-                [] // Empty array. No active permissions found or user is not
-                logged in.
-              </span>
-            ) : (
-              <pre className="text-sm font-mono leading-relaxed">
-                {JSON.stringify(accessData, null, 2)}
-              </pre>
-            )}
-          </div>
+            {/* Pillar 2 */}
+            <div className="bg-slate-800/50 border border-slate-800 p-6 rounded-xl hover:border-slate-700 transition-colors">
+              <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-lg w-fit mb-4">
+                <BarChart3 className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                Real-Time Operational Analytics
+              </h3>
+              <ul className="space-y-2 text-slate-400 text-sm">
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                  <span>
+                    Dynamic filtering across day, week, and month granularities.
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                  <span>
+                    Time-series revenue line charting, low-stock threshold
+                    triggers, and automated PDF report compilation.
+                  </span>
+                </li>
+              </ul>
+            </div>
 
-          {/* Quick Visual Checklist */}
-          <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-600 space-y-1">
-            <p className="font-semibold text-gray-700">
-              Expected Object Keys inside the array:
-            </p>
-            <ul className="list-disc pl-4 space-y-0.5 font-mono text-[11px]">
-              <li>
-                <span className="text-purple-600">store_id</span> (String)
-              </li>
-              <li>
-                <span className="text-purple-600">store_name</span> (String -
-                fetched via relation)
-              </li>
-              <li>
-                <span className="text-purple-600">role</span> (String)
-              </li>
-            </ul>
+            {/* Pillar 3 */}
+            <div className="bg-slate-800/50 border border-slate-800 p-6 rounded-xl hover:border-slate-700 transition-colors">
+              <div className="p-3 bg-purple-500/10 text-purple-400 rounded-lg w-fit mb-4">
+                <RotateCcw className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                Audit Trails & State Reversion
+              </h3>
+              <ul className="space-y-2 text-slate-400 text-sm">
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                  <span>
+                    Active activity logging paired with an instantaneous state
+                    rollback mechanism to undo accidental operational
+                    modifications.
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                  <span>
+                    Strict read-only order history ledger to maintain financial
+                    compliance and corporate integrity.
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Pillar 4 */}
+            <div className="bg-slate-800/50 border border-slate-800 p-6 rounded-xl hover:border-slate-700 transition-colors">
+              <div className="p-3 bg-amber-500/10 text-amber-400 rounded-lg w-fit mb-4">
+                <Layers className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                Multi-Tenant Governance
+              </h3>
+              <ul className="space-y-2 text-slate-400 text-sm">
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                  <span>
+                    Store toggle allowing strict data isolation across
+                    independent shop pipelines.
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                  <span>
+                    Granular inventory controls including global theme
+                    variables, custom currencies, and strict negative-inventory
+                    configuration toggles.
+                  </span>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
+        </section>
+
+        <hr className="border-slate-800" />
+
+        {/* SYSTEM CAPABILITIES SECTION */}
+        <section className="bg-gradient-to-b from-slate-800/30 to-transparent border border-slate-800 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold text-white mb-6">
+            System Features Breakdown
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 text-sm text-slate-300">
+            <div className="flex items-center gap-3 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+              <ShoppingBag className="w-5 h-5 text-emerald-400" />
+              <span>Product CRUD & Fast Search</span>
+            </div>
+            <div className="flex items-center gap-3 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+              <Settings className="w-5 h-5 text-emerald-400" />
+              <span>Multi-Currency Localization</span>
+            </div>
+            <div className="flex items-center gap-3 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+              <BarChart3 className="w-5 h-5 text-emerald-400" />
+              <span>Delta Percentage Calculations</span>
+            </div>
+          </div>
+        </section>
       </main>
-    </>
+    </div>
   );
 }

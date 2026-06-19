@@ -86,12 +86,6 @@ export default function Sidebar({ role }: SidebarProps) {
           isOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0`}
       >
-        <div className="p-6 border-b border-white/10 lg:hidden">
-          <h2 className="text-[1rem] font-bold uppercase text-[#c5c5c5] tracking-tight">
-            Admin Panel
-          </h2>
-        </div>
-
         <nav className="flex-1 px-0 space-y-1 mt-2 overflow-y-auto">
           {navLinks.map((link) => {
             const Icon = link.icon;

@@ -37,7 +37,7 @@ export default function UserManagementForm({ storeId }: { storeId: string }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 bg-white p-8 pt-0 rounded-2xl border border-gray-100 shadow-sm"
+      className="space-y-6 bg-white p-8 rounded-2xl border border-gray-100 shadow-sm"
     >
       {/* Description Header */}
       <div>

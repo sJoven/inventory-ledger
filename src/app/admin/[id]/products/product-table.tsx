@@ -78,7 +78,7 @@ export default function ProductTable({
           <table className="table-fixed text-left text-sm text-gray-600 border-collapse min-w-[800px] w-full">
             <thead className="bg-gray-50/80 text-xs uppercase text-gray-500 font-semibold tracking-wider border-b border-gray-200">
               <tr>
-                <th className="px-6 py-4 w-20">Image</th>
+                <th className="px-6 py-4 w-20 min-w-[100px]">Image</th>
                 <th className="px-6 py-4 min-w-[120px]">Product</th>
                 <th className="px-6 py-4 min-w-[200px]">Description</th>
                 <th className="px-6 py-4 w-28 text-right">Price</th>
@@ -86,7 +86,9 @@ export default function ProductTable({
                 <th className="px-6 py-4 w-24 text-right whitespace-nowrap">
                   In Stock
                 </th>
-                <th className="px-6 py-4 w-16 text-center">Actions</th>
+                <th className="px-6 py-4 w-16 text-center min-w-[100px]">
+                  Actions
+                </th>
               </tr>
             </thead>
 

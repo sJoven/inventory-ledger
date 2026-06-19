@@ -21,7 +21,7 @@ export default async function AdminDashboard() {
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-5 border-b border-gray-100 pb-6">
         <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
             Admin Dashboard
           </h1>
           <p className="mt-1.5 text-sm text-gray-500">
@@ -113,12 +113,12 @@ export function StoreCard({ store }: { store: Store }) {
   return (
     <Link
       href={`/admin/${store.store_id}`}
-      className="group block p-5 bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-gray-300 transition-all duration-200"
+      className="group block p-5 bg-white border border-slate-200/60 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 hover:border-[#fc6022]/40 transition-all duration-200"
     >
       <div className="flex flex-col h-full justify-between space-y-4">
         <div>
           <div className="flex justify-between items-start gap-3">
-            <h3 className="text-lg font-bold text-gray-800 tracking-tight group-hover:text-[#fc6022] transition-colors duration-200 truncate">
+            <h3 className="text-lg font-bold text-[#0f172a] tracking-tight group-hover:text-[#fc6022] transition-colors duration-200 truncate">
               {store.store_name}
             </h3>
             <span
@@ -129,9 +129,9 @@ export function StoreCard({ store }: { store: Store }) {
           </div>
         </div>
 
-        <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-mono text-gray-400">
+        <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-mono text-slate-400">
           <span className="truncate flex items-center gap-1">
-            <span className="text-gray-400">ID:</span> {store.store_id}
+            <span className="text-slate-400">ID:</span> {store.store_id}
           </span>
           <span className="text-[#fc6022] font-semibold group-hover:translate-x-1 transition-transform duration-200 inline-flex items-center gap-1 font-sans shrink-0 ml-2">
             Manage <span>&rarr;</span>
@@ -150,31 +150,30 @@ export function InviteCard({
   userId: string;
 }) {
   const role = invite.role === "super" ? "admin" : invite.role;
-  // Make sure these actions are imported or defined!
   const acceptAction = acceptInvite.bind(null, userId, invite.store_id);
   const declineAction = declineInvite.bind(null, userId, invite.store_id);
 
   return (
-    <div className="p-5 bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between space-y-5">
+    <div className="p-5 bg-white border border-slate-200/60 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between space-y-5">
       <div>
         <div className="flex justify-between items-start gap-3">
-          <h3 className="text-lg font-bold text-gray-800 tracking-tight truncate">
+          <h3 className="text-lg font-bold text-[#0f172a] tracking-tight truncate">
             {invite.store_name}
           </h3>
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-orange-50 text-[#fc6022] text-[11px] font-semibold tracking-wide shrink-0">
+          <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-[#fc6022]/10 text-[#fc6022] text-[11px] font-bold tracking-wide shrink-0">
             As {role}
           </span>
         </div>
-        <p className="mt-1.5 text-xs font-mono text-gray-400 truncate flex items-center gap-1">
-          <span className="text-gray-400">ID:</span> {invite.store_id}
+        <p className="mt-1.5 text-xs font-mono text-slate-400 truncate flex items-center gap-1">
+          <span className="text-slate-400">ID:</span> {invite.store_id}
         </p>
       </div>
 
-      <div className="flex gap-3 pt-3 border-t border-gray-100">
+      <div className="flex gap-3 pt-3 border-t border-slate-100">
         <form action={acceptAction} className="flex-1">
           <button
             type="submit"
-            className="w-full px-4 py-2 bg-[#fc6022] hover:bg-[#e0541e] text-white rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow active:scale-[0.98]"
+            className="w-full px-4 py-2 bg-[#fc6022] hover:bg-[#e0541e] text-white rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md active:scale-[0.98] cursor-pointer"
           >
             Accept
           </button>
@@ -182,7 +181,7 @@ export function InviteCard({
         <form action={declineAction} className="flex-1">
           <button
             type="submit"
-            className="w-full px-4 py-2 bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium transition-all duration-200 hover:text-gray-900 active:scale-[0.98]"
+            className="w-full px-4 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 rounded-lg text-sm font-semibold transition-all duration-200 hover:text-[#0f172a] hover:border-slate-300 active:scale-[0.98] cursor-pointer"
           >
             Decline
           </button>

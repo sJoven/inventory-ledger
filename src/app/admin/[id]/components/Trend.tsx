@@ -32,7 +32,7 @@ export default function RevenueChartClient({
     currency: safeCurrency,
   }).format(totalRevenue);
   return (
-    <div className="w-full p-6">
+    <div className="w-full p-6 bg-white">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-sm font-medium text-gray-500">Total Revenue</h3>

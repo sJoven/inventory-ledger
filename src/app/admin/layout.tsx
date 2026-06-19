@@ -13,7 +13,7 @@ export default async function AdminLayout({
   return (
     <SidebarProvider>
       <Navbar user={user} />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 bg-gray-200">{children}</main>
     </SidebarProvider>
   );
 }
