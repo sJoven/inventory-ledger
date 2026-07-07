@@ -49,7 +49,7 @@ export default async function GenerateReportPage({
   }
 
   // Extract the threshold from the store's settings
-  const threshold = store.settings.low_stock_threshold;
+  const threshold = store.settings?.low_stock_threshold ?? 0;
 
   // 2. Fetch products below the threshold
   const products = await prisma.product.findMany({
