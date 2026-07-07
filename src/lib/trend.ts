@@ -1,18 +1,18 @@
 import { prisma } from "@/src/lib/prisma";
+import { subDays, format } from "date-fns";
 
 export async function getTrendData(
   store_id: string,
   searchParams: { period?: string; date?: string },
 ) {
-  const period = searchParams.period || "week"; // "day", "week", "month"
-  const startDateStr =
-    searchParams.date || new Date().toISOString().split("T")[0];
+  const period = searchParams.period || "week";
+  const threeDaysAgo = subDays(new Date(), 3);
+  const startDateStr = searchParams.date || format(threeDaysAgo, "yyyy-MM-dd");
   const startDate = new Date(startDateStr);
   const now = new Date();
 
   startDate.setHours(0, 0, 0, 0);
 
-  // 1. Determine end date and number of buckets based on period
   const endDate = new Date(startDate);
   let buckets = 0;
 

@@ -26,13 +26,12 @@ export async function getTenOrders(storeId: string, page: number) {
   const skip = (page - 1) * pageSize;
 
   try {
-    // Run count and data fetch concurrently for performance
     const [orders, totalOrders] = await Promise.all([
       prisma.order.findMany({
         where: { store_id: storeId },
         skip: skip,
         take: pageSize,
-        orderBy: { createdAt: "desc" }, // Fresh orders first
+        orderBy: { createdAt: "desc" },
         include: {
           customer: {
             select: {
@@ -40,6 +39,8 @@ export async function getTenOrders(storeId: string, page: number) {
               email: true,
             },
           },
+          items: true,
+          payment: true,
         },
       }),
       prisma.order.count({
