@@ -3,6 +3,7 @@
 import { prisma } from "@/src/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { auth, unstable_update } from "@/src/lib/auth";
+import { addDays } from "date-fns";
 
 interface CreateStoreInput {
   storeName: string;
@@ -100,7 +101,9 @@ export async function createStore(data: CreateStoreInput) {
         ],
       });
 
-      const orderTimestamp = Date.now();
+      const now = new Date();
+      const threeDaysFromNow = addDays(now, 3);
+      const orderTimestamp = threeDaysFromNow.getTime();
       await tx.order.create({
         data: {
           transactionid: `tx_${orderTimestamp}_${Math.random().toString(36).substring(2, 7)}`,

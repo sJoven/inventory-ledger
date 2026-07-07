@@ -32,7 +32,6 @@ export default async function GenerateReportPage({
 
   const targetDate = date ? new Date(date) : new Date();
 
-  // 1. Fetch the store and its settings
   const store = await prisma.store.findUnique({
     where: {
       id: store_id,
@@ -45,20 +44,18 @@ export default async function GenerateReportPage({
   });
 
   if (!store) {
-    notFound(); // Cleaner than throwing an Error in Next.js
+    notFound();
   }
 
-  // Extract the threshold from the store's settings
   const threshold = store.settings?.low_stock_threshold ?? 0;
 
-  // 2. Fetch products below the threshold
   const products = await prisma.product.findMany({
     where: {
       store_id: store_id,
       quantity: {
-        lte: threshold, // Less than or equal to the threshold
+        lte: threshold,
       },
-      is_deleted: false, // Ensure we don't fetch deleted products
+      is_deleted: false,
     },
     select: {
       id: true,
@@ -67,11 +64,10 @@ export default async function GenerateReportPage({
       quantity: true,
     },
     orderBy: {
-      quantity: "asc", // Order by lowest stock first
+      quantity: "asc",
     },
   });
 
-  // 3. Map the data to match your component's expected format
   const storeData = {
     id: store.id,
     name: store.store_name,
@@ -81,10 +77,9 @@ export default async function GenerateReportPage({
     id: item.id,
     name: item.name,
     sku: item.sku,
-    stock: item.quantity, // Mapping Prisma's 'quantity' to 'stock'
+    stock: item.quantity,
   }));
 
-  // FIXED: Spread the search params and inject the storeId
   const revenueData = await getRevenueStats({
     ...gotSearchParams,
     storeId: store_id,
