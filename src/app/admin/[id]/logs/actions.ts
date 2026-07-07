@@ -22,10 +22,9 @@ export async function revertProductState(
     }
 
     const log = await prisma.activityLog.findUnique({
-      where: { id: logId, store_id: storeId },
+      where: { id: logId },
     });
-
-    if (!log) {
+    if (!log || log.store_id !== storeId) {
       throw new Error("Activity log entry not found.");
     }
 
@@ -72,39 +71,27 @@ export async function revertProductState(
     } = prevState;
 
     const nextVersion = (currentProduct?.version ?? 0) + 1;
-    const productPayload =
-      cleanProductData as Prisma.ProductUncheckedCreateInput;
+    const stateBeforeRevert = currentProduct ? currentProduct : {};
 
-    if (log.action === "delete") {
-      const updatedProduct = await prisma.product.update({
+    await prisma.$transaction(async (tx) => {
+      await tx.product.update({
         where: { id: productId },
         data: {
-          ...productPayload,
+          ...cleanProductData,
           version: nextVersion,
           is_deleted: false,
         },
       });
-    } else if (log.action === "update") {
-      await prisma.product.update({
-        where: { id: productId },
+
+      await tx.activityLog.create({
         data: {
-          ...productPayload,
-          version: nextVersion,
-          is_deleted: false,
+          store_id: storeId,
+          doc_id: productId,
+          user_id: userId,
+          action: "revert",
+          prev_state: stateBeforeRevert as Prisma.InputJsonValue,
         },
       });
-    }
-
-    const stateBeforeRevert = currentProduct ? currentProduct : null;
-
-    await prisma.activityLog.create({
-      data: {
-        store_id: storeId,
-        doc_id: productId,
-        user_id: userId,
-        action: "revert",
-        prev_state: stateBeforeRevert as Prisma.InputJsonValue,
-      },
     });
 
     revalidatePath(`/admin/${storeId}/logs`);

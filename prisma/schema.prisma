@@ -1,5 +1,5 @@
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -8,40 +8,45 @@ generator client {
 }
 
 model User {
-  id                String            @id @default(auto()) @map("_id") @db.ObjectId
+  id                String            @id @default(uuid())
   name              String?
   email             String?           @unique
   emailVerified     DateTime?
   image             String?
-  is_client         String[]          @db.ObjectId
+  is_client         String[]          
   accounts          Account[]
   logs              ActivityLog[]
   owned_stores      Store[]           @relation("StoreOwner")
   store_permissions StorePermission[]
   carts             Cart[]
-  orders            Order[]          
+  orders            Order[]
 
   @@map("users")
 }
 
-type StorePermission {
-  store_id  String  @db.ObjectId
+model StorePermission {
+  id        String  @id @default(uuid())
+  user_id   String
+  user      User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  store_id  String
   role      String
   is_active Boolean @default(true)
+
+  @@map("store_permissions")
 }
 
 model Account {
-  id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String  @db.ObjectId
+  id                String  @id @default(uuid())
+  userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.String
-  access_token      String? @db.String
+  refresh_token     String? @db.Text 
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.String
+  id_token          String? @db.Text
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -50,31 +55,36 @@ model Account {
 }
 
 model Store {
-  id                String        @id @default(auto()) @map("_id") @db.ObjectId
-  store_name        String
-  owner_id          String        @db.ObjectId
-  owner             User          @relation("StoreOwner", fields: [owner_id], references: [id])
-  version           Int           @default(0)
-  settings          StoreSettings
-  products          Product[]
-  logs              ActivityLog[]
-  carts             Cart[]
-  orders            Order[]       // <-- Added relation to track orders placed at this store
+  id         String         @id @default(uuid())
+  store_name String
+  owner_id   String
+  owner      User           @relation("StoreOwner", fields: [owner_id], references: [id])
+  version    Int            @default(0)
+  settings   StoreSettings? 
+  products   Product[]
+  logs       ActivityLog[]
+  carts      Cart[]
+  orders     Order[]
 
   @@map("stores")
 }
 
-type StoreSettings {
-  low_stock_threshold      Int     @default(10)      // Items running below this count trigger an alert
-  currency                 String  @default("PHP")   // e.g., "PHP", "USD", "EUR"
-  theme                    String  @default("light") // String matching a preset style/design identifier
-  allow_negative_inventory Boolean @default(false)   // True if items can be sold when quantity is 0
-  store_icon               String?                   // Optional string for the image URL logo
+model StoreSettings {
+  id                       String  @id @default(uuid())
+  store_id                 String  @unique
+  store                    Store   @relation(fields: [store_id], references: [id], onDelete: Cascade)
+  low_stock_threshold      Int     @default(10)
+  currency                 String  @default("PHP")
+  theme                    String  @default("light")
+  allow_negative_inventory Boolean @default(false)
+  store_icon               String?
+
+  @@map("store_settings")
 }
 
 model Product {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
-  store_id    String  @db.ObjectId
+  id          String  @id @default(uuid())
+  store_id    String
   sku         String
   name        String
   image       String
@@ -90,24 +100,24 @@ model Product {
 }
 
 model ActivityLog {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  store_id  String   @db.ObjectId
-  user_id   String   @db.ObjectId
-  action    String
-  doc_id    String
-  prev_state Json?
-  createdAt DateTime @default(now())
-  store     Store    @relation(fields: [store_id], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [user_id], references: [id])
+  id         String   @id @default(uuid())
+  store_id   String
+  user_id    String
+  action     String
+  doc_id     String
+  prev_state Json?    
+  createdAt  DateTime @default(now())
+  store      Store    @relation(fields: [store_id], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [user_id], references: [id])
 
   @@index([store_id, createdAt])
   @@map("activity_logs")
 }
 
 model Cart {
-  id         String     @id @default(auto()) @map("_id") @db.ObjectId
-  user_id    String     @db.ObjectId
-  store_id   String     @db.ObjectId
+  id         String     @id @default(uuid())
+  user_id    String
+  store_id   String
   user       User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
   store      Store      @relation(fields: [store_id], references: [id], onDelete: Cascade)
   items      CartItem[]
@@ -117,39 +127,54 @@ model Cart {
   @@map("carts")
 }
 
-type CartItem {
-  product_id String @db.ObjectId
+model CartItem {
+  id         String @id @default(uuid())
+  cart_id    String
+  cart       Cart   @relation(fields: [cart_id], references: [id], onDelete: Cascade)
+  product_id String
   quantity   Int    @default(1)
+
+  @@map("cart_items")
 }
 
 model Order {
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt     DateTime    @default(now())
-  transactionid String      @unique
-  ordernum      String      @unique
+  id            String       @id @default(uuid())
+  createdAt     DateTime     @default(now())
+  transactionid String       @unique
+  ordernum      String       @unique
   
-  store_id      String      @db.ObjectId
-  store         Store       @relation(fields: [store_id], references: [id], onDelete: Cascade)
+  store_id      String
+  store         Store        @relation(fields: [store_id], references: [id], onDelete: Cascade)
   
-  customerid    String      @db.ObjectId
-  customer      User        @relation(fields: [customerid], references: [id])
+  customerid    String
+  customer      User         @relation(fields: [customerid], references: [id])
   
-  items         OrderItem[] // Embedded type array
-  totalPrice    Int         // Stored in cents
-  payment       PaymentInfo // Embedded type object
+  items         OrderItem[]
+  totalPrice    Int          
+  payment       PaymentInfo? 
 
   @@index([store_id, createdAt])
   @@map("orders")
 }
 
-type OrderItem {
-  productid   String @db.ObjectId
+model OrderItem {
+  id          String @id @default(uuid())
+  order_id    String
+  order       Order  @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  productid   String
   productname String
   quantity    Int
+
+  @@map("order_items")
 }
 
-type PaymentInfo {
+model PaymentInfo {
+  id                String @id @default(uuid())
+  order_id          String @unique
+  order             Order  @relation(fields: [order_id], references: [id], onDelete: Cascade)
   customerPaymentId String
   method            String
   status            String
+
+  @@map("payment_info")
 }

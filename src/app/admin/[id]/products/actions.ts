@@ -144,7 +144,6 @@ export async function createProductAction(
           user_id: userId,
           action: "create",
           doc_id: newProduct.id,
-          prev_state: null,
         },
       });
     });
