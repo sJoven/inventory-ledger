@@ -101,11 +101,15 @@ export async function createStore(data: CreateStoreInput) {
         ],
       });
 
-      const orderTimestamp = subDays(new Date(), 2);
+      const twoDaysAgo = subDays(new Date(), 2);
+
       await tx.order.create({
         data: {
-          transactionid: `tx_${orderTimestamp}_${Math.random().toString(36).substring(2, 7)}`,
-          ordernum: `ORD-${orderTimestamp}`,
+          createdAt: twoDaysAgo,
+
+          transactionid: `tx_${twoDaysAgo.getTime()}_${Math.random().toString(36).substring(2, 7)}`,
+          ordernum: `ORD-${twoDaysAgo.getTime()}`,
+
           store_id: newStore.id,
           customerid: userId,
           items: {
@@ -122,7 +126,7 @@ export async function createStore(data: CreateStoreInput) {
               },
             ],
           },
-          totalPrice: mockProduct1.price + mockProduct2.price * 2, // Total in cents
+          totalPrice: mockProduct1.price + mockProduct2.price * 2,
           payment: {
             create: {
               customerPaymentId: `pay_${Math.random().toString(36).substring(2, 9)}`,
