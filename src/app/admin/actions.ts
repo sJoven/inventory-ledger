@@ -101,9 +101,7 @@ export async function createStore(data: CreateStoreInput) {
         ],
       });
 
-      const now = new Date();
-      const threeDaysFromNow = addDays(now, 3);
-      const orderTimestamp = threeDaysFromNow.getTime();
+      const orderTimestamp = new Date();
       await tx.order.create({
         data: {
           transactionid: `tx_${orderTimestamp}_${Math.random().toString(36).substring(2, 7)}`,
