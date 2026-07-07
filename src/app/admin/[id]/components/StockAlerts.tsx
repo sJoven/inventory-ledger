@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 
-// 1. Define the shape of our data
 type LowStockItem = {
   name: string;
   qty: number;

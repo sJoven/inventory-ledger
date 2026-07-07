@@ -39,7 +39,7 @@ export default async function AdminDashboardPage({
     return <div>Store not found.</div>;
   }
 
-  const threshold = store.settings.low_stock_threshold;
+  const threshold = store.settings?.low_stock_threshold ?? 0;
 
   const products = await prisma.product.findMany({
     where: {
