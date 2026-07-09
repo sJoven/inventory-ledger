@@ -1,24 +1,36 @@
-// src/components/RecentActivityLogs.tsx (Your original file)
 import Link from "next/link";
+import { prisma } from "@/src/lib/prisma";
 import { canShowAdmin } from "@/src/lib/canUser";
-import { getEnrichedLogs } from "@/src/lib/log-utils";
+import { formatEnrichedLogs } from "@/src/lib/log-utils";
 
 export default async function RecentActivityLogs({
   store_id,
 }: {
   store_id: string;
 }) {
-  // 1. Check permissions
   const canViewLogs = await canShowAdmin(store_id, "logs");
-
   if (canViewLogs.status !== 200) {
     return null;
   }
 
-  // 2. Fetch the decoupled, enriched logs
-  const enrichedLogs = await getEnrichedLogs(store_id);
+  const rawLogs = await prisma.activityLog.findMany({
+    where: { store_id },
+    orderBy: { createdAt: "desc" },
+    take: 5,
+  });
 
-  // 3. Render
+  let enrichedLogs: Array<{ id: string; sentence: React.ReactNode }> = [];
+
+  if (rawLogs.length > 0) {
+    const productIds = rawLogs.map((log) => log.doc_id);
+    const products = await prisma.product.findMany({
+      where: { id: { in: productIds } },
+      select: { id: true, name: true },
+    });
+
+    enrichedLogs = formatEnrichedLogs(rawLogs, products);
+  }
+
   return (
     <div className="bg-white border border-gray-200 rounded-xl shadow-sm flex flex-col h-full">
       <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">

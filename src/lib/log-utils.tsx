@@ -1,35 +1,28 @@
-// src/lib/getEnrichedLogs.tsx (Adjust path as needed)
-import { prisma } from "@/src/lib/prisma";
-
-// Helper function to turn database actions into human-readable verbs
 export function getReadableAction(action: string) {
   const lowerAction = action.toLowerCase();
   if (lowerAction.includes("create")) return "Created";
   if (lowerAction.includes("update")) return "Updated";
   if (lowerAction.includes("delete")) return "Deleted";
-  return "Modified"; // Fallback just in case
+  return "Modified";
 }
 
-export async function getEnrichedLogs(store_id: string) {
-  // Fetch logs
-  const logs = await prisma.activityLog.findMany({
-    where: { store_id },
-    orderBy: { createdAt: "desc" },
-    take: 5,
-  });
+type RawLog = {
+  id: string;
+  action: string;
+  doc_id: string;
+  createdAt: Date;
+};
 
+type Product = {
+  id: string;
+  name: string;
+};
+
+export function formatEnrichedLogs(logs: RawLog[], products: Product[]) {
   if (logs.length === 0) return [];
-
-  // Fetch associated products
-  const productIds = logs.map((log) => log.doc_id);
-  const products = await prisma.product.findMany({
-    where: { id: { in: productIds } },
-    select: { id: true, name: true },
-  });
 
   const productMap = new Map(products.map((p) => [p.id, p.name]));
 
-  // Enrich logs with formatting and JSX
   return logs.map((log) => {
     const formattedDate = new Intl.DateTimeFormat("en-US", {
       month: "short",

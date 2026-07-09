@@ -4,6 +4,7 @@ import { prisma } from "@/src/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { auth, unstable_update } from "@/src/lib/auth";
 import { subDays } from "date-fns";
+import { validateStoreName } from "@/src/lib/validations";
 
 interface CreateStoreInput {
   storeName: string;
@@ -27,7 +28,8 @@ export async function createStore(data: CreateStoreInput) {
       };
     }
 
-    if (!data.storeName) {
+    const nameValidation = validateStoreName(data.storeName);
+    if (nameValidation.success === false) {
       return { success: false, error: "Store name is required." };
     }
 
