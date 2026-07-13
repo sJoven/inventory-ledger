@@ -60,6 +60,10 @@ setup("authenticate", async ({ page }) => {
     })
     .toBe(true);
 
+  fs.mkdirSync(path.dirname(authFile), {
+    recursive: true,
+  });
+
   await page.context().storageState({
     path: authFile,
   });

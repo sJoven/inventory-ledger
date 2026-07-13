@@ -13,7 +13,6 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
-    storageState: authFile,
   },
   webServer: {
     command: "npm run dev:test",
@@ -29,7 +28,11 @@ export default defineConfig({
     {
       name: "setup",
       testMatch: /auth\.setup\.ts/,
+      use: {
+        storageState: undefined,
+      },
     },
+
     {
       name: "chromium",
       use: {
