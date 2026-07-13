@@ -79,7 +79,6 @@ export async function getTrendData(
       (o) => o.createdAt >= bucketStart && o.createdAt < bucketEnd,
     );
 
-    // Sum the total price (in cents)
     const bucketRevenueCents = bucketOrders.reduce(
       (sum, o) => sum + o.totalPrice,
       0,
@@ -87,7 +86,6 @@ export async function getTrendData(
 
     totalRevenueCents += bucketRevenueCents;
 
-    // Push converted dollars to chart
     chartData.push({
       label,
       revenue: bucketRevenueCents / 100,

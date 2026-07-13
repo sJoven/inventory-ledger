@@ -87,7 +87,7 @@ export default async function GenerateReportPage({
 
   const totalRevenue = revenueData.currentRev;
   const growthPercentage = revenueData.percentageChange;
-  const managerName = session.user.name || "Unknown Manager";
+  const managerName = session?.user.name || "Unknown Manager";
 
   const colorClass =
     growthPercentage === 0

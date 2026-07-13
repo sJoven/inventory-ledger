@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { canShowAdmin } from "@/src/lib/canUser";
+import { subDays, format } from "date-fns";
 
 interface GenerateReportProps {
   store_id: string;
@@ -23,9 +24,12 @@ export default async function GenerateReportAction({
     searchParams?.period &&
     ["day", "week", "month"].includes(searchParams.period)
       ? searchParams.period
-      : "month";
+      : "week";
 
-  const date = searchParams?.date || new Date().toISOString().split("T")[0];
+  const threeDaysAgo = subDays(new Date(), 3);
+  const startDateStr = format(threeDaysAgo, "yyyy-MM-dd");
+  const date =
+    searchParams?.date || new Date(startDateStr).toISOString().split("T")[0];
 
   const queryString = new URLSearchParams({
     period,

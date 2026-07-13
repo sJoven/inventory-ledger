@@ -8,6 +8,7 @@ import {
   addWeeks,
   addMonths,
   startOfDay,
+  format,
 } from "date-fns";
 import { calculatePercentageChange } from "@/src/lib/calculations"; // Import the new utility
 
@@ -18,12 +19,14 @@ type RevenueParams = {
 };
 
 export async function getRevenueStats(searchParams?: RevenueParams) {
-  const period = searchParams?.period || "day";
+  const period = searchParams?.period || "week";
   const storeId = searchParams?.storeId;
+
+  const threeDaysAgo = subDays(new Date(), 3);
 
   const baseDate = searchParams?.date
     ? parseISO(searchParams.date)
-    : new Date();
+    : new Date(format(threeDaysAgo, "yyyy-MM-dd"));
 
   const currentStart = startOfDay(baseDate);
 
