@@ -1,0 +1,109 @@
+import { test, expect } from "@playwright/test";
+import { prisma } from "@/src/lib/prisma";
+
+let STORE_ID: string;
+
+test.describe("Product Creation Flow", () => {
+  test.beforeAll(async () => {
+    const user = await prisma.user.findUnique({
+      where: { email: "admin@test.com" },
+    });
+
+    if (!user) throw new Error("Test user not found");
+
+    const store = await prisma.store.create({
+      data: {
+        store_name: "Playwright E2E Test Store",
+        owner_id: user.id,
+      },
+    });
+    STORE_ID = store.id;
+  });
+
+  test.afterAll(async () => {
+    await prisma.product.deleteMany({ where: { store_id: STORE_ID } });
+    await prisma.store.delete({ where: { id: STORE_ID } });
+  });
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto(`/admin/${STORE_ID}/products`);
+
+    // DEFENSIVE CHECK: Verify we are not on the login page
+    if (page.url().includes("signin")) {
+      throw new Error(
+        "Authentication failed: Redirected to signin page. Check auth.setup.ts.",
+      );
+    }
+  });
+
+  test("should open modal, create a product, and display it in the table", async ({
+    page,
+  }) => {
+    const testProduct = {
+      name: "Premium Cotton T-Shirt",
+      sku: `TSHIRT-${Date.now()}`,
+      price: "25.99",
+      quantity: "100",
+      description: "A comfortable, breathable cotton t-shirt.",
+    };
+
+    const createBtn = page.getByTestId("add-product-btn");
+    await expect(createBtn).toBeVisible();
+    await createBtn.click();
+
+    const modalHeading = page.getByRole("heading", { name: "New Product" });
+    await expect(modalHeading).toBeVisible();
+
+    await page.locator('input[name="name"]').fill(testProduct.name);
+    await page.locator('input[name="sku"]').fill(testProduct.sku);
+    await page.locator('input[name="price"]').fill(testProduct.price);
+    await page.locator('input[name="quantity"]').fill(testProduct.quantity);
+    await page
+      .locator('textarea[name="description"]')
+      .fill(testProduct.description);
+
+    const submitBtn = page.locator('button[type="submit"]', {
+      hasText: "Create Product",
+    });
+    await submitBtn.click();
+
+    await expect(page.getByText("Creating Product...")).toBeVisible();
+    await expect(modalHeading).toBeHidden({ timeout: 5000 });
+
+    const tableRow = page.getByRole("row", { name: testProduct.name });
+    await expect(tableRow).toBeVisible();
+    await expect(tableRow.getByText(testProduct.sku)).toBeVisible();
+  });
+
+  test("should show browser alert if SKU already exists", async ({ page }) => {
+    const DUPLICATE_SKU = "EXISTING-SKU-001";
+    await prisma.product.create({
+      data: {
+        store_id: STORE_ID,
+        name: "Existing Setup Item",
+        sku: DUPLICATE_SKU,
+        price: 15,
+        quantity: 10,
+        version: 0,
+        image: "",
+        description: "",
+      },
+    });
+
+    await page.reload();
+
+    const dialogPromise = page.waitForEvent("dialog");
+
+    const createBtn = page.getByTestId("add-product-btn");
+    await createBtn.click();
+
+    await page.locator('input[name="sku"]').fill(DUPLICATE_SKU);
+    await page
+      .locator('button[type="submit"]', { hasText: "Create Product" })
+      .click();
+
+    const dialog = await dialogPromise;
+    expect(dialog.message()).toBe("This SKU is already in use.");
+    await dialog.accept();
+  });
+});

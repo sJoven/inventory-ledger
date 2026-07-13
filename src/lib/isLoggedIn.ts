@@ -5,7 +5,10 @@ export async function isLoggedIn() {
   const session = await auth();
 
   if (!session) {
-    redirect("/login");
+    if (process.env.NODE_ENV !== "test") {
+      redirect("/login");
+    }
+    return null;
   }
 
   return session;

@@ -49,3 +49,11 @@ som.txt
 src1/
 src2/
 src/app/client/
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

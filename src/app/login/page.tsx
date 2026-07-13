@@ -1,4 +1,7 @@
 import { signIn } from "@/src/lib/auth";
+
+const isPlaywright = process.env.PLAYWRIGHT === "true";
+
 export default function GoogleSignInButton() {
   return (
     <div
@@ -54,6 +57,19 @@ export default function GoogleSignInButton() {
               Continue with Google
             </button>
           </form>
+          {isPlaywright && (
+            <form
+              action={async () => {
+                "use server";
+                await signIn("playwright", {
+                  email: "admin@test.com",
+                  redirectTo: "/admin",
+                });
+              }}
+            >
+              <button data-testid="playwright-login">Playwright Login</button>
+            </form>
+          )}
         </div>
       </div>
     </div>

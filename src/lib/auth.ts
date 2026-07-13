@@ -1,20 +1,55 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/src/lib/prisma";
+import type { Provider } from "next-auth/providers";
+
+const providers: Provider[] = [
+  Google({
+    clientId: process.env.GOOGLE_CLIENT_ID!,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    allowDangerousEmailAccountLinking: true,
+  }),
+];
+
+if (process.env.PLAYWRIGHT === "true") {
+  providers.push(
+    Credentials({
+      id: "playwright",
+      name: "Playwright",
+      credentials: {
+        email: {
+          label: "Email",
+          type: "email",
+        },
+      },
+
+      async authorize(credentials) {
+        if (!credentials?.email) return null;
+
+        const user = await prisma.user.findUnique({
+          where: {
+            email: credentials.email as string,
+          },
+        });
+
+        if (!user) return null;
+
+        return user;
+      },
+    }),
+  );
+}
 
 export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
   adapter: PrismaAdapter(prisma),
+
   session: {
     strategy: "jwt",
   },
-  providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      allowDangerousEmailAccountLinking: true,
-    }),
-  ],
+
+  providers,
 
   events: {
     async createUser({ user }) {
@@ -31,28 +66,33 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
 
   callbacks: {
     async signIn({ user, account, profile }) {
-      if (account?.provider === "google") {
-        if (!user.image || !user.emailVerified || !user.name) {
-          if (user.email) {
-            const existingUser = await prisma.user.findUnique({
-              where: { email: user.email },
-            });
+      // Skip Google-only logic for Playwright login
+      if (account?.provider !== "google") {
+        return true;
+      }
 
-            if (existingUser) {
-              await prisma.user.update({
-                where: { email: user.email },
-                data: {
-                  name: existingUser.name || profile?.name,
-                  image: existingUser.image || profile?.picture,
-                  emailVerified: existingUser.emailVerified || new Date(),
-                },
-              });
-            }
+      if (!user.image || !user.emailVerified || !user.name) {
+        if (user.email) {
+          const existingUser = await prisma.user.findUnique({
+            where: { email: user.email },
+          });
+
+          if (existingUser) {
+            await prisma.user.update({
+              where: { email: user.email },
+              data: {
+                name: existingUser.name || profile?.name,
+                image: existingUser.image || profile?.picture,
+                emailVerified: existingUser.emailVerified || new Date(),
+              },
+            });
           }
         }
       }
+
       return true;
     },
+
     async jwt({ token, user, trigger }) {
       if (user) {
         token.userid = user.id as string;
@@ -60,35 +100,47 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
 
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id },
-          select: { is_client: true, store_permissions: true },
+          select: {
+            is_client: true,
+            store_permissions: true,
+          },
         });
 
-        token.is_client = dbUser?.is_client || [];
+        token.is_client = dbUser?.is_client ?? [];
+
         token.is_admin =
           dbUser?.store_permissions
-            ?.filter((sp) => sp.is_active === true)
+            ?.filter((sp) => sp.is_active)
             .map((sp) => ({
               store_id: sp.store_id,
               role: sp.role,
-            })) || [];
+            })) ?? [];
       }
 
       if (trigger === "update" && token.userid) {
         const dbUser = await prisma.user.findUnique({
-          where: { id: token.userid as string },
-          select: { is_client: true, store_permissions: true, image: true },
+          where: {
+            id: token.userid as string,
+          },
+          select: {
+            is_client: true,
+            store_permissions: true,
+            image: true,
+          },
         });
 
         if (dbUser) {
-          token.is_client = dbUser.is_client || [];
+          token.picture = dbUser.image;
+
+          token.is_client = dbUser.is_client ?? [];
+
           token.is_admin =
             dbUser.store_permissions
-              ?.filter((sp) => sp.is_active === true)
+              ?.filter((sp) => sp.is_active)
               .map((sp) => ({
                 store_id: sp.store_id,
                 role: sp.role,
-              })) || [];
-          if (dbUser.image) token.picture = dbUser.image;
+              })) ?? [];
         }
       }
 
@@ -96,9 +148,11 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
     },
 
     async session({ session, token }) {
-      if (token && session.user) {
+      if (session.user) {
         session.user.userid = token.userid as string;
+
         session.user.is_client = token.is_client as string[];
+
         session.user.is_admin = token.is_admin as {
           store_id: string;
           role: string;
@@ -106,6 +160,7 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
 
         session.user.image = token.picture as string | null | undefined;
       }
+
       return session;
     },
   },

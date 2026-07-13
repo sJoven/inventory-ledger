@@ -20,10 +20,12 @@ export default function CreateProductButton({
   return (
     <>
       <button
+        data-testid="add-product-btn"
         onClick={() => setIsOpen(true)}
         className="w-full flex items-center justify-center gap-2 bg-[#fc6022] hover:bg-[#e0541e] text-white font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98]"
       >
-        <Plus className="w-4 h-4" /> Add Product
+        <Plus className="w-4 h-4" />
+        Add Product
       </button>
 
       {isOpen && (

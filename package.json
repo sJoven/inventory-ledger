@@ -4,12 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:test": "dotenv -e .env.test -- next dev",
     "build": "prisma generate && prisma migrate deploy && next build",
     "start": "next start",
     "lint": "eslint",
-    "test:db-push": "dotenv -e .env.test -- npx prisma db push",
+    "test:db-push": "dotenv -e .env.test -- prisma db push",
     "test": "dotenv -e .env.test -- vitest --fileParallelism=false",
-    "test:watch": "dotenv -e .env.test -- vitest"
+    "test:watch": "dotenv -e .env.test -- vitest",
+    "e2e": "dotenv -e .env.test -- playwright test",
+    "e2e:setup": "dotenv -e .env.test -- playwright test --project=setup"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.2",
@@ -26,12 +29,14 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20.19.39",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/selenium-webdriver": "^4.35.6",
     "@vitejs/plugin-react": "^6.0.3",
+    "cross-env": "^10.1.0",
     "dotenv-cli": "^11.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
