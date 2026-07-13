@@ -22,6 +22,8 @@ jobs:
         run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+      - name: Create Playwright auth directory
+        run: mkdir -p playwright/.auth
       - name: Push Prisma schema
         run: npm run test:db-push
       - name: Run Playwright tests
