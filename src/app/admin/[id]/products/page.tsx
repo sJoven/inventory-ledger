@@ -23,6 +23,9 @@ export default async function ProductsPage({
   const { page, query } = await searchParams;
   const existingSKUs = await getExistingSKUs(id);
   const session = await isLoggedIn();
+  if (!session) {
+    redirect(`/login`);
+  }
 
   const canShowProducts = await canShowAdmin(id, "products");
 

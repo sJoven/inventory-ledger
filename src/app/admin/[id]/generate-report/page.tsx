@@ -25,10 +25,14 @@ export default async function GenerateReportPage({
   const canGenerate = await canShowAdmin(store_id, "report");
   const canShowTrend = await canShowAdmin(store_id, "trend");
 
+  const session = await isLoggedIn();
+  if (!session) {
+    redirect(`/login`);
+  }
+
   if (canGenerate.status !== 200) {
     redirect(`/admin/${store_id}`);
   }
-  const session = await isLoggedIn();
 
   const targetDate = date ? new Date(date) : new Date();
 
@@ -87,7 +91,7 @@ export default async function GenerateReportPage({
 
   const totalRevenue = revenueData.currentRev;
   const growthPercentage = revenueData.percentageChange;
-  const managerName = session?.user.name || "Unknown Manager";
+  const managerName = session.user.name || "Unknown Manager";
 
   const colorClass =
     growthPercentage === 0

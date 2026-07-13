@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { isLoggedIn } from "@/src/lib/isLoggedIn";
+import { redirect } from "next/navigation";
 import { adminAccess } from "@/src/lib/access";
 import { getPendingInvitations } from "@/src/lib/invitations";
 import { acceptInvite, declineInvite } from "@/src/app/admin/actions";
@@ -11,8 +12,11 @@ interface Store {
 }
 
 export default async function AdminDashboard() {
-  const loggedIn = await isLoggedIn();
-  const userid = loggedIn.user.userid as string;
+  const session = await isLoggedIn();
+  if (!session) {
+    redirect(`/login`);
+  }
+  const userid = session.user.userid as string;
 
   const stores: Store[] = await adminAccess();
   const invitations: Store[] = await getPendingInvitations();

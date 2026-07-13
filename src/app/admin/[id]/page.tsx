@@ -22,6 +22,9 @@ export default async function AdminDashboardPage({
   const resolvedSearchParams = await searchParams;
 
   const session = await isLoggedIn();
+  if (!session) {
+    redirect(`/login`);
+  }
   const store_id = resolvedParams.id;
 
   const canShowDashboard = await canShowAdmin(store_id, "dashboard");

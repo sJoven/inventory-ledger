@@ -14,6 +14,9 @@ interface PageProps {
 
 export default async function LogsPage({ params, searchParams }: PageProps) {
   const session = await isLoggedIn();
+  if (!session) {
+    redirect(`/login`);
+  }
   const { id: storeId } = await params;
   const { page } = await searchParams;
 
