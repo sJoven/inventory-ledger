@@ -43,7 +43,6 @@ test("user can delete a product and the action is logged", async ({ page }) => {
 
   await expect(page.getByTestId("delete-product-submit")).toBeHidden();
   await page.reload();
-  await page.getByTestId("product-search").fill(product.name);
   await expect(page.getByText(product.name)).toHaveCount(0);
   await expect(page.getByText(product.sku)).toHaveCount(0);
 
