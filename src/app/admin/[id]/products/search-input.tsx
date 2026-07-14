@@ -12,9 +12,7 @@ export default function SearchInput({ placeholder }: { placeholder: string }) {
   const [text, setText] = useState(searchParams.get("query") || "");
   const [, startTransition] = useTransition();
 
-  // Handle debouncing/updating URL query parameters
   useEffect(() => {
-    // If the text matches what's already in the URL, don't trigger anything
     if (text === (searchParams.get("query") || "")) return;
 
     const delayDebounceFn = setTimeout(() => {
@@ -28,15 +26,14 @@ export default function SearchInput({ placeholder }: { placeholder: string }) {
         params.set("page", "1");
         router.push(`${pathname}?${params.toString()}`);
       });
-    }, 500); // Bump debounce up to 500ms to give typing breathing room
-
+    }, 500);
     return () => clearTimeout(delayDebounceFn);
   }, [text]);
 
   return (
-    // SearchInput.tsx
     <div className="relative min-w-0 w-full">
       <input
+        data-testid="product-search"
         type="text"
         value={text}
         onChange={(e) => setText(e.target.value)}

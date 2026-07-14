@@ -21,13 +21,13 @@ export default async function LogsPage({ params, searchParams }: PageProps) {
   const { page } = await searchParams;
 
   const currentPage = Math.max(1, parseInt(page || "1", 10));
-  const logs = await getLogs(storeId, currentPage);
-
   const canShowLogs = await canShowAdmin(storeId, "logs");
 
   if (canShowLogs.status !== 200) {
     redirect("/admin");
   }
+
+  const logs = await getLogs(storeId, currentPage);
 
   return (
     <div className="w-full space-y-6 md:px-8 lg:px-12">
@@ -104,9 +104,9 @@ export default async function LogsPage({ params, searchParams }: PageProps) {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`font-semibold px-2.5 py-1 rounded-lg border text-xs tracking-wide ${
-                          log.action === "CREATE"
+                          log.action === "create"
                             ? "text-green-700 bg-green-50 border-green-200"
-                            : log.action === "UPDATE"
+                            : log.action === "update"
                               ? "text-blue-700 bg-blue-50 border-blue-200"
                               : "text-red-700 bg-red-50 border-red-200"
                         }`}
@@ -122,7 +122,7 @@ export default async function LogsPage({ params, searchParams }: PageProps) {
                           {/* Trigger Button - Now at the bottom */}
                           <summary className="list-none cursor-pointer bg-white border border-gray-200 px-3 py-2 rounded-lg shadow-sm hover:border-[#fc6022] hover:shadow-md transition-all flex items-center justify-between text-xs font-semibold text-gray-700">
                             <span>
-                              {log.action === "UPDATE"
+                              {log.action === "update"
                                 ? "View Changes"
                                 : "View Snapshot"}
                             </span>
@@ -133,7 +133,7 @@ export default async function LogsPage({ params, searchParams }: PageProps) {
 
                           {/* Expanded Content - Now appears above the trigger */}
                           <div className="mb-2 p-3 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
-                            {log.action === "UPDATE" ? (
+                            {log.action === "update" ? (
                               Object.keys(log.changes).length > 0 ? (
                                 <div className="space-y-3">
                                   {Object.entries(log.changes).map(

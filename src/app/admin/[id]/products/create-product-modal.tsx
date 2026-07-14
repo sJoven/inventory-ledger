@@ -90,6 +90,7 @@ export default function CreateProductModal({
               Product Name <span className="text-[#fc6022]">*</span>
             </label>
             <input
+              data-testid="product-name"
               type="text"
               name="name"
               required
@@ -106,6 +107,7 @@ export default function CreateProductModal({
                 SKU <span className="text-[#fc6022]">*</span>
               </label>
               <input
+                data-testid="product-sku"
                 type="text"
                 name="sku"
                 required
@@ -121,6 +123,7 @@ export default function CreateProductModal({
                 Price ({currency}) <span className="text-[#fc6022]">*</span>
               </label>
               <input
+                data-testid="product-price"
                 type="number"
                 name="price"
                 required
@@ -137,6 +140,7 @@ export default function CreateProductModal({
               Quantity <span className="text-[#fc6022]">*</span>
             </label>
             <input
+              data-testid="product-quantity"
               type="number"
               name="quantity"
               required
@@ -153,6 +157,7 @@ export default function CreateProductModal({
               <span className="text-gray-400 font-normal">Optional</span>
             </label>
             <input
+              data-testid="product-image"
               type="url"
               name="image"
               value={formData.image}
@@ -168,6 +173,7 @@ export default function CreateProductModal({
               <span className="text-gray-400 font-normal">Optional</span>
             </label>
             <textarea
+              data-testid="product-description"
               name="description"
               value={formData.description}
               onChange={handleChange}
@@ -179,6 +185,7 @@ export default function CreateProductModal({
 
           <div className="pt-4 flex flex-col gap-3">
             <button
+              data-testid="create-product-submit"
               type="submit"
               disabled={isLoading}
               className="w-full bg-[#fc6022] hover:bg-[#e0541e] text-white py-3 rounded-xl font-bold tracking-wide transition-all duration-200 shadow-md hover:shadow-lg disabled:bg-orange-300 disabled:shadow-none active:scale-[0.98] flex justify-center items-center"

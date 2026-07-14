@@ -86,6 +86,7 @@ export default function DeleteProductModal({
         {/* Action Buttons - Stacked to match established system */}
         <div className="w-full flex flex-col gap-3">
           <button
+            data-testid="delete-product-submit"
             onClick={handleDelete}
             disabled={isLoading}
             className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-bold tracking-wide transition-all duration-200 shadow-md hover:shadow-lg disabled:bg-red-300 disabled:shadow-none active:scale-[0.98] flex justify-center items-center"

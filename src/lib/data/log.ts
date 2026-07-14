@@ -60,7 +60,7 @@ export async function getLogs(storeId: string, page: number) {
       const changes: Record<string, { from: any; to: any }> = {};
       const prevState = (log.prev_state as Record<string, any>) || {};
 
-      if (log.action === "UPDATE" && currentProduct) {
+      if (log.action === "update" && currentProduct) {
         Object.keys(prevState).forEach((key) => {
           const oldVal = prevState[key];
           const newVal = (currentProduct as Record<string, any>)[key];
@@ -86,7 +86,7 @@ export async function getLogs(storeId: string, page: number) {
               sku: currentProduct.sku,
             }
           : { id: log.doc_id, name: "Unknown/Deleted Product", sku: "N/A" },
-        changes: log.action === "UPDATE" ? changes : prevState,
+        changes: log.action === "update" ? changes : prevState,
       };
     });
   } catch (error) {

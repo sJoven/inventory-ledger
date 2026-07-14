@@ -67,7 +67,6 @@ export default function EditProductModal({
     setIsLoading(true);
 
     try {
-      // 👈 Replace the setTimeout with your actual Server Action
       const response = await updateProductAction(
         product.id,
         formData,
@@ -79,7 +78,7 @@ export default function EditProductModal({
         throw new Error(response.error);
       }
 
-      onClose(); // Close the modal on success
+      onClose();
     } catch (err: any) {
       setError(err.message || "Something went wrong.");
     } finally {
@@ -95,10 +94,7 @@ export default function EditProductModal({
         onClick={onClose}
       />
 
-      {/* Modal Card */}
-      {/* Note: Kept max-w-lg to fit the grid layout better than reference's max-w-md */}
       <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl z-10 animate-in fade-in zoom-in-95 duration-200 overflow-hidden flex flex-col">
-        {/* Close Button - moved to absolute position like reference */}
         <button
           onClick={onClose}
           className="absolute top-5 right-5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full p-1.5 transition-colors z-20"
@@ -112,7 +108,6 @@ export default function EditProductModal({
           onSubmit={handleSubmit}
           className="w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 [scrollbar-width:thin] [scrollbar-color:#d6d3d1_transparent]"
         >
-          {/* Header - Styled like reference, padding right for close btn */}
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-gray-800 tracking-tight pr-8">
               Edit Product
@@ -135,6 +130,7 @@ export default function EditProductModal({
                   Product Name <span className="text-[#fc6022]">*</span>
                 </label>
                 <input
+                  data-testid="product-name"
                   required
                   type="text"
                   name="name"
@@ -149,6 +145,7 @@ export default function EditProductModal({
                   SKU <span className="text-[#fc6022]">*</span>
                 </label>
                 <input
+                  data-testid="product-sku"
                   required
                   type="text"
                   name="sku"
@@ -163,6 +160,7 @@ export default function EditProductModal({
                   Quantity <span className="text-[#fc6022]">*</span>
                 </label>
                 <input
+                  data-testid="product-quantity"
                   required
                   type="number"
                   name="quantity"
@@ -178,6 +176,7 @@ export default function EditProductModal({
                   Price ({currency}) <span className="text-[#fc6022]">*</span>
                 </label>
                 <input
+                  data-testid="product-price"
                   required
                   type="number"
                   name="price"
@@ -194,6 +193,7 @@ export default function EditProductModal({
                   <span className="text-gray-400 font-normal">Optional</span>
                 </label>
                 <input
+                  data-testid="product-image"
                   type="url"
                   name="image"
                   value={formData.image}
@@ -209,6 +209,7 @@ export default function EditProductModal({
                   <span className="text-gray-400 font-normal">Optional</span>
                 </label>
                 <textarea
+                  data-testid="product-description"
                   name="description"
                   rows={3}
                   value={formData.description}
@@ -221,6 +222,7 @@ export default function EditProductModal({
             {/* Action Buttons - Stacked full-width like reference */}
             <div className="pt-6 flex flex-col gap-3">
               <button
+                data-testid="save-product-submit"
                 type="submit"
                 disabled={isLoading}
                 className="w-full bg-[#fc6022] hover:bg-[#e0541e] text-white py-3 rounded-xl font-bold tracking-wide transition-all duration-200 shadow-md hover:shadow-lg disabled:bg-orange-300 disabled:shadow-none active:scale-[0.98] flex justify-center items-center"

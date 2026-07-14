@@ -159,6 +159,7 @@ export default function ProductTable({
 
                     <td className="px-6 py-4 text-center whitespace-nowrap">
                       <button
+                        data-testid="product-actions"
                         className="actions-menu-trigger p-2 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors duration-200"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -203,6 +204,7 @@ export default function ProductTable({
                             </button>
                             {canDelete && (
                               <button
+                                data-testid="delete-product-btn"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setDeleteProduct(product);
