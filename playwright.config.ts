@@ -5,15 +5,24 @@ const authFile = path.join(process.cwd(), "playwright", ".auth", "user.json");
 
 export default defineConfig({
   testDir: "./tests/e2e",
+
   fullyParallel: true,
+
   forbidOnly: !!process.env.CI,
+
   retries: process.env.CI ? 2 : 0,
+
   workers: process.env.CI ? 1 : undefined,
+
   reporter: "html",
+
+  globalTeardown: "./playwright/teardown.ts",
+
   use: {
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
   },
+
   webServer: {
     command: "npm run dev:test",
     url: "http://localhost:3000",
@@ -24,6 +33,7 @@ export default defineConfig({
       PLAYWRIGHT: "true",
     },
   },
+
   projects: [
     {
       name: "setup",
@@ -41,6 +51,7 @@ export default defineConfig({
       },
       dependencies: ["setup"],
     },
+
     {
       name: "firefox",
       use: {
@@ -49,6 +60,7 @@ export default defineConfig({
       },
       dependencies: ["setup"],
     },
+
     {
       name: "webkit",
       use: {

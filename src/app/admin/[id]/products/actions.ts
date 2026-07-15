@@ -137,7 +137,6 @@ export async function createProductAction(
         },
       });
 
-      // 2. Log the creation activity
       await tx.activityLog.create({
         data: {
           store_id: storeId,

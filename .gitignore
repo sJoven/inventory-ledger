@@ -49,6 +49,7 @@ som.txt
 src1/
 src2/
 src/app/client/
+dune.txt
 
 # Playwright
 node_modules/
