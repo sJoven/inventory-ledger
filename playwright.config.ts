@@ -16,7 +16,7 @@ export default defineConfig({
 
   reporter: "html",
 
-  globalTeardown: "./playwright/teardown.ts",
+  globalTeardown: "./tests/e2e/teardown.ts",
 
   use: {
     baseURL: "http://localhost:3000",
