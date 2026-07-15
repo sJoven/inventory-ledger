@@ -64,7 +64,6 @@ async function globalTeardown() {
   } finally {
     await prisma.$disconnect();
 
-    // Remove auth files
     fs.rmSync(path.join(process.cwd(), "playwright", ".auth"), {
       recursive: true,
       force: true,
