@@ -1,12 +1,9 @@
+//PLEASE READ: This is a copy of @/src/app/admin/[id]/products/actions.ts
+//createProductAction() function without the guard rails
+//for easier performance testing.
+
+"use server";
 import { prisma } from "@/src/lib/prisma";
-
-export async function POST(req: Request) {
-  const body = await req.json();
-
-  return Response.json(
-    await createProductAction(body, body.storeId, body.userId),
-  );
-}
 
 export async function createProductAction(
   formData: any,
@@ -39,10 +36,11 @@ export async function createProductAction(
     });
 
     return { success: true };
-  } catch {
+  } catch (error: any) {
+    console.error("Database creation transaction failed:", error);
     return {
       success: false,
-      error: "Database error",
+      error: "Failed to create product and log activity.",
     };
   }
 }
