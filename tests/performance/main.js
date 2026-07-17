@@ -3,7 +3,7 @@ import ProductCreate from "./product-create-stress-test";
 import ProductSearch from "./product-search-load-test";
 
 export default function () {
-  group("Product Create Stress Test", () => {
+  group("Product Create Stress Tests", () => {
     ProductCreate();
   });
 
