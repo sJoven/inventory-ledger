@@ -21,7 +21,7 @@ export const options = {
   },
 };
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = __ENV.BASE_URL || "http://localhost:3000";
 
 const failures = new Counter("failures");
 const latency = new Trend("create_latency");

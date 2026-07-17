@@ -1,0 +1,43 @@
+name: k6 Performance Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: "Which test do you want to run?"
+        required: true
+        default: "both"
+        type: choice
+        options:
+          - db_stress
+          - product_search
+          - both
+      target_url:
+        description: "Target URL for the test (e.g., https://api.staging.mycompany.com)"
+        required: true
+        default: "http://localhost:3000"
+
+jobs:
+  k6_test:
+    name: Run k6 Load Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run DB Stress Test
+        if: ${{ github.event.inputs.test_type == 'db_stress' || github.event.inputs.test_type == 'both' }}
+        uses: grafana/run-k6-action@v1
+        with:
+          path: tests/performance/product-create-stress-test.js
+        env:
+          BASE_URL: ${{ github.event.inputs.target_url }}
+
+      - name: Run Product Search Test
+        if: ${{ github.event.inputs.test_type == 'product_search' || github.event.inputs.test_type == 'both' }}
+        uses: grafana/run-k6-action@v1
+        with:
+          path: tests/performance/product-search-load-test.js
+        env:
+          BASE_URL: ${{ github.event.inputs.target_url }}
