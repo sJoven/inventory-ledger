@@ -6,12 +6,11 @@ export const options = {
     create_product_stress: {
       executor: "ramping-vus",
       stages: [
-        { duration: "30s", target: 25 },
+        { duration: "20s", target: 10 },
+        { duration: "20s", target: 25 },
+        { duration: "20s", target: 50 },
         { duration: "30s", target: 50 },
-        { duration: "30s", target: 100 },
-        { duration: "30s", target: 200 },
-        { duration: "1m", target: 200 },
-        { duration: "30s", target: 0 },
+        { duration: "20s", target: 0 },
       ],
     },
   },

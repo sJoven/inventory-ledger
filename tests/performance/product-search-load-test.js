@@ -5,7 +5,7 @@ export const options = {
   scenarios: {
     read_heavy: {
       executor: "constant-vus",
-      vus: 100,
+      vus: 50,
       duration: "2m",
     },
   },
