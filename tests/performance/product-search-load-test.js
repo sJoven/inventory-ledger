@@ -17,7 +17,7 @@ export const options = {
 };
 
 const BASE_URL =
-  "https://inventory-ledger-abuffodys-sjovens-projects.vercel.app/api/products/search";
+  "https://inventory-ledger-omega-staging.vercel.app/api/products/search";
 
 const STORE_ID = "some-store";
 

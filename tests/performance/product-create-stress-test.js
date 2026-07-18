@@ -23,7 +23,7 @@ export const options = {
 };
 
 const URL =
-  "https://inventory-ledger-abuffodys-sjovens-projects.vercel.app/api/stress/product";
+  "https://inventory-ledger-omega-staging.vercel.app/api/stress/product";
 
 const STORE_ID = "some-store";
 const USER_ID = "some-id";
