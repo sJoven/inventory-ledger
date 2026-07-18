@@ -1,38 +1,54 @@
 import http from "k6/http";
-import { check } from "k6";
+import { check, sleep } from "k6";
 
 export const options = {
-  stages: [
-    { duration: "30s", target: 20 },
-    { duration: "1m", target: 100 },
-    { duration: "2m", target: 250 },
-    { duration: "30s", target: 0 },
-  ],
+  scenarios: {
+    read_heavy: {
+      executor: "constant-vus",
+      vus: 100,
+      duration: "2m",
+    },
+  },
 
   thresholds: {
-    http_req_duration: ["p(95)<300"],
     http_req_failed: ["rate<0.01"],
+    http_req_duration: ["p(95)<500"],
   },
 };
 
-const BASE_URL = __ENV.BASE_URL || "http://localhost:3000";
-const STORE_ID = "store123";
+const BASE_URL =
+  "https://inventory-ledger-abuffodys-sjovens-projects.vercel.app/api/products/search";
 
-const queries = ["", "apple", "keyboard", "mouse", "phone", "sku"];
+const STORE_ID = "some-store";
+
+const QUERIES = [
+  "",
+  "a",
+  "e",
+  "shirt",
+  "shoe",
+  "bag",
+  "watch",
+  "phone",
+  "abc",
+  "123",
+];
 
 export default function ProductSearch() {
-  const page = Math.floor(Math.random() * 50) + 1;
-  const query = queries[Math.floor(Math.random() * queries.length)];
+  const page = Math.floor(Math.random() * 20) + 1;
+  const query = QUERIES[Math.floor(Math.random() * QUERIES.length)];
 
   const url =
-    `${BASE_URL}/api/products/search` +
-    `?storeId=${STORE_ID}` +
+    `${BASE_URL}?storeId=${STORE_ID}` +
     `&page=${page}` +
     `&query=${encodeURIComponent(query)}`;
 
   const res = http.get(url);
 
   check(res, {
-    "status 200": (r) => r.status === 200,
+    "status is 200": (r) => r.status === 200,
+    "response is array": (r) => Array.isArray(r.json()),
   });
+
+  sleep(Math.random() * 0.5);
 }

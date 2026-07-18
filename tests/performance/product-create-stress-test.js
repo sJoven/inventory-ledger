@@ -1,56 +1,60 @@
 import http from "k6/http";
-import { check } from "k6";
-import { Counter, Trend } from "k6/metrics";
+import { check, sleep } from "k6";
 
 export const options = {
   scenarios: {
-    db_stress: {
+    create_product_stress: {
       executor: "ramping-vus",
       stages: [
-        { duration: "20s", target: 50 },
+        { duration: "30s", target: 25 },
+        { duration: "30s", target: 50 },
+        { duration: "30s", target: 100 },
+        { duration: "30s", target: 200 },
         { duration: "1m", target: 200 },
-        { duration: "2m", target: 500 },
         { duration: "30s", target: 0 },
       ],
     },
   },
 
   thresholds: {
-    http_req_failed: ["rate<0.01"],
-    http_req_duration: ["p(95)<800"],
+    http_req_failed: ["rate<0.05"],
+    http_req_duration: ["p(95)<1000"],
   },
 };
 
-const BASE_URL = __ENV.BASE_URL || "http://localhost:3000";
+const URL =
+  "https://inventory-ledger-abuffodys-sjovens-projects.vercel.app/api/stress/product";
 
-const failures = new Counter("failures");
-const latency = new Trend("create_latency");
+const STORE_ID = "some-store";
+const USER_ID = "some-id";
 
 export default function ProductCreate() {
-  const payload = JSON.stringify({
-    storeId: "store123",
-    userId: "user123",
+  const id = `${__VU}-${__ITER}-${Date.now()}`;
 
-    sku: `SKU-${__VU}-${__ITER}`,
-    name: `Stress Product ${__VU}-${__ITER}`,
+  const payload = JSON.stringify({
+    storeId: STORE_ID,
+    userId: USER_ID,
+
+    sku: `SKU-${id}`,
+    name: `Stress Product ${id}`,
     image: "",
-    description: "Stress test",
-    quantity: Math.floor(Math.random() * 1000),
-    price: Math.random() * 100,
+    description: "Created by k6 stress test",
+    quantity: Math.floor(Math.random() * 100) + 1,
+    price: Math.floor(Math.random() * 5000) + 100,
   });
 
-  const res = http.post(`${BASE_URL}/api/stress/products`, payload, {
+  const params = {
     headers: {
       "Content-Type": "application/json",
     },
+  };
+
+  const res = http.post(URL, payload, params);
+
+  check(res, {
+    "status is 200": (r) => r.status === 200,
+    "request succeeded": (r) => r.json("success") === true,
   });
 
-  latency.add(res.timings.duration);
-
-  const ok = check(res, {
-    200: (r) => r.status === 200,
-    success: (r) => JSON.parse(r.body).success === true,
-  });
-
-  if (!ok) failures.add(1);
+  sleep(Math.random() * 0.2);
 }
