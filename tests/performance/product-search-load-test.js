@@ -33,7 +33,7 @@ const QUERIES = [
   "123",
 ];
 
-export default function ProductSearch() {
+export default function () {
   const page = Math.floor(Math.random() * 20) + 1;
   const query = QUERIES[Math.floor(Math.random() * QUERIES.length)];
 

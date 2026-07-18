@@ -24,10 +24,13 @@ export const options = {
 const URL =
   "https://inventory-ledger-omega-staging.vercel.app/api/stress/product";
 
+const CLEANUP_URL =
+  "https://inventory-ledger-omega-staging.vercel.app/api/stress/product/delete";
+
 const STORE_ID = "some-store";
 const USER_ID = "some-id";
 
-export default function ProductCreate() {
+export default function () {
   const id = `${__VU}-${__ITER}-${Date.now()}`;
 
   const payload = JSON.stringify({
@@ -56,4 +59,22 @@ export default function ProductCreate() {
   });
 
   sleep(Math.random() * 0.2);
+}
+
+export function teardown() {
+  const res = http.post(
+    CLEANUP_URL,
+    JSON.stringify({
+      storeId: STORE_ID,
+    }),
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  check(res, {
+    "cleanup succeeded": (r) => r.status === 200,
+  });
 }

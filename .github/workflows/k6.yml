@@ -14,10 +14,10 @@ jobs:
       - name: Setup k6
         uses: grafana/setup-k6-action@v1
 
-      - name: Run Read-Heavy Test
-        run: |
-          k6 run tests/performance/product-search-load-test.js
-
       - name: Run Create Product Stress Test
         run: |
           k6 run tests/performance/product-create-stress-test.js
+
+      - name: Run Read-Heavy Test
+        run: |
+          k6 run tests/performance/product-search-load-test.js
