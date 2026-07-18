@@ -1,30 +1,23 @@
-import { createProductAction } from "@/src/app/admin/[id]/products/actions";
 import { prisma } from "@/src/lib/prisma";
 
 export async function POST(req: Request) {
   const body = await req.json();
 
   return Response.json(
-    await createProductActionMock(body, body.storeId, body.userId),
+    await createProductAction(body, body.storeId, body.userId),
   );
 }
 
-export async function createProductActionMock(
+//PLEASE READ: This is a copy of @/src/app/admin/[id]/products/actions.ts
+//createProductAction() function without the guard rails
+//for easier performance testing.
+
+export async function createProductAction(
   formData: any,
   storeId: string,
   userId: string,
 ) {
   try {
-    // canAdmin mocked
-    const authCheck = { status: 200 };
-
-    if (authCheck.status !== 200) {
-      return {
-        success: false,
-        error: "Forbidden",
-      };
-    }
-
     await prisma.$transaction(async (tx) => {
       const newProduct = await tx.product.create({
         data: {
