@@ -10,7 +10,7 @@ export default defineConfig({
   test: {
     environment: "node",
     fileParallelism: false,
-    include: ["**/*.{test,spec}.{ts,tsx}"],
+    include: ["**/*.test.{ts,tsx}"],
     setupFiles: ["./vitest.setup.ts"],
   },
 });

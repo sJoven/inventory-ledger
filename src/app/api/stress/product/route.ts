@@ -10,7 +10,7 @@ export async function POST(req: Request) {
 
 //PLEASE READ: This is a copy of @/src/app/admin/[id]/products/actions.ts
 //createProductAction() function without the guard rails
-//for easier performance testing.
+//for easier performance testing..
 
 export async function createProductAction(
   formData: any,
