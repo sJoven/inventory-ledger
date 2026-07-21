@@ -38,16 +38,15 @@ export default function PerformanceTesting() {
           </p>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50">
-          <div className="flex aspect-[16/10] items-center justify-center">
-            <div className="text-center">
-              <h4 className="text-lg font-semibold text-white">
-                k6 Stress Graph
-              </h4>
-
-              <p className="mt-2 text-slate-500">Screenshot Placeholder</p>
-            </div>
-          </div>
+        <div className="mt-12 overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50 shadow-lg">
+          <Image
+            src="/create-stress-test.png"
+            alt="Enterprise Headless Commerce SaaS Architecture Diagram"
+            width={1583}
+            height={775}
+            className="h-auto w-full object-contain"
+            priority
+          />
         </div>
       </div>
 
