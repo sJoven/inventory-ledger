@@ -1,4 +1,5 @@
 import { CheckCircle2, ShieldCheck } from "lucide-react";
+import Image from "next/image";
 
 export default function SecureAuth() {
   const features = [
@@ -44,16 +45,15 @@ export default function SecureAuth() {
         </div>
 
         {/* Screenshot */}
-        <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50 shadow-xl">
-          <div className="flex aspect-[16/10] items-center justify-center">
-            <div className="text-center">
-              <div className="mb-4 text-lg font-semibold text-white">
-                Login Page
-              </div>
-
-              <p className="text-slate-500">Screenshot Placeholder</p>
-            </div>
-          </div>
+        <div className="mt-12 overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50 shadow-lg">
+          <Image
+            src="/login-page.png"
+            alt="Enterprise Headless Commerce SaaS Architecture Diagram"
+            width={1600}
+            height={775}
+            className="h-auto w-full object-contain"
+            priority
+          />
         </div>
       </div>
     </section>

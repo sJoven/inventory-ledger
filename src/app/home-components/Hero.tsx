@@ -11,11 +11,11 @@ export default function Hero() {
 
       <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-6 text-center">
         <span className="mb-6 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1 text-sm font-semibold uppercase tracking-[0.25em] text-emerald-400">
-          Enterprise Portfolio Project
+          Portfolio Project
         </span>
 
         <h1 className="max-w-4xl text-5xl font-extrabold leading-tight tracking-tight text-white md:text-7xl">
-          Enterprise
+          Enterprise-Ready
           <br />
           Headless Commerce SaaS
         </h1>

@@ -1,10 +1,10 @@
 import { CheckCircle2, History } from "lucide-react";
+import Image from "next/image";
 
 export default function AuditLogging() {
   const features = [
     "Immutable activity logs",
     "State restoration",
-    "Order history",
     "Rollback functionality",
   ];
 
@@ -12,16 +12,15 @@ export default function AuditLogging() {
     <section className="mx-auto max-w-7xl px-6 py-20">
       <div className="grid items-center gap-14 lg:grid-cols-2">
         {/* Screenshot */}
-        <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50 shadow-xl">
-          <div className="flex aspect-[16/10] items-center justify-center">
-            <div className="text-center">
-              <div className="mb-4 text-lg font-semibold text-white">
-                Activity Logs
-              </div>
-
-              <p className="text-slate-500">Screenshot Placeholder</p>
-            </div>
-          </div>
+        <div className="mt-12 overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50 shadow-lg">
+          <Image
+            src="/logs-page.png"
+            alt="Enterprise Headless Commerce SaaS Architecture Diagram"
+            width={1583}
+            height={851}
+            className="h-auto w-full object-contain"
+            priority
+          />
         </div>
 
         {/* Content */}
@@ -35,10 +34,9 @@ export default function AuditLogging() {
           </h2>
 
           <p className="mt-6 text-lg leading-8 text-slate-400">
-            Every important action performed within the system is securely
-            recorded and can be reverted when necessary, providing
-            accountability, traceability, and protection against accidental
-            changes.
+            Product actions performed within the system is securely recorded and
+            can be reverted when necessary, providing accountability,
+            traceability, and protection against accidental changes.
           </p>
 
           <div className="mt-10">

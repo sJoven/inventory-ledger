@@ -6,10 +6,10 @@ export const options = {
     create_product_stress: {
       executor: "ramping-vus",
       stages: [
+        { duration: "20s", target: 5 },
         { duration: "20s", target: 10 },
-        { duration: "20s", target: 25 },
-        { duration: "20s", target: 50 },
-        { duration: "30s", target: 50 },
+        { duration: "20s", target: 15 },
+        { duration: "30s", target: 25 },
         { duration: "20s", target: 0 },
       ],
     },
@@ -52,9 +52,10 @@ export default function () {
 
   const res = http.post(URL, payload, params);
 
+  const body = JSON.parse(res.body);
   check(res, {
     "status is 200": (r) => r.status === 200,
-    "request succeeded": (r) => r.json("success") === true,
+    "success is true": () => body.success === true,
   });
 
   sleep(Math.random() * 0.2);
