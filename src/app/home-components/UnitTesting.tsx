@@ -73,16 +73,14 @@ export default function UnitTesting() {
           </p>
 
           <div className="mt-8 rounded-xl border border-slate-700 bg-slate-900 p-6">
-            <p className="font-mono text-emerald-400">UPDATE_PRODUCT</p>
+            <p className="font-mono text-emerald-400">
+              07-21-2026, 10:38 | update | Product ID
+            </p>
 
             <p className="my-4 text-2xl text-slate-500">↓</p>
 
             <p className="text-slate-300">
-              John updated <strong>Laptop</strong> price
-            </p>
-
-            <p className="text-slate-400">
-              from <strong>₱30,000</strong> to <strong>₱28,000</strong>
+              Updated <strong>Laptop V-Mx</strong> at July 21, 10: 38 AM
             </p>
           </div>
         </div>

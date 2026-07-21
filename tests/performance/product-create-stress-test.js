@@ -52,12 +52,14 @@ export default function () {
 
   const res = http.post(URL, payload, params);
 
+  const body = JSON.parse(res.body);
+  console.log(body);
+  console.log(body.success);
+  console.log(typeof body.success);
+
   check(res, {
     "status is 200": (r) => r.status === 200,
-    "request succeeded": (r) => {
-      const body = r.json();
-      return body.success === true;
-    },
+    "success is true": () => body.success === true,
   });
 
   sleep(Math.random() * 0.2);

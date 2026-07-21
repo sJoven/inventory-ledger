@@ -2,12 +2,7 @@ import { Boxes, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 
 export default function ProductManagement() {
-  const features = [
-    "Product CRUD",
-    "Category management",
-    "Inventory tracking",
-    "Stock validation",
-  ];
+  const features = ["Product CRUD", "Inventory tracking", "Stock validation"];
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-20">
@@ -22,7 +17,7 @@ export default function ProductManagement() {
 
           <p className="mt-6 text-lg leading-8 text-slate-400">
             Implemented complete inventory management with tools for managing
-            products, monitoring stock levels, and organizing product categories
+            products, monitoring stock levels, and organizing product details
             across the platform.
           </p>
 

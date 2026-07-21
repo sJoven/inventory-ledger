@@ -10,7 +10,7 @@ export default function WebDevelopment() {
 
       {/* Title */}
       <h2 className="mt-4 text-4xl font-bold text-white md:text-5xl">
-        Enterprise Headless Commerce SaaS
+        Enterprise-Ready Headless Commerce SaaS
       </h2>
 
       {/* Description */}

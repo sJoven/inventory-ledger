@@ -5,7 +5,6 @@ export default function AuditLogging() {
   const features = [
     "Immutable activity logs",
     "State restoration",
-    "Order history",
     "Rollback functionality",
   ];
 
@@ -35,10 +34,9 @@ export default function AuditLogging() {
           </h2>
 
           <p className="mt-6 text-lg leading-8 text-slate-400">
-            Every important action performed within the system is securely
-            recorded and can be reverted when necessary, providing
-            accountability, traceability, and protection against accidental
-            changes.
+            Product actions performed within the system is securely recorded and
+            can be reverted when necessary, providing accountability,
+            traceability, and protection against accidental changes.
           </p>
 
           <div className="mt-10">

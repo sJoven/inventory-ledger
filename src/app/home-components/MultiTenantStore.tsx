@@ -4,7 +4,6 @@ import Image from "next/image";
 export default function MultiTenantStore() {
   const features = [
     "Store switching",
-    "Theme customization",
     "Currency settings",
     "Store-specific inventory",
   ];

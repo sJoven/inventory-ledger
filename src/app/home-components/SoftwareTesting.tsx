@@ -25,13 +25,14 @@ export default function SoftwareTesting() {
 
       {/* Testing Pyramid */}
       <div className="max-w-4xl">
-        <h3 className="text-3xl font-semibold text-white">Testing Pyramid</h3>
+        <h3 className="text-3xl font-semibold text-white">Testing Strategy</h3>
 
         <p className="mt-5 text-lg leading-8 text-slate-400">
-          The testing strategy follows a layered approach, beginning with unit
-          tests for isolated business logic, integration tests for service
-          interactions, end-to-end tests for complete user workflows, and
-          performance testing to evaluate scalability under load.
+          The testing strategy follows a granular approach, first with unit
+          tests for isolated business logic, then with integration tests for
+          service interactions, aftwerwards was end-to-end tests for complete
+          user workflows, and lastly performance testing to evaluate scalability
+          under load.
         </p>
       </div>
 
