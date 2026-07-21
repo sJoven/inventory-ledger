@@ -36,18 +36,8 @@ export default function EndToEndTesting() {
       </div>
 
       {/* Authentication */}
-      <div className="mt-20 grid items-center gap-14 lg:grid-cols-2">
-        <div>
-          <h3 className="text-2xl font-semibold text-white">Authentication</h3>
-
-          <p className="mt-5 text-lg leading-8 text-slate-400">
-            Automated user login using the NextAuth Credentials Provider,
-            verifying authentication flow, session creation, and protected route
-            access.
-          </p>
-        </div>
-
-        <div className="mt-12 overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50 shadow-lg">
+      <div className="mt-16 grid items-center gap-4">
+        <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50 shadow-lg">
           <Image
             src="/login.png"
             alt="Enterprise Headless Commerce SaaS Architecture Diagram"
@@ -57,11 +47,23 @@ export default function EndToEndTesting() {
             priority
           />
         </div>
+
+        <div>
+          <h3 className="mt-2 text-2xl font-semibold text-white">
+            Authentication
+          </h3>
+
+          <p className="mt-2 text-lg leading-8 text-slate-400">
+            Automated user login using the NextAuth Credentials Provider,
+            verifying authentication flow, session creation, and protected route
+            access.
+          </p>
+        </div>
       </div>
 
       {/* Product CRUD Flow */}
-      <div className="mt-24 grid items-center gap-14 lg:grid-cols-2">
-        <div className="mt-12 overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50 shadow-lg">
+      <div className="mt-16 grid items-center gap-4">
+        <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50 shadow-lg">
           <Image
             src="/crud.png"
             alt="Enterprise Headless Commerce SaaS Architecture Diagram"
@@ -72,17 +74,17 @@ export default function EndToEndTesting() {
           />
         </div>
 
-        <div className="order-1 lg:order-2">
+        <div className="mt-2 order-1 lg:order-2">
           <h3 className="text-2xl font-semibold text-white">
             Product CRUD Flow
           </h3>
 
-          <p className="mt-5 text-lg leading-8 text-slate-400">
+          <p className="mt-2 text-lg leading-8 text-slate-400">
             Automated the complete product management workflow to validate core
             user interactions from creation through deletion.
           </p>
 
-          <div className="mt-8 rounded-xl border border-slate-700 bg-slate-900/60 p-6">
+          <div className="mt-2 rounded-xl border border-slate-700 bg-slate-900/60 p-6">
             <h4 className="mb-4 text-lg font-semibold text-white">Workflow</h4>
 
             <ul className="space-y-3">

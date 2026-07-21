@@ -25,20 +25,8 @@ export default function PerformanceTesting() {
       </div>
 
       {/* Product Creation Stress Test */}
-      <div className="mt-20 grid items-center gap-14 lg:grid-cols-2">
-        <div>
-          <h3 className="text-2xl font-semibold text-white">
-            Product Creation Stress Test
-          </h3>
-
-          <p className="mt-5 text-lg leading-8 text-slate-400">
-            Evaluated application stability while continuously creating products
-            under heavy concurrent load, ensuring the system remained responsive
-            and reliable during peak usage.
-          </p>
-        </div>
-
-        <div className="mt-12 overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50 shadow-lg">
+      <div className="mt-16 grid items-center gap-4">
+        <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50 shadow-lg">
           <Image
             src="/create-stress-test.png"
             alt="Enterprise Headless Commerce SaaS Architecture Diagram"
@@ -48,11 +36,23 @@ export default function PerformanceTesting() {
             priority
           />
         </div>
+
+        <div>
+          <h3 className="mt-2 text-2xl font-semibold text-white">
+            Product Creation Stress Test
+          </h3>
+
+          <p className="mt-2 text-lg leading-8 text-slate-400">
+            Evaluated application stability while continuously creating products
+            under heavy concurrent load, ensuring the system remained responsive
+            and reliable during peak usage.
+          </p>
+        </div>
       </div>
 
       {/* Product Search Load Test */}
-      <div className="mt-24 grid items-center gap-14 lg:grid-cols-2">
-        <div className="mt-12 overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50 shadow-lg">
+      <div className="mt-16 grid items-center gap-4">
+        <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50 shadow-lg">
           <Image
             src="/stress-test.png"
             alt="Enterprise Headless Commerce SaaS Architecture Diagram"
@@ -63,18 +63,18 @@ export default function PerformanceTesting() {
           />
         </div>
 
-        <div className="order-1 lg:order-2">
+        <div className="mt-2 order-1 lg:order-2">
           <h3 className="text-2xl font-semibold text-white">
             Product Search Load Test
           </h3>
 
-          <p className="mt-5 text-lg leading-8 text-slate-400">
+          <p className="mt-2 text-lg leading-8 text-slate-400">
             Measured response times during concurrent product search requests to
             verify consistent performance and identify potential bottlenecks
             under increasing user traffic.
           </p>
 
-          <div className="mt-8 rounded-xl border border-slate-700 bg-slate-900/60 p-6">
+          <div className="mt-2 rounded-xl border border-slate-700 bg-slate-900/60 p-6">
             <div className="flex items-center gap-3">
               <Activity className="h-6 w-6 text-orange-400" />
 
