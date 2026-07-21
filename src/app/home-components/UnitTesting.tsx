@@ -1,4 +1,5 @@
 import { CheckCircle2, FlaskConical } from "lucide-react";
+import Image from "next/image";
 
 export default function UnitTesting() {
   return (
@@ -36,29 +37,29 @@ export default function UnitTesting() {
           </p>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50">
-          <div className="flex aspect-[16/10] items-center justify-center">
-            <div className="text-center">
-              <h4 className="text-lg font-semibold text-white">
-                Revenue Unit Tests
-              </h4>
-              <p className="mt-2 text-slate-500">Screenshot Placeholder</p>
-            </div>
-          </div>
+        <div className="mt-12 overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50 shadow-lg">
+          <Image
+            src="/calculate.png"
+            alt="Enterprise Headless Commerce SaaS Architecture Diagram"
+            width={1091}
+            height={517}
+            className="h-auto w-full object-contain"
+            priority
+          />
         </div>
       </div>
 
       {/* Action Log Formatter */}
       <div className="mt-24 grid items-center gap-14 lg:grid-cols-2">
-        <div className="order-2 lg:order-1 overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50">
-          <div className="flex aspect-[16/10] items-center justify-center">
-            <div className="text-center">
-              <h4 className="text-lg font-semibold text-white">
-                Formatter Test Output
-              </h4>
-              <p className="mt-2 text-slate-500">Screenshot Placeholder</p>
-            </div>
-          </div>
+        <div className="mt-12 overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50 shadow-lg">
+          <Image
+            src="/readable.png"
+            alt="Enterprise Headless Commerce SaaS Architecture Diagram"
+            width={1075}
+            height={517}
+            className="h-auto w-full object-contain"
+            priority
+          />
         </div>
 
         <div className="order-1 lg:order-2">
@@ -112,16 +113,15 @@ export default function UnitTesting() {
           </ul>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50">
-          <div className="flex aspect-[16/10] items-center justify-center">
-            <div className="text-center">
-              <h4 className="text-lg font-semibold text-white">
-                Validation Tests
-              </h4>
-
-              <p className="mt-2 text-slate-500">Screenshot Placeholder</p>
-            </div>
-          </div>
+        <div className="mt-12 overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50 shadow-lg">
+          <Image
+            src="/name.png"
+            alt="Enterprise Headless Commerce SaaS Architecture Diagram"
+            width={991}
+            height={519}
+            className="h-auto w-full object-contain"
+            priority
+          />
         </div>
       </div>
     </section>

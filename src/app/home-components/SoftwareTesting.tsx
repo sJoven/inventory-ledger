@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function SoftwareTesting() {
   return (
     <section id="software-testing" className="mx-auto max-w-7xl px-6 py-24">
@@ -35,34 +37,14 @@ export default function SoftwareTesting() {
 
       {/* Illustration Placeholder */}
       <div className="mt-12 overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/50 shadow-lg">
-        <div className="flex aspect-[16/9] items-center justify-center">
-          <div className="text-center">
-            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-slate-700">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-10 w-10 text-slate-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.5}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 3v18M3 21h18M6 15h12M9 9h6"
-                />
-              </svg>
-            </div>
-
-            <h4 className="text-xl font-semibold text-white">
-              Testing Pyramid Illustration
-            </h4>
-
-            <p className="mt-2 text-slate-500">
-              Replace this placeholder with your testing pyramid diagram.
-            </p>
-          </div>
-        </div>
+        <Image
+          src="/testing.png"
+          alt="Enterprise Headless Commerce SaaS Architecture Diagram"
+          width={4736}
+          height={2099}
+          className="h-auto w-full object-contain"
+          priority
+        />
       </div>
     </section>
   );

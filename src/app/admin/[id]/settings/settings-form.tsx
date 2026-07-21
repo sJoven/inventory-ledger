@@ -125,9 +125,17 @@ export default function SettingsForm({
 
       {/* Theme */}
       <div className="space-y-1.5">
-        <label className="text-sm font-semibold text-gray-700">
-          Store Theme
-        </label>
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-semibold text-gray-700">
+            Store Theme
+          </label>
+          {/* In-Development Reminder */}
+          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-rose-500">
+            <span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse" />
+            NOTE: The theme settings is currently in-development
+          </span>
+        </div>
+
         <select
           name="theme"
           value={formData.theme}

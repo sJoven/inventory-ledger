@@ -54,7 +54,10 @@ export default function () {
 
   check(res, {
     "status is 200": (r) => r.status === 200,
-    "request succeeded": (r) => r.json("success") === true,
+    "request succeeded": (r) => {
+      const body = r.json();
+      return body.success === true;
+    },
   });
 
   sleep(Math.random() * 0.2);
